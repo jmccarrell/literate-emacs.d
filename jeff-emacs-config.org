@@ -149,3 +149,36 @@
    #+END_SRC
 
    Use =M-x package-refresh-contents= to reload the list of packages as needed.
+
+** Use-Package
+
+   Prefer [[https://github.com/jwiegley/use-package][use-package]] more or less as a more convenient way of customizing emacs. It does a whole lot more
+   than that. My usage is fairly shallow.
+
+   #+BEGIN_SRC emacs-lisp
+     (unless (package-installed-p 'use-package)
+       (package-install 'use-package))
+
+     (setq use-package-verbose t)
+     (setq use-package-always-ensure t)
+
+     (require 'use-package)
+   #+END_SRC
+
+** Howard's Recommended Emacs Lisp Libs
+
+   Again following Howard here. Add in these supporting libraries to ease emacs lisp development. [[https://github.com/magnars/dash.el][dash]] for a
+   modern list api, [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation. Also load in =cl= as other
+   packages may depend on it.
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'cl)
+
+     (use-package dash
+       :config (eval-after-load "dash" '(dash-enable-font-lock)))
+
+     (use-package s)
+
+     (use-package f)
+
+   #+END_SRC

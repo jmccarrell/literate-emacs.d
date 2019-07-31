@@ -34,3 +34,20 @@
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 
 (package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(setq use-package-verbose t)
+(setq use-package-always-ensure t)
+
+(require 'use-package)
+
+(require 'cl)
+
+(use-package dash
+  :config (eval-after-load "dash" '(dash-enable-font-lock)))
+
+(use-package s)
+
+(use-package f)
