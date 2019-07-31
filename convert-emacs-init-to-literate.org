@@ -1,0 +1,212 @@
+#+TITLE Reconstruct my emacs init file in the Literate style
+
+* Goals [/]
+- [ ] switch to a literate construction method for emacs
+- [ ] prefer ivy, counsle and swiper over helm
+- [ ] my color scheme applies to new frames; while the global color scheme applies to the startup frame. fix this?
+- [ ] create support for bash execution in org babel sections
+  - ie literate programming using bash at the shell
+- [ ] remove unnecessary :ensure t blocks in my use-package uses
+* DONE preliminaries
+    - State "DONE"       from "DOING"      [2019-07-30 Tue 20:41]
+    - State "DOING"      from "DONE"       [2019-07-30 Tue 17:48]
+    - State "DONE"       from "DOING"      [2019-07-26 Fri 08:33]
+    - State "DOING"      from              [2019-07-21 Sun 12:59]
+- what method should I use to publish the compile init file into my home directory?
+** DONE REJECTED symlink to .emacs.d
+     - State "DONE"       from              [2019-07-21 Sun 12:30]
+how many other top level emacs directories do I have now?
+#+BEGIN_SRC bash
+❯ print -l ~/.emacs.jwm.d/**/*(.)
+/Users/jeff/.emacs.jwm.d/elisp/c-m-supl.el
+/Users/jeff/.emacs.jwm.d/elisp/jc_ctags.el
+/Users/jeff/.emacs.jwm.d/elisp/jc_misc.el
+/Users/jeff/.emacs.jwm.d/elisp/ps-ccrypt.el
+/Users/jeff/.emacs.jwm.d/emacs-custom-23.el
+/Users/jeff/.emacs.jwm.d/emacs-custom-24.el
+/Users/jeff/.emacs.jwm.d/emacs-custom-future.el
+#+END_SRC
+I can just group all of that source code into my single literate file.
+
+- is this a new gh repo?  A: no.  Put it in jeff-dotfiles
+** DEFERRED move jeff-dotfiles to github from bitbucket
+     - State "DEFERRED"   from              [2019-07-21 Sun 12:30] \\
+       I don't need to do this now; instead, create a separate emacs repo.
+[these notes](https://gist.github.com/mandiwise/5954bbb2e95c011885ff) suggest that there is a githum import tool.
+check it out.
+2FA did not work with that tool.
+This still makes sense for my dot files, to move them out of bitbucket
+I can move them around by configuring additional git remotes and syncing them that way.
+** DONE git clone it in place
+     - State "DONE"       from "DOING"      [2019-07-21 Sun 12:59]
+     - State "DOING"      from              [2019-07-21 Sun 12:33]
+Like [[https://github.com/munen/emacs.d/#installation][munen does]]
+So create a new repo at github named emacs-d
+and undo the mechanism I have now to replace?  move?  the .emacs.d directory
+and .emacs.jwm.d
+** DONE plan the transition
+     - State "DONE"       from "DOING"      [2019-07-21 Sun 15:28]
+     - State "DOING"      from              [2019-07-21 Sun 12:59]
+how do I evolve my current config into a literate form while not screwing up my working emacs?
+A1: git branches
+Just build the new config on a git branch.
+Start the master with the git config at: jwm-dotfiles/.emacs.d and .emacs.jwm.d
+But that suggests that I collapse the .emacs.jwm.d functions into the main init.el first.
+- [X] So evaluate if I need any of those older functions.
+choose to move the .emacs.d in and out of the home directory to facilitate working the transition.
+- [X] write 2 shell scripts to make it easier to rotate between configurations
+  - prefer-literate-emacs-config
+  - prefer-classic-emacs-config
+** DONE figure out how to tangle init.el from the org file
+     - State "DONE"       from              [2019-07-21 Sun 16:12]
+munen: Alain doesn't do any tangling of the org file into the init.el file;
+he just [[babel org version ][loads in the org file using org-babel-load-file]]
+check out SriPscl
+he does [[Alain doesn't do any tangling of the org file into the init.el file;%0Ahe just %5B%5Bbabel org version %5D%5Bloads in the org file using org-babel-load-file%5D%5D%0A][much the same as munen]]
+seems like this is a way to get bootstrapped here.
+what does Howard Abrams do?
+Howard has split out his org file into many individual file and has a [[file:/t/emacs-configs/howardabrams-dot-files/build.el::(defun%20ha/build-dot-files%20()][build script (written in elisp)]]
+what does Sacha do?
+#+BEGIN_QUOTE
+My =~/.emacs.d/init.el= is now a symlink to =Sacha.el=, which is what
+=M-x org-babel-tangle= (=C-c C-v t=) produces.
+#+END_QUOTE
+So Sacha writes her changes to =Sacha.el=, then tangles it, then revision controls the pair of files.
+She also splits out each elisp into a separate buffer with =C-c '=
+then she can run the debugger or eval buffer
+----
+Decision: I am going to follow Sacha's pattern, with one org file that I explicitly tangle
+** DONE read the [[https://orgmode.org/worg/org-contrib/babel/intro.html][org babel introducton]] for context
+     - State "DONE"       from "DOING"      [2019-07-30 Tue 20:37]
+     - State "DOING"      from              [2019-07-26 Fri 08:51]
+no, skip that intro; it appears to be quite out of date.
+it refers to a variable? ~org-babel-interpreters~ which doesn't exist in my emacs.
+- [X] So read Working with source code in the [[https://orgmode.org/orgguide.pdf][guide]] instead
+*** DONE structure of a block
+     - State "DONE"       from              [2019-07-30 Tue 20:37]
+#+BEGIN_EXAMPLE
+
+#+NAME: <name>
+#+BEGIN_SRC <language> <switches> <header arguments>
+  <body>
+#+END_SRC
+
+#+END_EXAMPLE
+switches: control the export of the block
+header args: control many aspects of the code block behavior
+*** DONE editing blocks
+     - State "DONE"       from              [2019-07-30 Tue 20:37]
+Use C-c ' to enter and exit an evaluation buffer for that block
+
+*** DONE evaluating code blocks
+     - State "DONE"       from              [2019-07-30 Tue 20:37]
+Use C-c C-c in the block to evaluate it and insert its results in the emacs buffer.
+By default, only ~emacs-lisp~ is supported; other languages must be explicitly turned on.
+See the manual.  (where?)
+
+#+BEGIN_SRC emacs-lisp
+(+ 45 6)
+#+END_SRC
+
+#+RESULTS:
+: 51
+
+another example
+
+#+name: echo
+#+begin_src emacs-lisp :var input="echo'd"
+input
+#+end_src
+
+#+RESULTS: echo
+: echo'd
+
+*** DONE zsh block examples
+     - State "DONE"       from              [2019-07-30 Tue 20:37]
+According to [[https://orgmode.org/manual/Languages.html#Languages][the manual]], this function will enable babel support for added languages
+
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (shell . t)))
+#+END_SRC
+
+#+RESULTS:
+
+Ok, that worked.  So now try to execute some shell
+#+BEGIN_SRC shell
+awk '{print $2}' <<=eod
+every good boy
+does fine
+eod
+#+END_SRC
+
+#+RESULTS:
+| good |
+| fine |
+|      |
+
+Ok, now figure out how to name which shell is invoked
+#+BEGIN_SRC shell
+sh_pid=$(echo "$$")
+ps uww $sh_pid
+#+END_SRC
+
+#+RESULTS:
+| USER |  PID | %CPU | %MEM |     VSZ |  RSS | TT | STAT | STARTED |    TIME | COMMAND            |
+| jeff | 6668 |  0.2 |  0.0 | 4308668 | 1840 | ?? | S    | 8:27PM  | 0:00.03 | /usr/local/bin/zsh |
+
+good it is my shell; zsh
+
+count how many lines are given to the input from a here document
+#+BEGIN_SRC shell
+  wc <<=eod
+  every good boy
+  does fine
+  eod
+#+END_SRC
+
+#+RESULTS:
+: 2       6      28
+
+*** DONE read org mode [[https://orgmode.org/manual/Literal-examples.html][support for code blocks]]
+      - State "DONE"       from "DOING"      [2019-07-30 Tue 20:39]
+      - State "DOING"      from              [2019-07-26 Fri 08:52]
+the [[https://orgmode.org/worg/library-of-babel.org][library of babel source]] is a good example of org blocks with emacs-lisp to pattern after
+*** DONE read Org mode [[https://orgmode.org/manual/Literal-examples.html][literal examples]]
+      - State "DONE"       from "DOING"      [2019-07-30 Tue 20:41]
+      - State "DOING"      from              [2019-07-28 Sun 15:05]
+Looks like [[https://orgmode.org/manual/Easy-templates.html#Easy-templates][easy templates]] have what I want for expanding blocks of examples, especailly shell code
+#+BEGIN_EXAMPLE
+< - e  expands to BEGIN_EXAMPLE
+#+END_EXAMPLE
+and editing in those source blocks with ~C-c '~ is explicitly supported.
+#+BEGIN_SRC emacs-lisp
+  (defun xor (a b)
+         (if (a
+              a
+              ! b)))
+#+END_SRC
+this example is not valid emacs-lisp
+* DOING good literate configs to read, and selectively pick from
+  - State "DOING"      from              [2019-07-21 Sun 16:12]
+** [[https://github.com/munen/emacs.d/#where-ivy-doesnt-work-well][munens config]]
+- pull the 'use dumb term in zsh' so emacs shell can run zsh for me, just without colors
+** [[https://github.com/SirPscl/emacs.d][SirPscl/emacs.d]]
+- munen references this config as a good example as well
+- I like the keyboard hints he has at the top of his config as well
+* DOING open questions
+  - State "DOING"      from              [2019-07-21 Sun 16:13]
+** DOING do I use ido?  or just ivy, counsel and swiper
+     - State "DOING"      from              [2019-07-21 Sun 12:59]
+- arguments in favor of ido
+  - I believe Sacha uses it
+  - [[https://github.com/munen/emacs.d/#where-ivy-doesnt-work-well][where ivy doesn't work well]]
+
+* TODO start writing my updated config
+** write the first version and figure out how to get emacs to execute it
+start with the basics
+figure out how to make the most basic, valid emacs config initialization file
+and test it
+*** how does Sacha tangle her file?

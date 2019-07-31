@@ -1,0 +1,20 @@
+#+TITLE: Jeff McCarrell's emacs configuration
+#+STARTUP: showeverything
+#+PROPERTY: header-args:emacs-lisp  :tangle "init.el"
+
+#+BEGIN_SRC emacs-lisp
+  ;; initialize packages
+  (package-initialize)
+  (eval-and-compile
+    (require 'cl)
+
+    (defvar use-package-verbose t)
+    (defvar use-package-always-ensure t)
+    (require 'use-package))
+
+  ;;; jwm: leave the custom settings in settings.el
+  ;;;  it is good enough for jwiegley
+  (setq custom-file (expand-file-name "settings.el" user-emacs-directory))
+  (load custom-file t)
+
+#+END_SRC
