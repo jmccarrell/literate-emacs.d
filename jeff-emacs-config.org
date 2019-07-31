@@ -1,20 +1,137 @@
-#+TITLE: Jeff McCarrell's emacs configuration
+#+TITLE: Emacs Configuration
+#+AUTHOR: Jeff McCarrell
+#+EMAIL: jeff@mccarrell.org
 #+STARTUP: showeverything
 #+PROPERTY: header-args:emacs-lisp  :tangle "init.el"
 
-#+BEGIN_SRC emacs-lisp
-  ;; initialize packages
-  (package-initialize)
-  (eval-and-compile
-    (require 'cl)
+* Introduction
+** About This File
 
-    (defvar use-package-verbose t)
-    (defvar use-package-always-ensure t)
-    (require 'use-package))
+   After many years of emacs evolution via hunting and pecking, I have finally decided to pursue my long time
+   goal to refactor my existing emacs init setup in the literate style. I had previously followed the leads of
+   many fine emacs authors, among them:
 
-  ;;; jwm: leave the custom settings in settings.el
-  ;;;  it is good enough for jwiegley
-  (setq custom-file (expand-file-name "settings.el" user-emacs-directory))
-  (load custom-file t)
+   - [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][Howard Abrams]]
+   - [[https://github.com/sachac/.emacs.d][Sacha Chua]]
+   - [[https://github.com/jwiegley/dot-emacs][John Weigley]]
+   - [[https://github.com/purcell/emacs.d][Steve Purcell]]
+   - [[https://github.com/abo-abo/oremacs][abo-abo]]
+   - and many others
 
-#+END_SRC
+   To all of these contributors, I doff my cap in salute. Your published work has inspired and, -- to be honest
+   -- at times terrified me as I have contemplated cutting and splicing together these various styles in search
+   of my own.
+
+   I would also like to publicly acknowledge certain emacs contributors of the YouTube genre, among them:
+
+   - [[https://www.youtube.com/playlist?list=PLVtKhBrRV_ZkPnBtt_TD1Cs9PJlU0IIdE][Ranier König]]
+   - [[https://www.youtube.com/channel/UClT2UAbC6j7TqOWurVhkuHQ][Sacha Chua]]
+   - [[https://www.youtube.com/playlist?list=PL9KxKa8NpFxIcNQa9js7dQQIHc81b0-Xg][Mike Zamansky]]
+   - [[https://www.youtube.com/user/howardabrams/videos][Howard Abrams]]
+   - [[https://www.youtube.com/playlist?list=PL0sMmOaE_gs3GbuZV_sNjwMREw9rfElTV][John Kitchen]]
+   - [[https://www.youtube.com/channel/UCCRdRbI93UGW0AZttVH3SbA/feed][Daniel Gopar]]
+
+   I have drawn inspiration to adopt new ways of doing some very old tricks from these fine folks.
+
+   In this refactor, I have the following major goals:
+
+     - use the literate programming style
+       - learn babel and tangle in the process
+     - learn more emacs-lisp
+     - prefer ivy, counsel and swiper over helm
+
+   as well as a host of smaller, clean-up type goals.
+
+* General Settings
+** Directories
+
+   I prefer Howard's style of [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][defining where to store eveything]], so I shamelessly stole it.
+
+   #+BEGIN_SRC emacs-lisp
+     (defconst jwm/emacs-directory (concat (getenv "HOME") "/.emacs.d"))
+
+     (defun jwm/emacs-subdirectory (d) (expand-file-name d jwm/emacs-directory))
+
+     ;; initialize some directories if needed
+     (let* ((subdirs '("elisp" "backups"))
+            (fulldirs (mapcar (lambda (d) (jwm/emacs-subdirectory d)) subdirs)))
+       (dolist (dir fulldirs)
+         (when (not (file-exists-p dir))
+           (message "Make directory: %s" dir)
+           (make-directory dir))))
+   #+END_SRC
+
+** Custom Settings
+
+   Explicitly store and load my custom settings.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq custom-file (expand-file-name "settings.el" jwm/emacs-directory))
+     (when (file-exists-p custom-file)
+       (load custom-file t))
+   #+END_SRC
+
+** DEPRECATED Starting Up
+
+   I used to use this knid of logic to startup, cribbed from John Weigley. But in hindsight, I think it is a
+   bit advanced for me. I try to minimize using stuff I don't really understand.
+
+   #+BEGIN_COMMENT
+
+   #+BEGIN_SRC emacs-lisp
+   ;; initialize packages
+   (package-initialize)
+   (eval-and-compile
+   (require 'cl)
+
+   (defvar use-package-verbose t)
+   (defvar use-package-always-ensure t)
+   (require 'use-package))
+
+   ;;; jwm: leave the custom settings in settings.el
+   (setq custom-file (expand-file-name "settings.el" user-emacs-directory))
+   (load custom-file t)
+   #+END_SRC
+
+   #+END_COMMENT
+
+** Helpful Predicates
+
+   Some useful predicates in customization...
+
+    #+BEGIN_SRC emacs-lisp
+      (defun jwm/personal-mac-p ()
+        (and (eq 'darwin system-type)
+             (file-exists-p "/j/pdata/.gitignore")))
+
+      (defun jwm/sift-mac-p ()
+        (file-exists-p (expand-file-name "~/code/java/build.gradle")))
+    #+END_SRC
+
+** Modernizing Emacs
+
+   Another section I lifted [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#modernizing-emacs][straight from Howard]].  This is his text.
+
+   With a long history of working on small machines without gigabytes
+   of RAM, we might as well let Emacs be the beast it has always
+   dreamed.
+
+   First, let’s increase the cache before starting garbage collection:
+   #+BEGIN_SRC elisp
+     (setq gc-cons-threshold 50000000)
+   #+END_SRC
+
+   Found [[https://github.com/wasamasa/dotemacs/blob/master/init.org#init][here]] how to remove the warnings from the GnuTLS library when
+   using HTTPS... increase the minimum prime bits size:
+   #+BEGIN_SRC elisp
+     (setq gnutls-min-prime-bits 4096)
+   #+END_SRC
+
+** Personal Information
+
+   #+BEGIN_SRC emacs-lisp
+     (setq user-full-name "Jeff McCarrell"
+           user-mail-address (cond
+                              ((jwm/sift-mac-p) "jmccarrell@siftscience.com")
+                              (t "jeff@mccarrell.org")))
+   #+END_SRC
