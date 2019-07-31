@@ -9,7 +9,7 @@
 
    After many years of emacs evolution via hunting and pecking, I have finally decided to pursue my long time
    goal to refactor my existing emacs init setup in the literate style. I had previously followed the leads of
-   many fine emacs authors, among them:
+   many fine emacs devotees, among them:
 
    - [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][Howard Abrams]]
    - [[https://github.com/sachac/.emacs.d][Sacha Chua]]
@@ -39,6 +39,7 @@
        - learn babel and tangle in the process
      - learn more emacs-lisp
      - prefer ivy, counsel and swiper over helm
+     - use =customize-theme= to create a full fledged theme for my color definitions
 
    as well as a host of smaller, clean-up type goals.
 
@@ -73,25 +74,21 @@
 
 ** DEPRECATED Starting Up
 
-   I used to use this knid of logic to startup, cribbed from John Weigley. But in hindsight, I think it is a
+   I used to use this kind of logic to startup, cribbed from John Weigley. But in hindsight, I think it is a
    bit advanced for me. I try to minimize using stuff I don't really understand.
 
    #+BEGIN_COMMENT
 
-   #+BEGIN_SRC emacs-lisp
-   ;; initialize packages
-   (package-initialize)
-   (eval-and-compile
-   (require 'cl)
+     ,#+BEGIN_SRC emacs-lisp
+       ;; initialize packages
+       (package-initialize)
+       (eval-and-compile
+         (require 'cl)
 
-   (defvar use-package-verbose t)
-   (defvar use-package-always-ensure t)
-   (require 'use-package))
-
-   ;;; jwm: leave the custom settings in settings.el
-   (setq custom-file (expand-file-name "settings.el" user-emacs-directory))
-   (load custom-file t)
-   #+END_SRC
+         (defvar use-package-verbose t)
+         (defvar use-package-always-ensure t)
+         (require 'use-package))
+     ,#+END_SRC
 
    #+END_COMMENT
 
