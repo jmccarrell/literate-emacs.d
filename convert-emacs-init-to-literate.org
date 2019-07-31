@@ -1,7 +1,7 @@
-#+TITLE Reconstruct my emacs init file in the Literate style
+#+TITLE: Reconstruct my emacs init file in the Literate style
 
-* Goals [/]
-- [ ] switch to a literate construction method for emacs
+* Goals [1/5]
+- [X] switch to a literate construction method for emacs
 - [ ] prefer ivy, counsle and swiper over helm
 - [ ] my color scheme applies to new frames; while the global color scheme applies to the startup frame. fix this?
 - [ ] create support for bash execution in org babel sections
@@ -191,6 +191,8 @@ and editing in those source blocks with ~C-c '~ is explicitly supported.
 this example is not valid emacs-lisp
 * DOING good literate configs to read, and selectively pick from
   - State "DOING"      from              [2019-07-21 Sun 16:12]
+** [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::#+TITLE:%20Emacs%20Configuration%20File%20#+AUTHOR:%20Howard%20Abrams%20#+EMAIL:%20howard.abrams@gmail.com][Howards config]]
+** [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org][Sachas config]]
 ** [[https://github.com/munen/emacs.d/#where-ivy-doesnt-work-well][munens config]]
 - pull the 'use dumb term in zsh' so emacs shell can run zsh for me, just without colors
 ** [[https://github.com/SirPscl/emacs.d][SirPscl/emacs.d]]
@@ -204,9 +206,16 @@ this example is not valid emacs-lisp
   - I believe Sacha uses it
   - [[https://github.com/munen/emacs.d/#where-ivy-doesnt-work-well][where ivy doesn't work well]]
 
-* TODO start writing my updated config
-** write the first version and figure out how to get emacs to execute it
+* DOING start writing my updated config
+  - State "DOING"      from "TODO"       [2019-07-30 Tue 23:34]
+** DONE write the first version and figure out how to get emacs to execute it
+   - State "DONE"       from              [2019-07-30 Tue 23:30]
+
 start with the basics
-figure out how to make the most basic, valid emacs config initialization file
-and test it
+- figure out how to make the most basic, valid emacs config initialization file
+- and test it
+  - test the init fragments inside each block with =C-c '= and =eval-buffer=
+  - then tangle and
+    - =emacs -Q -l init.el=
 *** how does Sacha tangle her file?
+She names the output file in a file-scoped property, then runs =C-c C-v t= to generate that output.
