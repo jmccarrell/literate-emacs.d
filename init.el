@@ -25,3 +25,12 @@
       user-mail-address (cond
                          ((jwm/sift-mac-p) "jmccarrell@siftscience.com")
                          (t "jeff@mccarrell.org")))
+
+(require 'package)
+
+(unless (assoc-default "org" package-archives)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+(unless (assoc-default "melpa" package-archives)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+
+(package-initialize)
