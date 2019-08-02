@@ -372,7 +372,7 @@
 
    Here is how [[https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el#L7-L33][Xah Lee sets his frame font]]
 
-   and a 2019 [[https://www.wisdomandwonder.com/text/12298/choosing-a-monospace-font-2019-march#more-12298][blog post]] comparing fonts that led me to hack
+   and a 2019 [[https://www.wisdomandwonder.com/text/12298/choosing-a-monospace-font-2019-march#more-12298][blog post]] comparing fonts that led me to the font [[https://github.com/source-foundry/Hack][hack]]
 
 *** TODO rewrite this to condiitionally load Hack when it is available
 
