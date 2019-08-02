@@ -68,14 +68,11 @@
   (scroll-bar-mode -1))
 
 ;; prefer utf-8 encoding in all cases.
-(setq locale-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
+(let ((lang 'utf-8))
+  (set-language-environment lang)
+  (prefer-coding-system lang))
 
 (use-package zenburn-theme
-  :when (window-system)
   :init (load-theme 'zenburn t))
 
 (when (window-system)
