@@ -5,6 +5,143 @@
 #+PROPERTY: header-args:emacs-lisp  :tangle "init.el"
 
 * Introduction
+** Next steps: iteration 1
+
+   I would like to get the initial window appearance going.
+
+   Another approach would be to figure out the minimum number of features I need to move over to this config
+   as my default choice.
+
+   Yet a third would be to follow some combination of Howard and Sachas configs, as I have done to date
+   - Howards config
+
+   Another approach would be to purse a set of goals:
+
+   - a window with font and color theme I prefer
+   - how to use projectile to navigate between projects as I so often want to do
+     - between notes and work projects specifically
+   - to support jq literate programming to solve some of the salt challenges I have at work
+
+   Goals
+   - enable tramp mode
+
+   - experiment with Howards mac bindings so I can get Super and Alternate? key prefixes
+     - and I think I really like Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Key%20Bindings][global key binding approach]]
+
+*** Color theme
+
+   Where does Howard define his fonts, and theme?  A: in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][emacs-client.org]]
+   - but [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][Howards theme loader of choice]]: =color-theme= is obsolete
+     - so I need a more modern way to pick my color theme.
+     - What does Sacha do?
+   - all that being said, Howard uses Steve Purcells [[https://github.com/purcell/color-theme-sanityinc-tomorrow][sanityinc tomorrow themes]], which look sweet
+     - it would be nice to be able to switch themes from day to night as needed.
+
+   Sacha defines her color theme as [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::*Set%20up%20a%20light-on-dark%20color%20scheme][small overrides to solarized]]
+
+   from Sacha, this appears to be a [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(add-hook%20'after-make-frame-functions%20(lambda%20(frame)%20(select-frame%20frame)%20(my/setup-color-theme)))][fix for the theme getting applied to new frames]]
+
+   How do I define my theme now?  A: I just [[file:jeff-classic-init.el::(use-package%20zenburn-theme%20:init%20(load-theme%20'zenburn%20t))][load zenburn]]
+
+*** todo eventually
+
+   - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
+   - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
+   - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
+   - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
+   - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
+
+*** maybe explore these
+
+    Howard has a bunch of _Technical Artifacts_ sections
+
+      - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
+      - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
+      - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
+
+    Consider reading these for the insights they may contain
+
+    Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
+    Monaco for the short term.
+
+    Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
+
+*** Howard and Sachas organization
+
+**** Howard
+    #+BEGIN_EXAMPLE
+      * Introduction
+      * General Settings
+      * Package Initialization
+      * Variables
+      * Display Settings
+      * Key Bindings
+      * Loading and Finding Files
+      * Word Smithing
+      * Miscellaneous Settings
+      * Programming Languages
+      * Org-Mode
+      * Tools
+      * Applications
+      * Frivolous
+      * Technical Artifacts
+    #+END_EXAMPLE
+
+   Howard also loads a mac specific file on his macintoshs. That would break my /single file/ model. So
+   while I find that approach logically appealing, I am not willing to go all the way toward [[file:/t/emacs-configs/howardabrams-dot-files/build.el::;;%20Simple%20Emacs%20script%20used%20to%20build/tangle%20all%20my%20support][Howards build
+   process]].  But maybe I should try it?
+
+   Executing Howards =build.el= by evaluating the buffer gives me:
+
+   #+BEGIN_EXAMPLE
+   Opening output file: No such file or directory, /Users/jeff/.lein/profiles.clj
+   #+END_EXAMPLE
+
+   So I should probably stick with my single file approach for now following the /don't use stuff you don't
+   know maxim/.
+
+   But Howard also [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::#+BEGIN_SRC%20shell%20brew%20install%20gpg%20#+END_SRC][calls brew in his main org file]] so I'm going to stick with a single file.
+
+**** Sacha
+
+    #+BEGIN_EXAMPLE
+      * Configuration
+      ** About this file
+      ** Starting up
+      ** System information
+      ** Personal information
+      ** Emacs initialization
+      ** General configuration
+      ** Navigation
+      ** Reading
+      ** Shuffling lines
+
+      ** Writing
+      ** Org  :org:
+      ** Coding
+      ** Internet Relay Chat
+      ** Self-tracking, statistics, and other data transformations
+      ** Workarounds
+      ** Display
+      ** Web browsing
+      ** Clipboard
+      ** Search
+      ** Mail
+      ** Ledger (personal finance)
+      ** Emacs server
+      ** Menus
+
+      ** Advanced stuff / things I tend to forget about
+      ** Other nifty Emacs things I want to learn
+      ** Weather forecast
+      ** Encryption
+      ** DONE Scan ~/bin and turn the scripts into interactive commands
+      ** Syncthing
+      ** Search logs
+      * Other cool configs you may want to check out
+
+    #+END_EXAMPLE
+
 ** About This File
 
    After many years of emacs evolution via hunting and pecking, I have finally decided to pursue my long time
@@ -181,4 +318,72 @@
 
      (use-package f)
 
+   #+END_SRC
+* Variables
+
+** Turn Off Emacs Messages, the bell and window dressings
+
+   #+BEGIN_SRC emacs-lisp
+     (setq inhibit-startup-message t)
+     ;; needed for emacs23
+     (setq inhibit-splash-screen t)
+     (setq initial-scratch-message "")
+
+     ;; Don't beep at me
+     (setq visible-bell t)
+
+     ;; screen real estate is for text, not widgets
+     (when (window-system)
+       (tool-bar-mode 0)
+       (when (fboundp 'horizontal-scroll-bar-mode)
+         (horizontal-scroll-bar-mode -1))
+       (scroll-bar-mode -1))
+   #+END_SRC
+
+** Prefer utf8 Everywhere
+
+   #+BEGIN_SRC emacs-lisp
+     ;; prefer utf-8 encoding in all cases.
+     (setq locale-coding-system 'utf-8)
+     (set-terminal-coding-system 'utf-8)
+     (set-keyboard-coding-system 'utf-8)
+     (set-selection-coding-system 'utf-8)
+     (prefer-coding-system 'utf-8)
+   #+END_SRC
+
+* Display Settings
+
+** Color Theme
+
+  After much experimentation, I have come to prefer zenburn. Over the years, I have used my own color theme,
+  which I used to be quite proud of, and then solarized. Now I have come to prefer zenburn.
+
+  Here is how Sacha overrides and [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(defun%20my/setup-color-theme%20()%20(interactive)%20(when%20(display-graphic-p)%20(color-theme-solarized))%20(set-background-color%20"black")%20(set-face-foreground%20'secondary-selection%20"darkblue")%20(set-face-background%20'secondary-selection%20"lightblue")%20(set-face-background%20'font-lock-doc-face%20"black")%20(set-face-foreground%20'font-lock-doc-face%20"wheat")%20(set-face-background%20'font-lock-string-face%20"black"))%20(use-package%20color-theme-solarized%20:config%20(my/setup-color-theme))][customizes her use of solarized]].
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package zenburn-theme
+      :when (window-system)
+      :init (load-theme 'zenburn t))
+  #+END_SRC
+
+** Font
+
+   I prefer a little bigger (14 point) font on my personal laptop, especially on my large monitor at home.
+
+   Here is how [[https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el#L7-L33][Xah Lee sets his frame font]]
+
+   and a 2019 [[https://www.wisdomandwonder.com/text/12298/choosing-a-monospace-font-2019-march#more-12298][blog post]] comparing fonts that led me to hack
+
+*** TODO rewrite this to condiitionally load Hack when it is available
+
+    and figure out why I can't seem to use a value that I have (let ) defined
+    but I can setq all day long.
+
+   #+BEGIN_SRC emacs-lisp
+     (when (window-system)
+       (when (member "Monaco" (font-family-list))
+         (setq jwm/preferred-font
+               (cond ((jwm/personal-mac-p) "Hack-14")
+                      (t "Monaco-12")))
+         (set-frame-font jwm/preferred-font t t)))
    #+END_SRC

@@ -51,3 +51,36 @@
 (use-package s)
 
 (use-package f)
+
+(setq inhibit-startup-message t)
+;; needed for emacs23
+(setq inhibit-splash-screen t)
+(setq initial-scratch-message "")
+
+;; Don't beep at me
+(setq visible-bell t)
+
+;; screen real estate is for text, not widgets
+(when (window-system)
+  (tool-bar-mode 0)
+  (when (fboundp 'horizontal-scroll-bar-mode)
+    (horizontal-scroll-bar-mode -1))
+  (scroll-bar-mode -1))
+
+;; prefer utf-8 encoding in all cases.
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
+(use-package zenburn-theme
+  :when (window-system)
+  :init (load-theme 'zenburn t))
+
+(when (window-system)
+  (when (member "Monaco" (font-family-list))
+    (setq jwm/preferred-font
+          (cond ((jwm/personal-mac-p) "Hack-14")
+                 (t "Monaco-12")))
+    (set-frame-font jwm/preferred-font t t)))
