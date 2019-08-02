@@ -28,7 +28,8 @@
        (file-exists-p "/j/pdata/.gitignore")))
 
 (defun jwm/sift-mac-p ()
-  (file-exists-p (expand-file-name "~/code/java/build.gradle")))
+  (and (eq 'darwin system-type)
+       (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
 
 (setq user-full-name "Jeff McCarrell"
       user-mail-address (cond
@@ -80,6 +81,11 @@
 (let ((lang 'utf-8))
   (set-language-environment lang)
   (prefer-coding-system lang))
+
+(setq-default indent-tabs-mode nil)
+(setq tab-width 2)
+
+(setq-default tab-always-indent 'complete)
 
 (use-package zenburn-theme
   :init (load-theme 'zenburn t))
