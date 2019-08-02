@@ -14,6 +14,15 @@
 (when (file-exists-p custom-file)
   (load custom-file t))
 
+;; ;; initialize packages
+;; (package-initialize)
+;; (eval-and-compile
+;;   (require 'cl)
+
+;;   (defvar use-package-verbose t)
+;;   (defvar use-package-always-ensure t)
+;;   (require 'use-package))
+
 (defun jwm/personal-mac-p ()
   (and (eq 'darwin system-type)
        (file-exists-p "/j/pdata/.gitignore")))

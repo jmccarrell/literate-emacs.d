@@ -215,21 +215,16 @@
    I used to use this kind of logic to startup, cribbed from John Weigley. But in hindsight, I think it is a
    bit advanced for me. I try to minimize using stuff I don't really understand.
 
-   #+BEGIN_COMMENT
+     #+BEGIN_SRC emacs-lisp
+       ;; ;; initialize packages
+       ;; (package-initialize)
+       ;; (eval-and-compile
+       ;;   (require 'cl)
 
-     ,#+BEGIN_SRC emacs-lisp
-       ;; initialize packages
-       (package-initialize)
-       (eval-and-compile
-         (require 'cl)
-
-         (defvar use-package-verbose t)
-         (defvar use-package-always-ensure t)
-         (require 'use-package))
-     ,#+END_SRC
-
-   #+END_COMMENT
-
+       ;;   (defvar use-package-verbose t)
+       ;;   (defvar use-package-always-ensure t)
+       ;;   (require 'use-package))
+     #+END_SRC
 ** Helpful Predicates
 
    Some useful predicates in customization...
@@ -320,7 +315,6 @@
      (use-package f)
    #+END_SRC
 * Variables
-
 ** Turn Off Emacs Messages, the bell and window dressings
 
    #+BEGIN_SRC emacs-lisp
@@ -352,7 +346,6 @@
    #+END_SRC
 
 * Display Settings
-
 ** Color Theme
 
   After much experimentation, I have come to prefer zenburn. Over the years, I have used my own color theme,
