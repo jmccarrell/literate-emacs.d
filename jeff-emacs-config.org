@@ -46,7 +46,6 @@
    have kind of done this, as I have read much of Howard and Sachas configs.
 
    Another approach would be to purse a set of goals:
-<<<<<<< HEAD
 
    - [X] a window with font and color theme I prefer
    - how to use projectile to navigate between projects as I so often want to do
@@ -58,19 +57,6 @@
 
 *** DONE Howard and Sachas organization
 
-=======
-
-   - [X] a window with font and color theme I prefer
-   - how to use projectile to navigate between projects as I so often want to do
-     - between notes and work projects specifically
-   - to support jq literate programming to solve some of the salt challenges I have at work
-
-   Goals
-   - enable tramp mode
-
-*** DONE Howard and Sachas organization
-
->>>>>>> key bindings
     - State "DONE"       from              [2019-08-02 Fri 17:34]
 **** Howard
     #+BEGIN_EXAMPLE
