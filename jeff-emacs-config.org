@@ -5,44 +5,15 @@
 #+PROPERTY: header-args:emacs-lisp  :tangle "init.el"
 
 * Introduction
-** Next steps: iteration 1
+** Next steps: key binding iteration
+*** Create Key Bindings
 
-   I would like to get the initial window appearance going.
-
-   Another approach would be to figure out the minimum number of features I need to move over to this config
-   as my default choice.
-
-   Yet a third would be to follow some combination of Howard and Sachas configs, as I have done to date
-   - Howards config
-
-   Another approach would be to purse a set of goals:
-
-   - a window with font and color theme I prefer
-   - how to use projectile to navigate between projects as I so often want to do
-     - between notes and work projects specifically
-   - to support jq literate programming to solve some of the salt challenges I have at work
-
-   Goals
-   - enable tramp mode
-
-   - experiment with Howards mac bindings so I can get Super and Alternate? key prefixes
+   - experiment with Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::(setq%20mac-option-modifier%20'meta)%20(setq%20mac-command-modifier%20'super)][mac modifier key bindings]] so I can get Super and Alternate? key prefixes
      - and I think I really like Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Key%20Bindings][global key binding approach]]
 
-*** Color theme
+   - then set up =which-key=
 
-   Where does Howard define his fonts, and theme?  A: in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][emacs-client.org]]
-   - but [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][Howards theme loader of choice]]: =color-theme= is obsolete
-     - so I need a more modern way to pick my color theme.
-     - What does Sacha do?
-   - all that being said, Howard uses Steve Purcells [[https://github.com/purcell/color-theme-sanityinc-tomorrow][sanityinc tomorrow themes]], which look sweet
-     - it would be nice to be able to switch themes from day to night as needed.
-
-   Sacha defines her color theme as [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::*Set%20up%20a%20light-on-dark%20color%20scheme][small overrides to solarized]]
-
-   from Sacha, this appears to be a [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(add-hook%20'after-make-frame-functions%20(lambda%20(frame)%20(select-frame%20frame)%20(my/setup-color-theme)))][fix for the theme getting applied to new frames]]
-
-   How do I define my theme now?  A: I just [[file:jeff-classic-init.el::(use-package%20zenburn-theme%20:init%20(load-theme%20'zenburn%20t))][load zenburn]]
-
+**** option
 *** todo eventually
 
    - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
@@ -62,12 +33,31 @@
     Consider reading these for the insights they may contain
 
     Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
-    Monaco for the short term.
+    Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
+    Hack.
 
     Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
 
-*** Howard and Sachas organization
+*** Possible Approaches
+   Another approach would be to figure out the minimum number of features I need to move over to this config
+   as my default choice.
 
+   Yet a third would be to follow some combination of Howard and Sachas configs, as I have done to date. I
+   have kind of done this, as I have read much of Howard and Sachas configs.
+
+   Another approach would be to purse a set of goals:
+
+   - [X] a window with font and color theme I prefer
+   - how to use projectile to navigate between projects as I so often want to do
+     - between notes and work projects specifically
+   - to support jq literate programming to solve some of the salt challenges I have at work
+
+   Goals
+   - enable tramp mode
+
+*** DONE Howard and Sachas organization
+
+    - State "DONE"       from              [2019-08-02 Fri 17:34]
 **** Howard
     #+BEGIN_EXAMPLE
       * Introduction
@@ -142,6 +132,23 @@
 
     #+END_EXAMPLE
 
+*** DONE Color theme
+
+    - State "DONE"       from              [2019-08-02 Fri 17:33]
+
+   Where does Howard define his fonts, and theme?  A: in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][emacs-client.org]]
+   - but [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][Howards theme loader of choice]]: =color-theme= is obsolete
+     - so I need a more modern way to pick my color theme.
+     - What does Sacha do?
+   - all that being said, Howard uses Steve Purcells [[https://github.com/purcell/color-theme-sanityinc-tomorrow][sanityinc tomorrow themes]], which look sweet
+     - it would be nice to be able to switch themes from day to night as needed.
+
+   Sacha defines her color theme as [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::*Set%20up%20a%20light-on-dark%20color%20scheme][small overrides to solarized]]
+
+   from Sacha, this appears to be a [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(add-hook%20'after-make-frame-functions%20(lambda%20(frame)%20(select-frame%20frame)%20(my/setup-color-theme)))][fix for the theme getting applied to new frames]]
+
+   How do I define my theme now?  A: I just [[file:jeff-classic-init.el::(use-package%20zenburn-theme%20:init%20(load-theme%20'zenburn%20t))][load zenburn]]
+
 ** About This File
 
    After many years of emacs evolution via hunting and pecking, I finally refactored my existing emacs init
@@ -175,9 +182,10 @@
 
      - use the literate programming style
        - learn babel and tangle in the process
-     - learn more emacs-lisp
+     - learn more emacs-lisp; even become competent?
      - prefer ivy, counsel and swiper over helm
      - use =customize-theme= to create a full fledged theme for my color definitions
+       - this one seems less and less important the more I work with Hack and zenburn.
 
    as well as a host of smaller, clean-up type goals.
 
@@ -384,7 +392,11 @@
 
    Here is how [[https://github.com/xahlee/xah_emacs_init/blob/master/xah_emacs_font.el#L7-L33][Xah Lee sets his frame font]]
 
-   And a 2019 [[https://www.wisdomandwonder.com/text/12298/choosing-a-monospace-font-2019-march#more-12298][blog post]] comparing fonts that led me to the font [[https://github.com/source-foundry/Hack][hack]].  Install hack from that link.
+   And a 2019 [[https://www.wisdomandwonder.com/text/12298/choosing-a-monospace-font-2019-march#more-12298][blog post]] comparing fonts that led me to the font [[https://github.com/source-foundry/Hack][Hack]].  Install Hack via homebrew:
+
+   #+BEGIN_SRC shell
+     brew cask install caskroom/fonts/font-hack
+   #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
      (defun jwm/font-exists-p (f)
@@ -398,6 +410,96 @@
                (t "Monaco-12"))))
            (message "setting Jeff preferred font %s" preferred-font)
            (set-frame-font preferred-font t t)))
-
    #+END_SRC
+
+** Whitespace Mode
+
+   This is another [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#whitespace-mode][copy and paste from Howard]]. It makes it easier to see whitespace when necessary.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package whitespace
+       :bind ("C-c T w" . whitespace-mode)
+       :init
+       (setq whitespace-line-column nil
+             whitespace-display-mappings '((space-mark 32 [183] [46])
+                                           (newline-mark 10 [9166 10])
+                                           (tab-mark 9 [9654 9] [92 9])))
+       :config
+       (set-face-attribute 'whitespace-space       nil :foreground "#666666" :background nil)
+       (set-face-attribute 'whitespace-newline     nil :foreground "#666666" :background nil)
+       (set-face-attribute 'whitespace-indentation nil :foreground "#666666" :background nil)
+       :diminish whitespace-mode)
+   #+END_SRC
+
 * Key Bindings
+** Option and Command Modifier Keys
+
+   Howard maps option and command to different emacs key symbols to allow him that many more possible key
+   bindings. Like this:
+
+   #+BEGIN_EXAMPLE
+    (setq mac-option-modifier 'meta)
+    (setq mac-command-modifier 'super)
+   #+END_EXAMPLE
+
+   And I did much the same thing.  However, I think I prefer to keep meta closest to the space bar.
+
+   I leave right-option for the OS X combiner keys, like √ from right-option v.
+
+   #+BEGIN_SRC emacs-lisp
+     (when (jwm/mac-p)
+       (setq mac-command-modifier 'meta)
+       (setq mac-option-modifier 'super)
+       (setq mac-right-option-modifier 'none))
+   #+END_SRC
+
+** Global Key Bindings
+
+   I really like Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Key%20Bindings][global key binding approach]], which leverages John Wiegley's [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][bind-key]] that is part
+   of [[https://github.com/jwiegley/use-package/blob/master/bind-key.el][use-package]].
+
+   Recall that there are several /power/ features of =bind-key=, such as rebinding, adding keys to a
+   specific map etc. Here are John's [[https://github.com/jwiegley/use-package/blob/master/bind-key.el#L41-L90][pointers]] in the comments of the package.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (bind-keys
+      ;; long time bindings I have preferred
+      ("C-x y" . revert-buffer)
+      ("C-M-g" . goto-line)
+
+      ;; org mode wants these default global bindings set up.
+      ("C-c l" . org-store-link)
+      ("C-c c" . org-capture)
+      ("C-c a" . org-agenda)
+      ("C-c b" . org-iswitchb)
+
+      ;; perhaps turn these of when/if I bring in Howards font size functions
+
+      ("s-C-+" . ha/text-scale-frame-increase)
+      ("A-C-+" . ha/text-scale-frame-increase)
+      ("s-C-=" . ha/text-scale-frame-increase)
+      ("A-C-=" . ha/text-scale-frame-increase)
+      ("s-C--" . ha/text-scale-frame-decrease)
+      ("A-C--" . ha/text-scale-frame-decrease))
+   #+END_SRC
+
+** which-key
+
+   I have come to appreciate the exploration of the key maps that [[https://github.com/justbur/emacs-which-key][which-key]] enables.
+
+   Howard extensively [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#displaying-command-sequences][customizes the display of which-key]]. I find that interesting, and maybe something to
+   pursue one day.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package which-key
+       :config
+       :diminish which-key-mode
+       :config
+
+       ;; prefer to show the entire command name with no truncation.
+       ;;  some of those projectile command names exceed the default value of 27, eg
+       ;;  projectile-toggle-between-implementation-and-test
+       (setq which-key-max-description-length nil)
+       (which-key-mode 1))
+   #+END_SRC

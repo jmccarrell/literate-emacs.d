@@ -105,3 +105,52 @@
           (t "Monaco-12"))))
       (message "setting Jeff preferred font %s" preferred-font)
       (set-frame-font preferred-font t t)))
+
+(use-package whitespace
+  :bind ("C-c T w" . whitespace-mode)
+  :init
+  (setq whitespace-line-column nil
+        whitespace-display-mappings '((space-mark 32 [183] [46])
+                                      (newline-mark 10 [9166 10])
+                                      (tab-mark 9 [9654 9] [92 9])))
+  :config
+  (set-face-attribute 'whitespace-space       nil :foreground "#666666" :background nil)
+  (set-face-attribute 'whitespace-newline     nil :foreground "#666666" :background nil)
+  (set-face-attribute 'whitespace-indentation nil :foreground "#666666" :background nil)
+  :diminish whitespace-mode)
+
+(when (jwm/mac-p)
+  (setq mac-command-modifier 'meta)
+  (setq mac-option-modifier 'super)
+  (setq mac-right-option-modifier 'none))
+
+(bind-keys
+ ;; long time bindings I have preferred
+ ("C-x y" . revert-buffer)
+ ("C-M-g" . goto-line)
+
+ ;; org mode wants these default global bindings set up.
+ ("C-c l" . org-store-link)
+ ("C-c c" . org-capture)
+ ("C-c a" . org-agenda)
+ ("C-c b" . org-iswitchb)
+
+ ;; perhaps turn these of when/if I bring in Howards font size functions
+
+ ("s-C-+" . ha/text-scale-frame-increase)
+ ("A-C-+" . ha/text-scale-frame-increase)
+ ("s-C-=" . ha/text-scale-frame-increase)
+ ("A-C-=" . ha/text-scale-frame-increase)
+ ("s-C--" . ha/text-scale-frame-decrease)
+ ("A-C--" . ha/text-scale-frame-decrease))
+
+(use-package which-key
+  :config
+  :diminish which-key-mode
+  :config
+
+  ;; prefer to show the entire command name with no truncation.
+  ;;  some of those projectile command names exceed the default value of 27, eg
+  ;;  projectile-toggle-between-implementation-and-test
+  (setq which-key-max-description-length nil)
+  (which-key-mode 1))
