@@ -23,12 +23,16 @@
 ;;   (defvar use-package-always-ensure t)
 ;;   (require 'use-package))
 
+(defun jwm/mac-p ()
+  (and (eq 'ns (window-system))
+       (eq 'darwin system-type)))
+
 (defun jwm/personal-mac-p ()
-  (and (eq 'darwin system-type)
+  (and (jwm/mac-p)
        (file-exists-p "/j/pdata/.gitignore")))
 
 (defun jwm/sift-mac-p ()
-  (and (eq 'darwin system-type)
+  (and (jwm/mac-p)
        (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
 
 (setq user-full-name "Jeff McCarrell"
@@ -90,9 +94,14 @@
 (use-package zenburn-theme
   :init (load-theme 'zenburn t))
 
+(defun jwm/font-exists-p (f)
+  (and (window-system)
+       (member f (font-family-list))))
+
 (when (window-system)
-  (when (member "Monaco" (font-family-list))
-    (setq jwm/preferred-font
-          (cond ((jwm/personal-mac-p) "Hack-14")
-                 (t "Monaco-12")))
-    (set-frame-font jwm/preferred-font t t)))
+  (let ((preferred-font
+         (cond
+          ((and (jwm/font-exists-p "Hack") (jwm/mac-p)) "Hack-14")
+          (t "Monaco-12"))))
+      (message "setting Jeff preferred font %s" preferred-font)
+      (set-frame-font preferred-font t t)))
