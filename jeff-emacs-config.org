@@ -144,9 +144,9 @@
 
 ** About This File
 
-   After many years of emacs evolution via hunting and pecking, I have finally decided to pursue my long
-   time goal to refactor my existing emacs init setup in the literate style. I have previously and continue
-   to follow the lead of many fine emacs devotees, among them:
+   After many years of emacs evolution via hunting and pecking, I finally refactored my existing emacs init
+   setup in the literate style. I have previously and continue to follow the lead of many fine emacs
+   devotees, among them:
 
    - [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][Howard Abrams]]
    - [[https://github.com/sachac/.emacs.d][Sacha Chua]]
