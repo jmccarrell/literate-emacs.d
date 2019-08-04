@@ -1,12 +1,10 @@
 #+TITLE: Reconstruct my emacs init file in the Literate style
 
-* Goals [1/5]
+* Goals [4/4]
 - [X] switch to a literate construction method for emacs
-- [ ] prefer ivy, counsle and swiper over helm
-- [ ] my color scheme applies to new frames; while the global color scheme applies to the startup frame. fix this?
-- [ ] create support for bash execution in org babel sections
-  - ie literate programming using bash at the shell
-- [ ] remove unnecessary :ensure t blocks in my use-package uses
+- [X] prefer ivy, counsle and swiper over helm
+- [X] my color scheme applies to new frames; while the global color scheme applies to the startup frame. fix this?
+- [X] remove unnecessary :ensure t blocks in my use-package uses
 * DONE preliminaries
     - State "DONE"       from "DOING"      [2019-07-30 Tue 20:41]
     - State "DOING"      from "DONE"       [2019-07-30 Tue 17:48]

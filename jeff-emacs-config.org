@@ -5,35 +5,10 @@
 #+PROPERTY: header-args:emacs-lisp  :tangle "init.el"
 
 * Introduction
-** Next steps
-*** Install essential packages
-**** Tier 1: cant live without
+*** Install Essential Packages
+**** Tier 2: Maybe, Consider These
 
-     Packages that I view as essential to my emacs experience:
-
-     - [X] magit
-
-     - [X] org-mode
-       - I would like to have better indentation support in org-mode
-         - indentation under a heading should not indent further depending on the heading
-           - ie, 3 spaces for a 2 star heading; 4 spaces for a 3 star, etc.
-         - explore org-adapt-indentation
-           - from [[https://www.reddit.com/r/emacs/comments/97naje/what_is_everyones_org_mode_indentation_preferences/][this reddit]]
-         - so after reading about it, I have decided to leave this alone.
-           - org will change the indentation on promote/demote, so good enough.
-
-     - [X] eshell?
-       - eshell seems to work just fine.
-
-     - [X] ag
-
-     - projectile
-       - ensure =describe-personal-bindings= continues to work after I customize projectile
-
-     - ivy, swiper, counsel
-       - whatever binds projectile and ivy together, ie, replace [[file:jeff-classic-init.el::(use-package%20helm-projectile%20:config%20(setq%20projectile-completion-system%20'helm)%20(helm-projectile-on))][helm-projectile]]
-
-**** Tier 2: Maybe, consider these
+     Consider swapping out my default emacs config for this new one.
 
      Turn off all disabled emacs commands; follow Howards config there.
 
@@ -91,7 +66,7 @@
        (add-hook 'prog-mode-hook #'jwm::prog-mode-hook)
      #+END_SRC
 
-**** Tier 3: Drop these in this refactor
+**** Tier 3: Drop These in this Refactor
 ***** not used enough
 
       - key-chord
@@ -113,7 +88,43 @@
       - yasnippet
       - ztree
 
-*** todo eventually
+**** DONE Tier 1: Can't Live Without
+
+     - State "DONE"       from              [2019-08-03 Sat 21:45]
+     Packages that I view as essential to my emacs experience:
+
+     - [X] magit
+
+     - [X] org-mode
+       - I would like to have better indentation support in org-mode
+         - indentation under a heading should not indent further depending on the heading
+           - ie, 3 spaces for a 2 star heading; 4 spaces for a 3 star, etc.
+         - explore org-adapt-indentation
+           - from [[https://www.reddit.com/r/emacs/comments/97naje/what_is_everyones_org_mode_indentation_preferences/][this reddit]]
+         - so after reading about it, I have decided to leave this alone.
+           - org will change the indentation on promote/demote, so good enough.
+
+     - [X] eshell?
+       - eshell seems to work just fine.
+
+     - [X] ag
+
+     - [X] projectile
+       - ensure =describe-personal-bindings= continues to work after I customize projectile
+
+     - [X] ivy, swiper, counsel
+       - whatever binds projectile and ivy together, ie, replace [[file:jeff-classic-init.el::(use-package%20helm-projectile%20:config%20(setq%20projectile-completion-system%20'helm)%20(helm-projectile-on))][helm-projectile]]
+
+*** Goals to Achieve
+
+    - how to use projectile to navigate between projects as I so often want to do
+      - between notes and work projects specifically
+    - to support jq literate programming to solve some of the salt challenges I have at work
+    - enable tramp mode
+    - [ ] create support for bash execution in org babel sections
+      - ie literate programming using bash at the shell
+
+*** Todo Eventually
 
     - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
     - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
@@ -136,23 +147,6 @@
     Hack.
 
     Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
-
-*** Possible Approaches
-    Another approach would be to figure out the minimum number of features I need to move over to this config
-    as my default choice.
-
-    Yet a third would be to follow some combination of Howard and Sachas configs, as I have done to date. I
-    have kind of done this, as I have read much of Howard and Sachas configs.
-
-    Another approach would be to purse a set of goals:
-
-    - [X] a window with font and color theme I prefer
-    - how to use projectile to navigate between projects as I so often want to do
-      - between notes and work projects specifically
-    - to support jq literate programming to solve some of the salt challenges I have at work
-
-    Goals
-    - enable tramp mode
 
 *** DONE Create Key Bindings
 
@@ -656,7 +650,7 @@
        :commands ag)
    #+END_SRC
 
-* Swiper Ivy Counsel
+* Swiper Ivy Counsel Projectile
 
   I choose to pattern my config for these related packages after abo-abo, the author.  Well, it turns out
   abo-abo has a pretty baroque way of loading his configuration.
@@ -664,6 +658,14 @@
   So model after the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]].
 
   #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :init
+      (setq projectile-completion-system 'ivy)
+      :config
+      (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+      (projectile-mode +1))
+
     (use-package ivy
       :config
       (ivy-mode 1))
@@ -675,6 +677,10 @@
     (use-package counsel
       :config
       (counsel-mode))
+
+    (use-package counsel-projectile
+      :config
+      (counsel-projectile-mode))
   #+END_SRC
 
 * Programming Support
@@ -714,19 +720,19 @@
 ** Org Configuration
 *** Org Global Key Bindings
 
-  #+BEGIN_SRC emacs-lisp
-    (bind-keys
-     ;; org mode wants these default global bindings set up.
-     ("C-c l" . org-store-link)
-     ("C-c c" . org-capture)
-     ("C-c a" . org-agenda)
-     ("C-c b" . org-iswitchb))
-  #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (bind-keys
+       ;; org mode wants these default global bindings set up.
+       ("C-c l" . org-store-link)
+       ("C-c c" . org-capture)
+       ("C-c a" . org-agenda)
+       ("C-c b" . org-iswitchb))
+    #+END_SRC
 
 *** Where to Look for Org Info
 
-  #+BEGIN_SRC emacs-lisp
-    ;; I prefer dropbox; too bad work does not.
+    #+BEGIN_SRC emacs-lisp
+      ;; I prefer dropbox; too bad my work does not.
       (setq org-directory
             (cond ((jwm/sift-mac-p) "/s/notes/org")
                   (t "~/Dropbox/org")))
@@ -744,7 +750,7 @@
                   (mapcar (lambda (x) (and (file-exists-p x) x))
                           `("~/Dropbox/org/notes.org",
                             org-default-notes-file))))
-  #+END_SRC
+    #+END_SRC
 
 *** Templates, Tasks, Refiling
 
@@ -760,7 +766,14 @@
     #+BEGIN_SRC emacs-lisp
       ;; Jeff task states
       (setq org-todo-keywords
-            '((sequence "TODO(t)" "NEXT(n!)" "DOING(g!)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)" "DEFERRED(D@)")))
+            '((sequence
+               "TODO(t)"
+               "NEXT(n!)"
+               "DOING(g!)"
+               "WAITING(w@/!)"
+               "|" "DONE(d!)"
+               "CANCELLED(c@)"
+               "DEFERRED(D@)")))
     #+END_SRC
 
     #+BEGIN_SRC emacs-lisp

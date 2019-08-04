@@ -175,6 +175,14 @@
 (use-package ag
   :commands ag)
 
+(use-package projectile
+  :init
+  (setq projectile-completion-system 'ivy)
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+
 (use-package ivy
   :config
   (ivy-mode 1))
@@ -186,6 +194,10 @@
 (use-package counsel
   :config
   (counsel-mode))
+
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-mode))
 
 (use-package crux
   :bind
@@ -208,24 +220,24 @@
  ("C-c a" . org-agenda)
  ("C-c b" . org-iswitchb))
 
-;; I prefer dropbox; too bad work does not.
-  (setq org-directory
-        (cond ((jwm/sift-mac-p) "/s/notes/org")
-              (t "~/Dropbox/org")))
+;; I prefer dropbox; too bad my work does not.
+(setq org-directory
+      (cond ((jwm/sift-mac-p) "/s/notes/org")
+            (t "~/Dropbox/org")))
 
-  ;; The default place to put notes for capture mode
-  (setq org-default-notes-file
-        (concat org-directory
-                (cond ((jwm/sift-mac-p) "/sift.org")
-                      (t "/todo.org"))))
+;; The default place to put notes for capture mode
+(setq org-default-notes-file
+      (concat org-directory
+              (cond ((jwm/sift-mac-p) "/sift.org")
+                    (t "/todo.org"))))
 
-  ;; my agenda files
-  ;;  code shamelessly stolen from Sacha Chua's config
-  (setq org-agenda-files
-        (delq nil
-              (mapcar (lambda (x) (and (file-exists-p x) x))
-                      `("~/Dropbox/org/notes.org",
-                        org-default-notes-file))))
+;; my agenda files
+;;  code shamelessly stolen from Sacha Chua's config
+(setq org-agenda-files
+      (delq nil
+            (mapcar (lambda (x) (and (file-exists-p x) x))
+                    `("~/Dropbox/org/notes.org",
+                      org-default-notes-file))))
 
 ;; capture template.
 (setq org-capture-templates
@@ -236,7 +248,14 @@
 
 ;; Jeff task states
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n!)" "DOING(g!)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)" "DEFERRED(D@)")))
+      '((sequence
+         "TODO(t)"
+         "NEXT(n!)"
+         "DOING(g!)"
+         "WAITING(w@/!)"
+         "|" "DONE(d!)"
+         "CANCELLED(c@)"
+         "DEFERRED(D@)")))
 
 ;; I prefer 2 levels of headlines for org refile targets
 ;;  this matches well with my TASKS/PROJECTS high level
