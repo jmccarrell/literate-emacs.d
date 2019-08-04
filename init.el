@@ -100,6 +100,12 @@
 ;; highlight the matching parenthesis
 (show-paren-mode t)
 
+;; Answering just 'y' or 'n' will do
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; revert buffers automatically when underlying files are changed externally
+(global-auto-revert-mode t)
+
 (use-package zenburn-theme
   :init (load-theme 'zenburn t))
 

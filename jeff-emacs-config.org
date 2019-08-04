@@ -13,10 +13,14 @@
 
      - [X] magit
 
-     - org-mode
+     - [X] org-mode
        - I would like to have better indentation support in org-mode
          - indentation under a heading should not indent further depending on the heading
            - ie, 3 spaces for a 2 star heading; 4 spaces for a 3 star, etc.
+         - explore org-adapt-indentation
+           - from [[https://www.reddit.com/r/emacs/comments/97naje/what_is_everyones_org_mode_indentation_preferences/][this reddit]]
+         - so after reading about it, I have decided to leave this alone.
+           - org will change the indentation on promote/demote, so good enough.
 
      - eshell?
        - some shell that works
@@ -497,6 +501,12 @@
 
      ;; highlight the matching parenthesis
      (show-paren-mode t)
+
+     ;; Answering just 'y' or 'n' will do
+     (defalias 'yes-or-no-p 'y-or-n-p)
+
+     ;; revert buffers automatically when underlying files are changed externally
+     (global-auto-revert-mode t)
    #+END_SRC
 
 * Display Settings
