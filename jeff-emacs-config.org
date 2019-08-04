@@ -656,6 +656,27 @@
        :commands ag)
    #+END_SRC
 
+* Swiper Ivy Counsel
+
+  I choose to pattern my config for these related packages after abo-abo, the author.  Well, it turns out
+  abo-abo has a pretty baroque way of loading his configuration.
+
+  So model after the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]].
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package ivy
+      :config
+      (ivy-mode 1))
+
+    (use-package swiper
+      :config
+      (global-set-key "\C-s" 'swiper))
+
+    (use-package counsel
+      :config
+      (counsel-mode))
+  #+END_SRC
+
 * Programming Support
 ** crux
 

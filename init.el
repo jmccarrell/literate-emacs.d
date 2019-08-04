@@ -175,6 +175,18 @@
 (use-package ag
   :commands ag)
 
+(use-package ivy
+  :config
+  (ivy-mode 1))
+
+(use-package swiper
+  :config
+  (global-set-key "\C-s" 'swiper))
+
+(use-package counsel
+  :config
+  (counsel-mode))
+
 (use-package crux
   :bind
   (
