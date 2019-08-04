@@ -145,20 +145,14 @@
  ("C-x y" . revert-buffer)
  ("C-M-g" . goto-line)
 
- ;; org mode wants these default global bindings set up.
- ("C-c l" . org-store-link)
- ("C-c c" . org-capture)
- ("C-c a" . org-agenda)
- ("C-c b" . org-iswitchb)
-
- ;; perhaps turn these of when/if I bring in Howards font size functions
-
- ("s-C-+" . ha/text-scale-frame-increase)
- ("A-C-+" . ha/text-scale-frame-increase)
- ("s-C-=" . ha/text-scale-frame-increase)
- ("A-C-=" . ha/text-scale-frame-increase)
- ("s-C--" . ha/text-scale-frame-decrease)
- ("A-C--" . ha/text-scale-frame-decrease))
+ ;; perhaps turn these on when/if I bring in Howards font size functions
+ ;; ("s-C-+" . ha/text-scale-frame-increase)
+ ;; ("A-C-+" . ha/text-scale-frame-increase)
+ ;; ("s-C-=" . ha/text-scale-frame-increase)
+ ;; ("A-C-=" . ha/text-scale-frame-increase)
+ ;; ("s-C--" . ha/text-scale-frame-decrease)
+ ;; ("A-C--" . ha/text-scale-frame-decrease)
+ )
 
 (use-package which-key
   :config
@@ -184,6 +178,58 @@
 (use-package magit
   :defer t
   :bind ("C-x g" . magit-status))
+
+(bind-keys
+ ;; org mode wants these default global bindings set up.
+ ("C-c l" . org-store-link)
+ ("C-c c" . org-capture)
+ ("C-c a" . org-agenda)
+ ("C-c b" . org-iswitchb))
+
+;; I prefer dropbox; too bad work does not.
+  (setq org-directory
+        (cond ((jwm/sift-mac-p) "/s/notes/org")
+              (t "~/Dropbox/org")))
+
+  ;; The default place to put notes for capture mode
+  (setq org-default-notes-file
+        (concat org-directory
+                (cond ((jwm/sift-mac-p) "/sift.org")
+                      (t "/todo.org"))))
+
+  ;; my agenda files
+  ;;  code shamelessly stolen from Sacha Chua's config
+  (setq org-agenda-files
+        (delq nil
+              (mapcar (lambda (x) (and (file-exists-p x) x))
+                      `("~/Dropbox/org/notes.org",
+                        org-default-notes-file))))
+
+;; capture template.
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
+         "* TODO %?\n %t\n  %i\n  %a")
+        ("j" "Journal" entry (file+datetree "~/Dropbox/org/journal.org")
+         "* %?\nEntered on %U\n  %i\n  %a")))
+
+;; Jeff task states
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n!)" "DOING(g!)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)" "DEFERRED(D@)")))
+
+;; I prefer 2 levels of headlines for org refile targets
+;;  this matches well with my TASKS/PROJECTS high level
+;; further, I prefer the refiling to be per-buffer, not across all org-agenda-files
+;;  to preserve context.  most often, I use the file as context.
+(setq org-refile-targets '((nil . (:maxlevel . 2))))
+
+(defun save-org-mode-files ()
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (eq major-mode 'org-mode)
+        (if (and (buffer-modified-p) (buffer-file-name))
+            (save-buffer))))))
+
+(run-with-idle-timer 25 t 'save-org-mode-files)
 
 ;;; Post initialization
 
