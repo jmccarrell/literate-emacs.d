@@ -131,7 +131,14 @@
 (when (jwm/mac-p)
   (setq mac-command-modifier 'meta)
   (setq mac-option-modifier 'super)
-  (setq mac-right-option-modifier 'none))
+  (setq mac-right-option-modifier 'none)
+
+  ;; mirror the mac user gesture for switching frames
+  (bind-key "M-`" 'other-frame)
+
+  ;; prevent my thumb from triggering this menu on the trackpad when in open laptop mode
+  ;;  ie, when I am working on the train
+  (bind-key [C-down-mouse-1] 'ignore))
 
 (bind-keys
  ;; long time bindings I have preferred

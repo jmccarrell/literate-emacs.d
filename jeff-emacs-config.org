@@ -13,8 +13,6 @@
 
      - [X] magit
 
-     - smart-parens
-
      - org-mode
        - I would like to have better indentation support in org-mode
          - indentation under a heading should not indent further depending on the heading
@@ -41,7 +39,7 @@
      - js2-mode
      - terraform-mode
 
-     - crux
+     - [X] crux
        - which of these functions do I actually use?
          - rename buffer and file every once in a while
        - yes, probably add this back in
@@ -561,7 +559,7 @@
    #+END_SRC
 
 * Key Bindings
-** Option and Command Modifier Keys
+** Option and Command Modifier Keys on a Mac
 
    Howard maps option and command to different emacs key symbols to allow him that many more possible key
    bindings. Like this:
@@ -575,11 +573,20 @@
 
    I leave right-option for the OS X combiner keys, like √ from right-option v.
 
+   And I prefer to switch between emacs frames using the standard mac gesture Command-`
+
    #+BEGIN_SRC emacs-lisp
      (when (jwm/mac-p)
        (setq mac-command-modifier 'meta)
        (setq mac-option-modifier 'super)
-       (setq mac-right-option-modifier 'none))
+       (setq mac-right-option-modifier 'none)
+
+       ;; mirror the mac user gesture for switching frames
+       (bind-key "M-`" 'other-frame)
+
+       ;; prevent my thumb from triggering this menu on the trackpad when in open laptop mode
+       ;;  ie, when I am working on the train
+       (bind-key [C-down-mouse-1] 'ignore))
    #+END_SRC
 
 ** Global Key Bindings
