@@ -1,3 +1,8 @@
+(defconst emacs-start-time (current-time))
+
+(unless noninteractive
+  (message "Loading %s..." load-file-name))
+
 (defconst jwm/emacs-directory (concat (getenv "HOME") "/.emacs.d"))
 
 (defun jwm/emacs-subdirectory (d) (expand-file-name d jwm/emacs-directory))
@@ -13,15 +18,6 @@
 (setq custom-file (expand-file-name "settings.el" jwm/emacs-directory))
 (when (file-exists-p custom-file)
   (load custom-file t))
-
-;; ;; initialize packages
-;; (package-initialize)
-;; (eval-and-compile
-;;   (require 'cl)
-
-;;   (defvar use-package-verbose t)
-;;   (defvar use-package-always-ensure t)
-;;   (require 'use-package))
 
 (defun jwm/mac-p ()
   (and (eq 'ns (window-system))
@@ -91,6 +87,16 @@
 
 (setq-default tab-always-indent 'complete)
 
+;; always end a file with a newline
+(setq require-final-newline t)
+
+;; Hollerith cards have had their day. Norming to 80 characters seems like a poor use of screen real estate
+;; to me. I can't form a particular argument for 108, other than: it larger than 72 and seems to fit better.
+(setq-default fill-column 108)
+
+;; delete the region when typing, just like as we expect nowadays.
+(delete-selection-mode t)
+
 (use-package zenburn-theme
   :init (load-theme 'zenburn t))
 
@@ -154,3 +160,18 @@
   ;;  projectile-toggle-between-implementation-and-test
   (setq which-key-max-description-length nil)
   (which-key-mode 1))
+
+;;; Post initialization
+
+(when window-system
+  (let ((elapsed (float-time (time-subtract (current-time)
+                                            emacs-start-time))))
+    (message "Loading %s...done (%.3fs)" load-file-name elapsed))
+
+  (add-hook 'after-init-hook
+            `(lambda ()
+               (let ((elapsed (float-time (time-subtract (current-time)
+                                                         emacs-start-time))))
+                 (message "Loading %s...done (%.3fs) [after-init]"
+                          ,load-file-name elapsed)))
+            t))

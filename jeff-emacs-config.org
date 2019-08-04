@@ -5,30 +5,122 @@
 #+PROPERTY: header-args:emacs-lisp  :tangle "init.el"
 
 * Introduction
-** Next steps: key binding iteration
-*** Create Key Bindings
+** Next steps
+*** Install essential packages
+**** Tier 1: cant live without
 
-   - experiment with Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::(setq%20mac-option-modifier%20'meta)%20(setq%20mac-command-modifier%20'super)][mac modifier key bindings]] so I can get Super and Alternate? key prefixes
-     - and I think I really like Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Key%20Bindings][global key binding approach]]
+     Packages that I view as essential to my emacs experience:
 
-   - then set up =which-key=
+     - magit
 
-**** option
+     - smart-parens
+
+     - org-mode
+       - I would like to have better indentation support in org-mode
+         - indentation under a heading should not indent further depending on the heading
+           - ie, 3 spaces for a 2 star heading; 4 spaces for a 3 star, etc.
+
+     - eshell?
+       - some shell that works
+
+     - ag
+     - projectile
+       - ensure =describe-personal-bindings= continues to work after I customize projectile
+
+     - ivy, swiper, counsel
+       - whatever binds projectile and ivy together, ie, replace [[file:jeff-classic-init.el::(use-package%20helm-projectile%20:config%20(setq%20projectile-completion-system%20'helm)%20(helm-projectile-on))][helm-projectile]]
+
+**** Tier 2: Maybe, consider these
+
+     Packages that I most likely want to keep, but which need some investigation to validate:
+
+     - babel
+       - enough to support shell
+       - and particularly iterating on jq recipes
+
+     - js2-mode
+     - terraform-mode
+
+     - crux
+       - which of these functions do I actually use?
+         - rename buffer and file every once in a while
+       - yes, probably add this back in
+
+     - expand-region
+
+     - flycheck
+
+     - elpy
+       - python programming mode from Howard
+       - check it out
+
+     - yaml-mode
+
+     - undo-tree
+     - visual-regexp
+
+     - company
+       - do I use this now?  I am not really sure
+       - is this compatible with ivy, swiper, counsel?
+       - I don't think so.
+       - I think company and counsel are both completion frameworks
+
+     - ox-twbs
+       - twitter bootstrap rendering of generated org mode files
+
+     - avy
+
+     - jedi from Howards config
+
+     - imenu-anywhere
+
+     - Howards font size increase/decrease functions
+
+     - superword mode?  jwm::comment-region, jwm::c-ifdef-region?
+
+     #+BEGIN_SRC emacs-lisp :tangle no
+       (defun jwm::prog-mode-hook ()
+         (superword-mode t))
+       (add-hook 'prog-mode-hook #'jwm::prog-mode-hook)
+     #+END_SRC
+
+**** Tier 3: Drop these in this refactor
+***** not used enough
+
+      - key-chord
+      - macro-step
+      - rbenv
+      - robe
+      - scala-mode
+      - winner
+        - replace with eyebrowse?
+
+***** packages I never use
+
+      - bats-mode
+      - bookmark
+      - psession
+        - https://github.com/thierryvolpiatto/psession
+      - try
+      - wgrep
+      - yasnippet
+      - ztree
+
 *** todo eventually
 
-   - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
-   - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
-   - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
-   - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
-   - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
+    - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
+    - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
+    - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
+    - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
+    - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
 
 *** maybe explore these
 
     Howard has a bunch of _Technical Artifacts_ sections
 
-      - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
-      - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
-      - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
+    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
+    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
+    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
 
     Consider reading these for the insights they may contain
 
@@ -39,115 +131,131 @@
     Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
 
 *** Possible Approaches
-   Another approach would be to figure out the minimum number of features I need to move over to this config
-   as my default choice.
+    Another approach would be to figure out the minimum number of features I need to move over to this config
+    as my default choice.
 
-   Yet a third would be to follow some combination of Howard and Sachas configs, as I have done to date. I
-   have kind of done this, as I have read much of Howard and Sachas configs.
+    Yet a third would be to follow some combination of Howard and Sachas configs, as I have done to date. I
+    have kind of done this, as I have read much of Howard and Sachas configs.
 
-   Another approach would be to purse a set of goals:
+    Another approach would be to purse a set of goals:
 
-   - [X] a window with font and color theme I prefer
-   - how to use projectile to navigate between projects as I so often want to do
-     - between notes and work projects specifically
-   - to support jq literate programming to solve some of the salt challenges I have at work
+    - [X] a window with font and color theme I prefer
+    - how to use projectile to navigate between projects as I so often want to do
+      - between notes and work projects specifically
+    - to support jq literate programming to solve some of the salt challenges I have at work
 
-   Goals
-   - enable tramp mode
+    Goals
+    - enable tramp mode
 
+*** DONE Create Key Bindings
+
+    - State "DONE"       from              [2019-08-03 Sat 16:10]
+    - experiment with Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::(setq%20mac-option-modifier%20'meta)%20(setq%20mac-command-modifier%20'super)][mac modifier key bindings]] so I can get Super and Alternate? key prefixes
+      - and I think I really like Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Key%20Bindings][global key binding approach]]
+
+    - then set up =which-key=
+
+**** option
 *** DONE Howard and Sachas organization
 
     - State "DONE"       from              [2019-08-02 Fri 17:34]
 **** Howard
-    #+BEGIN_EXAMPLE
-      * Introduction
-      * General Settings
-      * Package Initialization
-      * Variables
-      * Display Settings
-      * Key Bindings
-      * Loading and Finding Files
-      * Word Smithing
-      * Miscellaneous Settings
-      * Programming Languages
-      * Org-Mode
-      * Tools
-      * Applications
-      * Frivolous
-      * Technical Artifacts
-    #+END_EXAMPLE
+     #+BEGIN_EXAMPLE
+       * Introduction
+       * General Settings
+       * Package Initialization
+       * Variables
+       * Display Settings
+       * Key Bindings
+       * Loading and Finding Files
+       * Word Smithing
+       * Miscellaneous Settings
+       * Programming Languages
+       * Org-Mode
+       * Tools
+       * Applications
+       * Frivolous
+       * Technical Artifacts
+     #+END_EXAMPLE
 
-   Howard also loads a mac specific file on his macintoshs. That would break my /single file/ model. So
-   while I find that approach logically appealing, I am not willing to go all the way toward [[file:/t/emacs-configs/howardabrams-dot-files/build.el::;;%20Simple%20Emacs%20script%20used%20to%20build/tangle%20all%20my%20support][Howards build
-   process]].  But maybe I should try it?
+     Howard also loads a mac specific file on his macintoshs. That would break my /single file/ model. So
+     while I find that approach logically appealing, I am not willing to go all the way toward [[file:/t/emacs-configs/howardabrams-dot-files/build.el::;;%20Simple%20Emacs%20script%20used%20to%20build/tangle%20all%20my%20support][Howards build
+     process]].  But maybe I should try it?
 
-   Executing Howards =build.el= by evaluating the buffer gives me:
+     Executing Howards =build.el= by evaluating the buffer gives me:
 
-   #+BEGIN_EXAMPLE
-   Opening output file: No such file or directory, /Users/jeff/.lein/profiles.clj
-   #+END_EXAMPLE
+     #+BEGIN_EXAMPLE
+     Opening output file: No such file or directory, /Users/jeff/.lein/profiles.clj
+     #+END_EXAMPLE
 
-   So I should probably stick with my single file approach for now following the /don't use stuff you don't
-   know maxim/.
+     So I should probably stick with my single file approach for now following the /don't use stuff you don't
+     know maxim/.
 
-   But Howard also [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::#+BEGIN_SRC%20shell%20brew%20install%20gpg%20#+END_SRC][calls brew in his main org file]] so I'm going to stick with a single file.
+     But Howard also [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::#+BEGIN_SRC%20shell%20brew%20install%20gpg%20#+END_SRC][calls brew in his main org file]] so I'm going to stick with a single file.
 
 **** Sacha
 
-    #+BEGIN_EXAMPLE
-      * Configuration
-      ** About this file
-      ** Starting up
-      ** System information
-      ** Personal information
-      ** Emacs initialization
-      ** General configuration
-      ** Navigation
-      ** Reading
-      ** Shuffling lines
+     #+BEGIN_EXAMPLE
+       * Configuration
+       ** About this file
+       ** Starting up
+       ** System information
+       ** Personal information
+       ** Emacs initialization
+       ** General configuration
+       ** Navigation
+       ** Reading
+       ** Shuffling lines
 
-      ** Writing
-      ** Org  :org:
-      ** Coding
-      ** Internet Relay Chat
-      ** Self-tracking, statistics, and other data transformations
-      ** Workarounds
-      ** Display
-      ** Web browsing
-      ** Clipboard
-      ** Search
-      ** Mail
-      ** Ledger (personal finance)
-      ** Emacs server
-      ** Menus
+       ** Writing
+       ** Org  :org:
+       ** Coding
+       ** Internet Relay Chat
+       ** Self-tracking, statistics, and other data transformations
+       ** Workarounds
+       ** Display
+       ** Web browsing
+       ** Clipboard
+       ** Search
+       ** Mail
+       ** Ledger (personal finance)
+       ** Emacs server
+       ** Menus
 
-      ** Advanced stuff / things I tend to forget about
-      ** Other nifty Emacs things I want to learn
-      ** Weather forecast
-      ** Encryption
-      ** DONE Scan ~/bin and turn the scripts into interactive commands
-      ** Syncthing
-      ** Search logs
-      * Other cool configs you may want to check out
+       ** Advanced stuff / things I tend to forget about
+       ** Other nifty Emacs things I want to learn
+       ** Weather forecast
+       ** Encryption
+       ** DONE Scan ~/bin and turn the scripts into interactive commands
+       ** Syncthing
+       ** Search logs
+       * Other cool configs you may want to check out
 
-    #+END_EXAMPLE
+     #+END_EXAMPLE
 
 *** DONE Color theme
 
     - State "DONE"       from              [2019-08-02 Fri 17:33]
 
-   Where does Howard define his fonts, and theme?  A: in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][emacs-client.org]]
-   - but [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][Howards theme loader of choice]]: =color-theme= is obsolete
-     - so I need a more modern way to pick my color theme.
-     - What does Sacha do?
-   - all that being said, Howard uses Steve Purcells [[https://github.com/purcell/color-theme-sanityinc-tomorrow][sanityinc tomorrow themes]], which look sweet
-     - it would be nice to be able to switch themes from day to night as needed.
+    Where does Howard define his fonts, and theme?  A: in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][emacs-client.org]]
+    - but [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][Howards theme loader of choice]]: =color-theme= is obsolete
+      - so I need a more modern way to pick my color theme.
+      - What does Sacha do?
+    - all that being said, Howard uses Steve Purcells [[https://github.com/purcell/color-theme-sanityinc-tomorrow][sanityinc tomorrow themes]], which look sweet
+      - it would be nice to be able to switch themes from day to night as needed.
 
-   Sacha defines her color theme as [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::*Set%20up%20a%20light-on-dark%20color%20scheme][small overrides to solarized]]
+    Sacha defines her color theme as [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::*Set%20up%20a%20light-on-dark%20color%20scheme][small overrides to solarized]]
 
-   from Sacha, this appears to be a [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(add-hook%20'after-make-frame-functions%20(lambda%20(frame)%20(select-frame%20frame)%20(my/setup-color-theme)))][fix for the theme getting applied to new frames]]
+    from Sacha, this appears to be a [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(add-hook%20'after-make-frame-functions%20(lambda%20(frame)%20(select-frame%20frame)%20(my/setup-color-theme)))][fix for the theme getting applied to new frames]]
 
-   How do I define my theme now?  A: I just [[file:jeff-classic-init.el::(use-package%20zenburn-theme%20:init%20(load-theme%20'zenburn%20t))][load zenburn]]
+    How do I define my theme now?  A: I just [[file:jeff-classic-init.el::(use-package%20zenburn-theme%20:init%20(load-theme%20'zenburn%20t))][load zenburn]]
+
+** Open Questions
+
+   Tabs; it looks like my tab-wdith setting is not taking effect
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (setq tab-width 2)
+   #+END_SRC
 
 ** About This File
 
@@ -180,17 +288,30 @@
 
    In this refactor, I have the following major goals:
 
-     - use the literate programming style
-       - learn babel and tangle in the process
-     - learn more emacs-lisp; even become competent?
-     - prefer ivy, counsel and swiper over helm
-     - use =customize-theme= to create a full fledged theme for my color definitions
-       - this one seems less and less important the more I work with Hack and zenburn.
+   - use the literate programming style
+     - learn babel and tangle in the process
+   - learn more emacs-lisp; even become competent?
+   - prefer ivy, counsel and swiper over helm
+   - use =customize-theme= to create a full fledged theme for my color definitions
+     - this one seems less and less important the more I work with Hack and zenburn.
 
    as well as a host of smaller, clean-up type goals.
 
+* Record Startup Timing
+
+  Record the elapsed time of starting up emacs.
+
+  My /classic/ configuration took about 2.1 seconds to load.
+
+  #+BEGIN_SRC emacs-lisp
+    (defconst emacs-start-time (current-time))
+
+    (unless noninteractive
+      (message "Loading %s..." load-file-name))
+  #+END_SRC
+
 * General Settings
-** Directories
+** Emacs Directories
 
    I prefer Howard's style of [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][defining where to store eveything]], so I shamelessly stole it.
 
@@ -218,26 +339,11 @@
        (load custom-file t))
    #+END_SRC
 
-** DEPRECATED Starting Up
-
-   I used to use this kind of logic to startup, cribbed from John Weigley. But in hindsight, I think it is a
-   bit advanced for me. I try to minimize using stuff I don't really understand.
-
-     #+BEGIN_SRC emacs-lisp
-       ;; ;; initialize packages
-       ;; (package-initialize)
-       ;; (eval-and-compile
-       ;;   (require 'cl)
-
-       ;;   (defvar use-package-verbose t)
-       ;;   (defvar use-package-always-ensure t)
-       ;;   (require 'use-package))
-     #+END_SRC
 ** Helpful Predicates
 
    Some useful predicates in customization...
 
-    #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
       (defun jwm/mac-p ()
         (and (eq 'ns (window-system))
              (eq 'darwin system-type)))
@@ -249,7 +355,7 @@
       (defun jwm/sift-mac-p ()
         (and (jwm/mac-p)
              (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
-    #+END_SRC
+   #+END_SRC
 
 ** Modernizing Emacs
 
@@ -327,6 +433,7 @@
 
      (use-package f)
    #+END_SRC
+
 * Variables
 ** Prefer Minimal Emacs
 
@@ -372,19 +479,36 @@
    #+BEGIN_SRC emacs-lisp
      (setq-default tab-always-indent 'complete)
    #+END_SRC
+
+** Other Misc Settings
+
+   Various settings I have come to prefer over the years
+
+   #+BEGIN_SRC emacs-lisp
+     ;; always end a file with a newline
+     (setq require-final-newline t)
+
+     ;; Hollerith cards have had their day. Norming to 80 characters seems like a poor use of screen real estate
+     ;; to me. I can't form a particular argument for 108, other than: it larger than 72 and seems to fit better.
+     (setq-default fill-column 108)
+
+     ;; delete the region when typing, just like as we expect nowadays.
+     (delete-selection-mode t)
+   #+END_SRC
+
 * Display Settings
 ** Color Theme
 
-  After much experimentation, I have come to prefer zenburn. Over the years, I have used my own color theme,
-  which I used to be quite proud of, and then solarized. Now I have come to prefer zenburn. It works well in
-  the terminal as well.
+   After much experimentation, I have come to prefer zenburn. Over the years, I have used my own color theme,
+   which I used to be quite proud of, and then solarized. Now I have come to prefer zenburn. It works well in
+   the terminal as well.
 
-  Here is how Sacha overrides and [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(defun%20my/setup-color-theme%20()%20(interactive)%20(when%20(display-graphic-p)%20(color-theme-solarized))%20(set-background-color%20"black")%20(set-face-foreground%20'secondary-selection%20"darkblue")%20(set-face-background%20'secondary-selection%20"lightblue")%20(set-face-background%20'font-lock-doc-face%20"black")%20(set-face-foreground%20'font-lock-doc-face%20"wheat")%20(set-face-background%20'font-lock-string-face%20"black"))%20(use-package%20color-theme-solarized%20:config%20(my/setup-color-theme))][customizes her use of solarized]].
+   Here is how Sacha overrides and [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(defun%20my/setup-color-theme%20()%20(interactive)%20(when%20(display-graphic-p)%20(color-theme-solarized))%20(set-background-color%20"black")%20(set-face-foreground%20'secondary-selection%20"darkblue")%20(set-face-background%20'secondary-selection%20"lightblue")%20(set-face-background%20'font-lock-doc-face%20"black")%20(set-face-foreground%20'font-lock-doc-face%20"wheat")%20(set-face-background%20'font-lock-string-face%20"black"))%20(use-package%20color-theme-solarized%20:config%20(my/setup-color-theme))][customizes her use of solarized]].
 
-  #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
     (use-package zenburn-theme
       :init (load-theme 'zenburn t))
-  #+END_SRC
+   #+END_SRC
 
 ** Font
 
@@ -437,10 +561,10 @@
    Howard maps option and command to different emacs key symbols to allow him that many more possible key
    bindings. Like this:
 
-   #+BEGIN_EXAMPLE
-    (setq mac-option-modifier 'meta)
-    (setq mac-command-modifier 'super)
-   #+END_EXAMPLE
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (setq mac-option-modifier 'meta)
+     (setq mac-command-modifier 'super)
+   #+END_SRC
 
    And I did much the same thing.  However, I think I prefer to keep meta closest to the space bar.
 
@@ -503,3 +627,24 @@
        (setq which-key-max-description-length nil)
        (which-key-mode 1))
    #+END_SRC
+
+* Report Startup Timing
+
+  I'm pretty sure I got this from John Weigley.
+
+  #+BEGIN_SRC emacs-lisp
+    ;;; Post initialization
+
+    (when window-system
+      (let ((elapsed (float-time (time-subtract (current-time)
+                                                emacs-start-time))))
+        (message "Loading %s...done (%.3fs)" load-file-name elapsed))
+
+      (add-hook 'after-init-hook
+                `(lambda ()
+                   (let ((elapsed (float-time (time-subtract (current-time)
+                                                             emacs-start-time))))
+                     (message "Loading %s...done (%.3fs) [after-init]"
+                              ,load-file-name elapsed)))
+                t))
+  #+END_SRC
