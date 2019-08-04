@@ -59,6 +59,8 @@
      - undo-tree
      - visual-regexp
 
+     - I would like to consider [[https://github.com/syohex/emacs-git-gutter-fringe][git-gutter-fringe]]
+
      - company
        - do I use this now?  I am not really sure
        - is this compatible with ivy, swiper, counsel?
@@ -626,6 +628,22 @@
        ;;  projectile-toggle-between-implementation-and-test
        (setq which-key-max-description-length nil)
        (which-key-mode 1))
+   #+END_SRC
+
+* Git
+
+  I would like to consider [[https://github.com/syohex/emacs-git-gutter-fringe][git-gutter-fringe]] someday.
+
+** Magit
+
+   Indispensible.  One of the two killer apps for emacs IMO.
+
+   Howard does [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Magit][additional customization]] that I should consider someday.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit
+       :defer t
+       :bind ("C-x g" . magit-status))
    #+END_SRC
 
 * Report Startup Timing

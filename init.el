@@ -161,6 +161,10 @@
   (setq which-key-max-description-length nil)
   (which-key-mode 1))
 
+(use-package magit
+  :defer t
+  :bind ("C-x g" . magit-status))
+
 ;;; Post initialization
 
 (when window-system
