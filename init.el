@@ -97,6 +97,9 @@
 ;; delete the region when typing, just like as we expect nowadays.
 (delete-selection-mode t)
 
+;; highlight the matching parenthesis
+(show-paren-mode t)
+
 (use-package zenburn-theme
   :init (load-theme 'zenburn t))
 
@@ -160,6 +163,16 @@
   ;;  projectile-toggle-between-implementation-and-test
   (setq which-key-max-description-length nil)
   (which-key-mode 1))
+
+(use-package crux
+  :bind
+  (
+   ("C-c n" . crux-cleanup-buffer-or-region)
+   ;; ("C-S-RET" . crux-smart-open-line-above)
+   ("M-o" . crux-smart-open-line)
+   ("C-c d" . crux-duplicate-current-line-or-region)
+   ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
+   ("C-c C-r" . crux-rename-file-and-buffer)))
 
 (use-package magit
   :defer t
