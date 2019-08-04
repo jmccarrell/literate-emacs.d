@@ -171,6 +171,10 @@
   (setq which-key-max-description-length nil)
   (which-key-mode 1))
 
+;; ag config derived from danielmai's config
+(use-package ag
+  :commands ag)
+
 (use-package crux
   :bind
   (

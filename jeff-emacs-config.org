@@ -22,10 +22,11 @@
          - so after reading about it, I have decided to leave this alone.
            - org will change the indentation on promote/demote, so good enough.
 
-     - eshell?
-       - some shell that works
+     - [X] eshell?
+       - eshell seems to work just fine.
 
-     - ag
+     - [X] ag
+
      - projectile
        - ensure =describe-personal-bindings= continues to work after I customize projectile
 
@@ -33,6 +34,8 @@
        - whatever binds projectile and ivy together, ie, replace [[file:jeff-classic-init.el::(use-package%20helm-projectile%20:config%20(setq%20projectile-completion-system%20'helm)%20(helm-projectile-on))][helm-projectile]]
 
 **** Tier 2: Maybe, consider these
+
+     Turn off all disabled emacs commands; follow Howards config there.
 
      Packages that I most likely want to keep, but which need some investigation to validate:
 
@@ -642,6 +645,15 @@
        ;;  projectile-toggle-between-implementation-and-test
        (setq which-key-max-description-length nil)
        (which-key-mode 1))
+   #+END_SRC
+
+* Search
+** ag
+
+   #+BEGIN_SRC emacs-lisp
+     ;; ag config derived from danielmai's config
+     (use-package ag
+       :commands ag)
    #+END_SRC
 
 * Programming Support
