@@ -183,8 +183,12 @@
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
 
+(use-package ivy-hydra)
+
 (use-package ivy
   :config
+  ;; add recentf and bookmarks to the candidates of 'ivy-switch-buffer'
+  (setq ivy-use-virtual-buffers t)
   (ivy-mode 1))
 
 (use-package swiper
@@ -194,10 +198,6 @@
 (use-package counsel
   :config
   (counsel-mode))
-
-(use-package counsel-projectile
-  :config
-  (counsel-projectile-mode))
 
 (use-package crux
   :bind
