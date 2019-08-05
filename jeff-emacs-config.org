@@ -690,6 +690,13 @@
   So model after the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]].
 
   #+BEGIN_SRC emacs-lisp
+    (setq ivy-use-virtual-buffers t)
+    (require 'counsel)
+    (global-set-key "\C-s" 'swiper)
+    (counsel-mode)
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp :tangle no
     (use-package projectile
       :init
       (setq projectile-completion-system 'ivy)
@@ -723,6 +730,66 @@
       :config
       (counsel-projectile-mode))
   #+END_SRC
+
+** Issues Searching with counsel
+
+   I seem to be having issues searching with =counsel=.  Specifically, running =counsel-grep= gathers the
+   inputs, but generates no results: no results buffer.  I see the same behavior with other counsel file
+   searching functions as well.
+
+*** Versions of Emacs Tested
+
+    1. [[https://emacsformacosx.com/][Emacs for Mac OS X]]
+       - version
+         - GNU Emacs 26.1 (build 1, x86_64-apple-darwin14.5.0, NS appkit-1348.17 Version 10.10.5 (Build 14F2511)) of 2018-05-30
+       - invoked as
+         - =/usr/local/bin/emacs -Q=
+    2. homebrew installed emacs
+       - version
+         - GNU Emacs 26.2 (build 1, x86_64-apple-darwin18.5.0) of 2019-04-13
+       - invoked as
+         - =/usr/local/Cellar/emacs/26.2/bin/emacs-26.2 -Q=
+
+*** Steps to Reproduce
+
+    1. start the emacs under test with no initialization, eg:
+       - =emacs -Q=
+    2. Load counsel
+       - =M-x eval-buffer= on this
+       #+BEGIN_SRC emacs-lisp :tangle no
+         (require 'package)
+         (unless (assoc-default "melpa" package-archives)
+           (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+         (package-initialize)
+         (package-refresh-contents)
+
+         (unless (package-installed-p 'counsel)
+           (package-install 'counsel))
+
+         (require 'counsel)
+         (ivy-mode)
+
+         (find-library "counsel")
+       #+END_SRC
+    3. Do a search
+       - =M-x counsel-grep=
+       - NB that counsel is working; see how =M-x= runs =counsel-M-x=
+       - search for =counsel= which should result in many matches in the file =counsel.el=
+    4. Expected vs Actual Results
+       - I expect to see a result buffer full of matches
+       - The results I actually see are essentially nothing; no search appears to be performed, no results buffer appears.
+       - To see this, execute =ivy-switch-buffer=, ie, =C-x b=
+         - I only see three buffers:
+           - =*scratch*=
+           - =*Messages*=
+           - =counsel.el=
+       - Run =M-x list-buffers=.  Here are the results I see:
+       #+BEGIN_EXAMPLE
+       .   counsel.el           228097 Emacs-Lisp       ~/.emacs.d/elpa/counsel-20190803.1121/counsel.el
+         * *scratch*               475 Lisp Interaction
+        %* *Messages*              328 Messages
+       #+END_EXAMPLE
+
 
 * Programming Support
 ** crux

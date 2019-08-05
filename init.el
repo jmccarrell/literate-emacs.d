@@ -175,29 +175,10 @@
 (use-package ag
   :commands ag)
 
-(use-package projectile
-  :init
-  (setq projectile-completion-system 'ivy)
-  :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode +1))
-
-(use-package ivy-hydra)
-
-(use-package ivy
-  :config
-  ;; add recentf and bookmarks to the candidates of 'ivy-switch-buffer'
-  (setq ivy-use-virtual-buffers t)
-  (ivy-mode 1))
-
-(use-package swiper
-  :config
-  (global-set-key "\C-s" 'swiper))
-
-(use-package counsel
-  :config
-  (counsel-mode))
+(setq ivy-use-virtual-buffers t)
+(require 'counsel)
+(global-set-key "\C-s" 'swiper)
+(counsel-mode)
 
 (use-package crux
   :bind
