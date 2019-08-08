@@ -148,7 +148,7 @@
 
 (bind-keys
  ;; long time bindings I have preferred
- ("C-x y" . revert-buffer)
+ ("C-c u" . revert-buffer)
  ("C-M-g" . goto-line)
 
  ;; perhaps turn these on when/if I bring in Howards font size functions
@@ -175,10 +175,17 @@
 (use-package ag
   :commands ag)
 
-(setq ivy-use-virtual-buffers t)
-(require 'counsel)
-(global-set-key "\C-s" 'swiper)
-(counsel-mode)
+(use-package projectile
+  :init
+  (setq projectile-completion-system 'ivy)
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+
+(use-package swiper
+  :config
+  (global-set-key "\C-s" 'swiper))
 
 (use-package crux
   :bind

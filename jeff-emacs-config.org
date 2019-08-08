@@ -11,7 +11,7 @@
     DOING Read the [[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][ivy users guide]]
 
     DOING Read through the counsel source code for other packages that counsel can use to increase functionality
-    - amx or smex
+    - NO PREFER HELM amx or smex
       - what do these provide?
     - "Complete using `company-candidates'."
     - "Inline C/C++ completion using Irony."
@@ -281,6 +281,51 @@
     from Sacha, this appears to be a [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(add-hook%20'after-make-frame-functions%20(lambda%20(frame)%20(select-frame%20frame)%20(my/setup-color-theme)))][fix for the theme getting applied to new frames]]
 
     How do I define my theme now?  A: I just [[file:jeff-classic-init.el::(use-package%20zenburn-theme%20:init%20(load-theme%20'zenburn%20t))][load zenburn]]
+
+** Pending Work To Do
+
+   - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+   - investigate helm-occur as a replacement for isearch and/or swiper
+   - =exec-path-from-shell=
+     - Daniel has an example
+     - I've seen this elsewhere as well
+   - Daniel has some interesting [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Open%20other%20apps%20from%20Emacs][open in other apps functions]] I would like to investigate as well
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*List%20buffers][ibuffer?]]
+   - investigate package recentf
+   - Daniel has a nice example [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installation][passing an emacs-lisp variable into a shell]] buffer to execute
+     - and a [[file:/t/emacs-configs/danielmai-dotemacs/config.org::#+begin_src%20emacs-lisp%20(use-package%20exec-path-from-shell%20:ensure%20t%20:init%20(exec-path-from-shell-initialize))%20#+end_src][link to an info buffer in emacs]]
+   - Daniels [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20babel%20languages][org-babel config]] looks good for my use case
+     - and this [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20templates][org-structure-template-alist stuff]]
+   - [X] consider moving my old revert-buffer binding from =C-x y= to =C-c u= per Daniel
+   - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
+   - consider setting up abo-abo's ace-window
+     - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Ace%20Window][Daniels use of it]]
+   - Daniel uses
+     - helm
+     - and ivy, swiper, counsel
+     - and avy
+   - Daniels config for [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Multiple%20cursors][multiple cursors]]
+   - Figure out why [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Yasnippet][Daniel likes yasnippets]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*json-mode][json-mode]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*terminal-here][terminal here?]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
+   - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
+   - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
+
+*** NOT WORKING: Daniels emacs build recipe
+
+    Daniel has a recipe to [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installing%20Emacs][build emacs with homebrew]]
+
+#+begin_src shell
+echo brew install emacs --with-cocoa --with-imagemagick --with-gnutls
+#+end_src
+
+but it fails for me, as brew has removed this build option:
+
+#+BEGIN_EXAMPLE
+Error: invalid option: --with-cocoa
+#+END_EXAMPLE
 
 ** Open Questions
 
@@ -640,7 +685,7 @@
    #+BEGIN_SRC emacs-lisp
      (bind-keys
       ;; long time bindings I have preferred
-      ("C-x y" . revert-buffer)
+      ("C-c u" . revert-buffer)
       ("C-M-g" . goto-line)
 
       ;; perhaps turn these on when/if I bring in Howards font size functions
@@ -682,7 +727,7 @@
        :commands ag)
    #+END_SRC
 
-* Swiper Ivy Counsel Projectile
+* Former Swiper Helm Projectile
 
   I choose to pattern my config for these related packages after abo-abo, the author.  Well, it turns out
   abo-abo has a pretty baroque way of loading his configuration.
@@ -690,13 +735,6 @@
   So model after the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]].
 
   #+BEGIN_SRC emacs-lisp
-    (setq ivy-use-virtual-buffers t)
-    (require 'counsel)
-    (global-set-key "\C-s" 'swiper)
-    (counsel-mode)
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp :tangle no
     (use-package projectile
       :init
       (setq projectile-completion-system 'ivy)
@@ -705,91 +743,44 @@
       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
       (projectile-mode +1))
 
-    (use-package ivy-hydra)
-
-    (use-package ivy
-      :config
-      ;; add recentf and bookmarks to the candidates of 'ivy-switch-buffer'
-      (setq ivy-use-virtual-buffers t)
-      (ivy-mode 1))
-
     (use-package swiper
       :config
       (global-set-key "\C-s" 'swiper))
-
-    (use-package counsel
-      :config
-      (counsel-mode))
   #+END_SRC
 
-  I have some questions about completion and file searching.  So disable =counsel-projectile= for now to
-  reduce the surface area to search for answers in.
+** former config now discarded
 
-  #+BEGIN_SRC emacs-lisp :tangle no
-    (use-package counsel-projectile
-      :config
-      (counsel-projectile-mode))
-  #+END_SRC
+ I have some questions about completion and file searching.  So disable =counsel-projectile= for now to
+ reduce the surface area to search for answers in.
 
-** Issues Searching with counsel
+ #+BEGIN_SRC emacs-lisp :tangle no
+   (use-package counsel-projectile
+     :config
+     (counsel-projectile-mode))
+ #+END_SRC
 
-   I seem to be having issues searching with =counsel=.  Specifically, running =counsel-grep= gathers the
-   inputs, but generates no results: no results buffer.  I see the same behavior with other counsel file
-   searching functions as well.
 
-*** Versions of Emacs Tested
+* Helm and Projectile
 
-    1. [[https://emacsformacosx.com/][Emacs for Mac OS X]]
-       - version
-         - GNU Emacs 26.1 (build 1, x86_64-apple-darwin14.5.0, NS appkit-1348.17 Version 10.10.5 (Build 14F2511)) of 2018-05-30
-       - invoked as
-         - =/usr/local/bin/emacs -Q=
-    2. homebrew installed emacs
-       - version
-         - GNU Emacs 26.2 (build 1, x86_64-apple-darwin18.5.0) of 2019-04-13
-       - invoked as
-         - =/usr/local/Cellar/emacs/26.2/bin/emacs-26.2 -Q=
+** Helm Config
 
-*** Steps to Reproduce
+  Look at how Howard, Sacha and Daniel Mai configure helm
+  - [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Helm][Howard's config]]
+    - Howard is not a regular user of helm.  He does have some good hints in there though.
+  - [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::*Helm%20-%20interactive%20completion][Sacha's config]]
+    - Sacha has a reasonable helm config that I could base mine off of.
+  - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Helm][Daniel's config]]
+    - Daniel configures [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Locate][helm-locate to use mdfind]], aka Spotlight
+    - Daniel has a nice reasonable config that I could benefit from
+  - [[file:jeff-classic-init.el::;;%20helm%20config%20derived%20from%20danielmai's%20config][My classic config]]
+    - Looks like I based my former config on Daniels config.
+    - So pick some blend of Daniel and Sacha's work to move forward here.
 
-    1. start the emacs under test with no initialization, eg:
-       - =emacs -Q=
-    2. Load counsel
-       - =M-x eval-buffer= on this
-       #+BEGIN_SRC emacs-lisp :tangle no
-         (require 'package)
-         (unless (assoc-default "melpa" package-archives)
-           (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
-         (package-initialize)
-         (package-refresh-contents)
+** Projectile Config
 
-         (unless (package-installed-p 'counsel)
-           (package-install 'counsel))
-
-         (require 'counsel)
-         (ivy-mode)
-
-         (find-library "counsel")
-       #+END_SRC
-    3. Do a search
-       - =M-x counsel-grep=
-       - NB that counsel is working; see how =M-x= runs =counsel-M-x=
-       - search for =counsel= which should result in many matches in the file =counsel.el=
-    4. Expected vs Actual Results
-       - I expect to see a result buffer full of matches
-       - The results I actually see are essentially nothing; no search appears to be performed, no results buffer appears.
-       - To see this, execute =ivy-switch-buffer=, ie, =C-x b=
-         - I only see three buffers:
-           - =*scratch*=
-           - =*Messages*=
-           - =counsel.el=
-       - Run =M-x list-buffers=.  Here are the results I see:
-       #+BEGIN_EXAMPLE
-       .   counsel.el           228097 Emacs-Lisp       ~/.emacs.d/elpa/counsel-20190803.1121/counsel.el
-         * *scratch*               475 Lisp Interaction
-        %* *Messages*              328 Messages
-       #+END_EXAMPLE
-
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Projectile][Daneil's projectile config]]
+     - looks sane
+     - investigate =projectile-switch-project-action=
 
 * Programming Support
 ** crux
