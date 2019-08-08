@@ -1,0 +1,95 @@
+#+TITLE: Bug Report: counsel-grep,rg,ag on OS X
+#+AUTHOR: Jeff McCarrell
+#+EMAIL: jeff@mccarrell.org
+#+STARTUP: showeverything
+
+* Summary
+It appears to me that the =counsel= functions that invoke external processes do not reliably report the
+results of those process invocations on Mac OS X. This behavior is shown on a minimally configured emacs via
+=emacs -Q=.  The reproducible sequence does not show the bug behavior on 3 tested ubuntu-based releases of emacs.
+
+* Issues Searching with counsel
+
+  I seem to be having issues searching with =counsel=.  Specifically, running =counsel-grep= gathers the
+  inputs, but generates no results: no results buffer.  I see the same behavior with other counsel file
+  searching functions as well.
+
+** Steps to Reproduce
+
+   1. start the emacs under test with no initialization, eg:
+      - =emacs -Q=
+   2. Load counsel
+      - =M-x eval-buffer= on this
+      #+BEGIN_SRC emacs-lisp :tangle no
+        (require 'package)
+        (unless (assoc-default "melpa" package-archives)
+          (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+        (package-initialize)
+        (package-refresh-contents)
+
+        (unless (package-installed-p 'counsel)
+          (package-install 'counsel))
+
+        (require 'counsel)
+        (ivy-mode)
+
+        (find-library "counsel")
+      #+END_SRC
+   3. Do a search
+      - =M-x counsel-grep=
+      - NB that counsel is working; see how =M-x= runs =counsel-M-x=
+      - search for =counsel= which should result in many matches in the file =counsel.el=
+   4. Expected vs Actual Results
+      - I expect to see a result buffer full of matches
+      - The results I actually see are essentially nothing; no search appears to be performed, no results buffer appears.
+
+** Versions of Emacs Tested
+
+*** Shows the bug
+
+   1. [[https://emacsformacosx.com/][Emacs for Mac OS X]]
+      - version
+        - GNU Emacs 26.1 (build 1, x86_64-apple-darwin14.5.0, NS appkit-1348.17 Version 10.10.5 (Build 14F2511)) of 2018-05-30
+      - invoked as
+        - =/usr/local/bin/emacs -Q=
+   2. homebrew installed emacs
+      - version
+        - GNU Emacs 26.2 (build 1, x86_64-apple-darwin18.5.0) of 2019-04-13
+      - invoked as
+        - =/usr/local/Cellar/emacs/26.2/bin/emacs-26.2 -Q=
+
+*** Works as Expected
+
+**** ubuntu 16.04 LTS results
+ #+BEGIN_EXAMPLE
+ GNU Emacs 24.5.1 (x86_64-pc-linux-gnu, GTK+ Version 3.18.9) of 2017-09-20 on lcy01-07, modified by Debian
+
+ DISTRIB_ID=Ubuntu
+ DISTRIB_RELEASE=16.04
+ DISTRIB_CODENAME=xenial
+ DISTRIB_DESCRIPTION=“Ubuntu 16.04.6 LTS”
+ #+END_EXAMPLE
+
+**** ubuntu 18.04 LTS results
+ worked just fine.
+ #+BEGIN_EXAMPLE
+ jmccarrell@jeff-test-1:~$ emacs --version
+ GNU Emacs 25.2.2
+ jmccarrell@jeff-test-1:~$ cat /etc/lsb-release
+ DISTRIB_ID=Ubuntu
+ DISTRIB_RELEASE=18.04
+ DISTRIB_CODENAME=bionic
+ DISTRIB_DESCRIPTION="Ubuntu 18.04.2 LTS"
+ #+END_EXAMPLE
+
+**** ubuntu 19.04 results
+ #+BEGIN_EXAMPLE
+ jmccarrell@jeff-test-2:~$ emacs --version
+ GNU Emacs 26.1
+ jmccarrell@jeff-test-2:~$ cat /etc/lsb-release
+ DISTRIB_ID=Ubuntu
+ DISTRIB_RELEASE=19.04
+ DISTRIB_CODENAME=disco
+ DISTRIB_DESCRIPTION="Ubuntu 19.04"
+ #+END_EXAMPLE
+
