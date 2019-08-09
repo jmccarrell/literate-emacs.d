@@ -5,49 +5,53 @@
 #+PROPERTY: header-args:emacs-lisp  :tangle "init.el"
 
 * Working Notes
+** To Be Done
+*** Goals to Achieve
+
+    - how to use projectile to navigate between projects as I so often want to do
+      - between notes and work projects specifically
+    - to support jq literate programming to solve some of the salt challenges I have at work
+    - enable tramp mode
+    - [X] create support for bash execution in org babel sections
+      - ie literate programming using bash at the shell
+
+*** Todo Eventually
+
+    - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
+    - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
+    - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
+    - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
+    - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
+
+*** maybe explore these
+
+    Howard has a bunch of _Technical Artifacts_ sections
+
+    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
+    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
+    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
+
+    Consider reading these for the insights they may contain
+
+    Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
+    Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
+    Hack.
+
+    Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
+
 ** Install Essential Packages
-*** Explore ivy, swiper, counsel
-
-    DOING Read the [[https://github.com/abo-abo/swiper/blob/master/doc/ivy.org][ivy users guide]]
-
-    DOING Read through the counsel source code for other packages that counsel can use to increase functionality
-    - NO PREFER HELM amx or smex
-      - what do these provide?
-    - "Complete using `company-candidates'."
-    - "Inline C/C++ completion using Irony."
-    - python
-      #+BEGIN_SRC emacs-lisp :tangle no
-        (defun counsel-jedi ()
-         "Python completion at point."
-      #+END_SRC
-    - how do I access counsel-command-history?
-
-    - looks like projectile-find-file known-projects is very likely to be useful to me after I clean up the know-projects list.
-      - apply: Setting current directory: No such file or directory, /t/emacs-configs/jwiegley-dotemacs/fatal: No url found for submodule path 'lib/emacs-request/doc/eldomain' in .gitmodules
-
-    - [ ] Search for an interactive project search
-      - the equivalent of =helm-do-ag= and =helm-do-ag-project-root=
-      - counsel-projectile-git-grep is close
-        - C-c p s i
-      - counsel-projectile-ag should be close as well
-        - C-c p s s
-        - but I don't seem to have that one working
-
-    - it looks like =counsel-git-grep-query-replace= will be something quite useful, once I get counsel searching to actually work
-
-    - =counsel-git-checkout=
-
 *** Tier 2: Maybe, Consider These
 
-    Consider swapping out my default emacs config for this new one.
+    - [X] Consider swapping out my default emacs config for this new one.
 
-    Turn off all disabled emacs commands; follow Howards config there.
+    - [X] Turn off all disabled emacs commands; follow Howards config there.
 
     Packages that I most likely want to keep, but which need some investigation to validate:
 
-    - babel
+    - [X] babel
       - enough to support shell
       - and particularly iterating on jq recipes
+      - from Daniel Mai
 
     - js2-mode
     - terraform-mode
@@ -119,169 +123,6 @@
      - yasnippet
      - ztree
 
-*** DONE Tier 1: Can't Live Without
-
-    - State "DONE"       from              [2019-08-03 Sat 21:45]
-    Packages that I view as essential to my emacs experience:
-
-    - [X] magit
-
-    - [X] org-mode
-      - I would like to have better indentation support in org-mode
-        - indentation under a heading should not indent further depending on the heading
-          - ie, 3 spaces for a 2 star heading; 4 spaces for a 3 star, etc.
-        - explore org-adapt-indentation
-          - from [[https://www.reddit.com/r/emacs/comments/97naje/what_is_everyones_org_mode_indentation_preferences/][this reddit]]
-        - so after reading about it, I have decided to leave this alone.
-          - org will change the indentation on promote/demote, so good enough.
-
-    - [X] eshell?
-      - eshell seems to work just fine.
-
-    - [X] ag
-
-    - [X] projectile
-      - ensure =describe-personal-bindings= continues to work after I customize projectile
-
-    - [X] ivy, swiper, counsel
-      - whatever binds projectile and ivy together, ie, replace [[file:jeff-classic-init.el::(use-package%20helm-projectile%20:config%20(setq%20projectile-completion-system%20'helm)%20(helm-projectile-on))][helm-projectile]]
-
-*** Goals to Achieve
-
-    - how to use projectile to navigate between projects as I so often want to do
-      - between notes and work projects specifically
-    - to support jq literate programming to solve some of the salt challenges I have at work
-    - enable tramp mode
-    - [ ] create support for bash execution in org babel sections
-      - ie literate programming using bash at the shell
-
-*** Todo Eventually
-
-    - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
-    - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
-    - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
-    - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
-    - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
-
-*** maybe explore these
-
-    Howard has a bunch of _Technical Artifacts_ sections
-
-    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
-    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
-    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
-
-    Consider reading these for the insights they may contain
-
-    Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
-    Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
-    Hack.
-
-    Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
-
-*** DONE Create Key Bindings
-
-    - State "DONE"       from              [2019-08-03 Sat 16:10]
-    - experiment with Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::(setq%20mac-option-modifier%20'meta)%20(setq%20mac-command-modifier%20'super)][mac modifier key bindings]] so I can get Super and Alternate? key prefixes
-      - and I think I really like Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Key%20Bindings][global key binding approach]]
-
-    - then set up =which-key=
-
-**** option
-*** DONE Howard and Sachas organization
-
-    - State "DONE"       from              [2019-08-02 Fri 17:34]
-**** Howard
-     #+BEGIN_EXAMPLE
-       * Introduction
-       * General Settings
-       * Package Initialization
-       * Variables
-       * Display Settings
-       * Key Bindings
-       * Loading and Finding Files
-       * Word Smithing
-       * Miscellaneous Settings
-       * Programming Languages
-       * Org-Mode
-       * Tools
-       * Applications
-       * Frivolous
-       * Technical Artifacts
-     #+END_EXAMPLE
-
-     Howard also loads a mac specific file on his macintoshs. That would break my /single file/ model. So
-     while I find that approach logically appealing, I am not willing to go all the way toward [[file:/t/emacs-configs/howardabrams-dot-files/build.el::;;%20Simple%20Emacs%20script%20used%20to%20build/tangle%20all%20my%20support][Howards build
-     process]].  But maybe I should try it?
-
-     Executing Howards =build.el= by evaluating the buffer gives me:
-
-     #+BEGIN_EXAMPLE
-     Opening output file: No such file or directory, /Users/jeff/.lein/profiles.clj
-     #+END_EXAMPLE
-
-     So I should probably stick with my single file approach for now following the /don't use stuff you don't
-     know maxim/.
-
-     But Howard also [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::#+BEGIN_SRC%20shell%20brew%20install%20gpg%20#+END_SRC][calls brew in his main org file]] so I'm going to stick with a single file.
-
-**** Sacha
-
-     #+BEGIN_EXAMPLE
-       * Configuration
-       ** About this file
-       ** Starting up
-       ** System information
-       ** Personal information
-       ** Emacs initialization
-       ** General configuration
-       ** Navigation
-       ** Reading
-       ** Shuffling lines
-
-       ** Writing
-       ** Org  :org:
-       ** Coding
-       ** Internet Relay Chat
-       ** Self-tracking, statistics, and other data transformations
-       ** Workarounds
-       ** Display
-       ** Web browsing
-       ** Clipboard
-       ** Search
-       ** Mail
-       ** Ledger (personal finance)
-       ** Emacs server
-       ** Menus
-
-       ** Advanced stuff / things I tend to forget about
-       ** Other nifty Emacs things I want to learn
-       ** Weather forecast
-       ** Encryption
-       ** DONE Scan ~/bin and turn the scripts into interactive commands
-       ** Syncthing
-       ** Search logs
-       * Other cool configs you may want to check out
-
-     #+END_EXAMPLE
-
-*** DONE Color theme
-
-    - State "DONE"       from              [2019-08-02 Fri 17:33]
-
-    Where does Howard define his fonts, and theme?  A: in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][emacs-client.org]]
-    - but [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Color%20Theme][Howards theme loader of choice]]: =color-theme= is obsolete
-      - so I need a more modern way to pick my color theme.
-      - What does Sacha do?
-    - all that being said, Howard uses Steve Purcells [[https://github.com/purcell/color-theme-sanityinc-tomorrow][sanityinc tomorrow themes]], which look sweet
-      - it would be nice to be able to switch themes from day to night as needed.
-
-    Sacha defines her color theme as [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::*Set%20up%20a%20light-on-dark%20color%20scheme][small overrides to solarized]]
-
-    from Sacha, this appears to be a [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(add-hook%20'after-make-frame-functions%20(lambda%20(frame)%20(select-frame%20frame)%20(my/setup-color-theme)))][fix for the theme getting applied to new frames]]
-
-    How do I define my theme now?  A: I just [[file:jeff-classic-init.el::(use-package%20zenburn-theme%20:init%20(load-theme%20'zenburn%20t))][load zenburn]]
-
 ** Pending Work To Do
 
    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
@@ -312,20 +153,6 @@
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
    - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
    - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
-
-*** NOT WORKING: Daniels emacs build recipe
-
-    Daniel has a recipe to [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installing%20Emacs][build emacs with homebrew]]
-
-#+begin_src shell
-echo brew install emacs --with-cocoa --with-imagemagick --with-gnutls
-#+end_src
-
-but it fails for me, as brew has removed this build option:
-
-#+BEGIN_EXAMPLE
-Error: invalid option: --with-cocoa
-#+END_EXAMPLE
 
 ** Open Questions
 
@@ -525,6 +352,10 @@ Error: invalid option: --with-cocoa
      ;; Don't beep at me
      (setq visible-bell t)
 
+     ;; get rid of all of the backup files
+     (setq backup-before-writing nil)
+     (setq make-backup-files nil)
+
      ;; screen real estate is for text, not widgets
      (when (window-system)
        (tool-bar-mode 0)
@@ -582,6 +413,10 @@ Error: invalid option: --with-cocoa
 
      ;; revert buffers automatically when underlying files are changed externally
      (global-auto-revert-mode t)
+
+     ;; no disabled functions
+     (setq disabled-command-function nil)
+
    #+END_SRC
 
 * Display Settings
@@ -795,8 +630,7 @@ Error: invalid option: --with-cocoa
       (helm-mode))
     (use-package helm-projectile
       :after helm-mode
-      :commands helm-projectile
-      :bind ("C-c p h" . helm-projectile))
+      :commands helm-projectile)
     (use-package helm-ag
       :ensure t
       :after helm-mode)
@@ -953,6 +787,37 @@ Error: invalid option: --with-cocoa
                  (save-buffer))))))
 
      (run-with-idle-timer 25 t 'save-org-mode-files)
+   #+END_SRC
+
+** Org babel
+
+   I stole much of this from Daniel Mai
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ob-restclient)
+
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((python . t)
+        (C . t)
+        (calc . t)
+        (java . t)
+        (ruby . t)
+        (lisp . t)
+        (scheme . t)
+        (shell . t)
+        (sqlite . t)
+        (js . t)
+        (restclient . t)))
+
+     (defun my-org-confirm-babel-evaluate (lang body)
+       "Do not confirm evaluation for these languages."
+       (not (or (string= lang "C")
+                (string= lang "java")
+                (string= lang "python")
+                (string= lang "emacs-lisp")
+                (string= lang "sqlite"))))
+     (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
    #+END_SRC
 
 * Report Startup Timing

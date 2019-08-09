@@ -70,6 +70,10 @@
 ;; Don't beep at me
 (setq visible-bell t)
 
+;; get rid of all of the backup files
+(setq backup-before-writing nil)
+(setq make-backup-files nil)
+
 ;; screen real estate is for text, not widgets
 (when (window-system)
   (tool-bar-mode 0)
@@ -105,6 +109,9 @@
 
 ;; revert buffers automatically when underlying files are changed externally
 (global-auto-revert-mode t)
+
+;; no disabled functions
+(setq disabled-command-function nil)
 
 (use-package zenburn-theme
   :init (load-theme 'zenburn t))
@@ -192,8 +199,7 @@
   (helm-mode))
 (use-package helm-projectile
   :after helm-mode
-  :commands helm-projectile
-  :bind ("C-c p h" . helm-projectile))
+  :commands helm-projectile)
 (use-package helm-ag
   :ensure t
   :after helm-mode)
@@ -295,6 +301,31 @@
             (save-buffer))))))
 
 (run-with-idle-timer 25 t 'save-org-mode-files)
+
+(use-package ob-restclient)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (C . t)
+   (calc . t)
+   (java . t)
+   (ruby . t)
+   (lisp . t)
+   (scheme . t)
+   (shell . t)
+   (sqlite . t)
+   (js . t)
+   (restclient . t)))
+
+(defun my-org-confirm-babel-evaluate (lang body)
+  "Do not confirm evaluation for these languages."
+  (not (or (string= lang "C")
+           (string= lang "java")
+           (string= lang "python")
+           (string= lang "emacs-lisp")
+           (string= lang "sqlite"))))
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 ;;; Post initialization
 
