@@ -734,7 +734,7 @@ Error: invalid option: --with-cocoa
 
   So model after the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]].
 
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp :tangle no
     (use-package projectile
       :init
       (setq projectile-completion-system 'ivy)
@@ -760,7 +760,7 @@ Error: invalid option: --with-cocoa
  #+END_SRC
 
 
-* Helm and Projectile
+* Helm, Ivy, Swiper and Projectile
 
 ** Helm Config
 
@@ -776,11 +776,67 @@ Error: invalid option: --with-cocoa
     - Looks like I based my former config on Daniels config.
     - So pick some blend of Daniel and Sacha's work to move forward here.
 
+  #+BEGIN_SRC emacs-lisp
+    (use-package helm
+      :diminish helm-mode
+      :bind (("C-c h" . helm-command-prefix)
+             ("C-x b" . helm-mini)
+             ("C-`" . helm-resume)
+             ("M-x" . helm-M-x)
+             ("C-x C-f" . helm-find-files)
+             ("C-x C-r" . helm-recentf))
+      :init
+      (require 'helm-config)
+      :config
+      (setq helm-locate-command "mdfind -interpret -name %s %s"
+            helm-ff-newfile-prompt-p nil
+            helm-M-x-fuzzy-match t)
+      (helm-mode))
+    (use-package helm-projectile
+      :after helm-mode
+      :commands helm-projectile
+      :bind ("C-c p h" . helm-projectile))
+    (use-package helm-ag
+      :ensure t
+      :after helm-mode)
+    (use-package helm-swoop
+      :ensure t
+      :after helm-mode
+      :bind ("s-w" . helm-swoop))
+  #+END_SRC
+
 ** Projectile Config
 
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Projectile][Daneil's projectile config]]
      - looks sane
      - investigate =projectile-switch-project-action=
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package projectile
+       :diminish projectile-mode
+       :bind-keymap ("C-c p" . projectile-command-map)
+       :init
+       (setq projectile-completion-system 'ivy)
+       :config
+       (bind-key "s p" 'helm-do-ag-project-root 'projectile-command-map)
+       (bind-key "s a" 'helm-do-ag 'projectile-command-map)
+       (projectile-mode +1))
+   #+END_SRC
+
+** Ivy and Swiper Config
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ivy
+       :diminish (ivy-mode . "")
+       :config
+       (ivy-mode 1)
+       ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
+       (setq ivy-use-virtual-buffers t))
+
+     (use-package swiper
+       :config
+       (global-set-key "\C-s" 'swiper))
+   #+END_SRC
 
 * Programming Support
 ** crux

@@ -175,13 +175,49 @@
 (use-package ag
   :commands ag)
 
+(use-package helm
+  :diminish helm-mode
+  :bind (("C-c h" . helm-command-prefix)
+         ("C-x b" . helm-mini)
+         ("C-`" . helm-resume)
+         ("M-x" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+         ("C-x C-r" . helm-recentf))
+  :init
+  (require 'helm-config)
+  :config
+  (setq helm-locate-command "mdfind -interpret -name %s %s"
+        helm-ff-newfile-prompt-p nil
+        helm-M-x-fuzzy-match t)
+  (helm-mode))
+(use-package helm-projectile
+  :after helm-mode
+  :commands helm-projectile
+  :bind ("C-c p h" . helm-projectile))
+(use-package helm-ag
+  :ensure t
+  :after helm-mode)
+(use-package helm-swoop
+  :ensure t
+  :after helm-mode
+  :bind ("s-w" . helm-swoop))
+
 (use-package projectile
+  :diminish projectile-mode
+  :bind-keymap ("C-c p" . projectile-command-map)
   :init
   (setq projectile-completion-system 'ivy)
   :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (bind-key "s p" 'helm-do-ag-project-root 'projectile-command-map)
+  (bind-key "s a" 'helm-do-ag 'projectile-command-map)
   (projectile-mode +1))
+
+(use-package ivy
+  :diminish (ivy-mode . "")
+  :config
+  (ivy-mode 1)
+  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
+  (setq ivy-use-virtual-buffers t))
 
 (use-package swiper
   :config
