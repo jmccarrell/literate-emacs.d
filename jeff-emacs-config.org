@@ -343,6 +343,7 @@ Error: invalid option: --with-cocoa
 
    - [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][Howard Abrams]]
    - [[https://github.com/sachac/.emacs.d][Sacha Chua]]
+   - [[https://github.com/danielmai/.emacs.d][Daniel Mai]]
    - [[https://www.wisdomandwonder.com/tag/emacs][Grant aka Wisdom and Wonder]]
    - [[https://github.com/jwiegley/dot-emacs][John Weigley]]
    - [[https://github.com/purcell/emacs.d][Steve Purcell]]
