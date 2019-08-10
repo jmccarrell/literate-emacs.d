@@ -126,7 +126,8 @@
 ** Pending Work To Do
 
    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
-   - investigate helm-occur as a replacement for isearch and/or swiper
+   - [X] investigate helm-occur as a replacement for isearch and/or swiper
+     - no, I decided to use =swiper= for =C-s=
    - =exec-path-from-shell=
      - Daniel has an example
      - I've seen this elsewhere as well
@@ -135,8 +136,8 @@
    - investigate package recentf
    - Daniel has a nice example [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installation][passing an emacs-lisp variable into a shell]] buffer to execute
      - and a [[file:/t/emacs-configs/danielmai-dotemacs/config.org::#+begin_src%20emacs-lisp%20(use-package%20exec-path-from-shell%20:ensure%20t%20:init%20(exec-path-from-shell-initialize))%20#+end_src][link to an info buffer in emacs]]
-   - Daniels [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20babel%20languages][org-babel config]] looks good for my use case
-     - and this [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20templates][org-structure-template-alist stuff]]
+   - [ ] Daniels [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20babel%20languages][org-babel config]] looks good for my use case
+     - [ ] and this [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20templates][org-structure-template-alist stuff]]
    - [X] consider moving my old revert-buffer binding from =C-x y= to =C-c u= per Daniel
    - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
    - consider setting up abo-abo's ace-window
@@ -197,9 +198,7 @@
    - use the literate programming style
      - learn babel and tangle in the process
    - learn more emacs-lisp; even become competent?
-   - prefer ivy, counsel and swiper over helm
-   - use =customize-theme= to create a full fledged theme for my color definitions
-     - this one seems less and less important the more I work with Hack and zenburn.
+   - add ivy and swiper in addition to helm
 
    as well as a host of smaller, clean-up type goals.
 
