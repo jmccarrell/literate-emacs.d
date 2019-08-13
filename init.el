@@ -91,12 +91,15 @@
 
 (setq-default tab-always-indent 'complete)
 
-;; always end a file with a newline
-(setq require-final-newline t)
-
 ;; Hollerith cards have had their day. Norming to 80 characters seems like a poor use of screen real estate
 ;; to me. I can't form a particular argument for 108, other than: it larger than 72 and seems to fit better.
 (setq-default fill-column 108)
+(auto-fill-mode)
+(global-visual-line-mode)
+(diminish 'visual-line-mode)
+
+;; always end a file with a newline
+(setq require-final-newline t)
 
 ;; delete the region when typing, just like as we expect nowadays.
 (delete-selection-mode t)
@@ -140,6 +143,12 @@
   (set-face-attribute 'whitespace-newline     nil :foreground "#666666" :background nil)
   (set-face-attribute 'whitespace-indentation nil :foreground "#666666" :background nil)
   :diminish whitespace-mode)
+
+(use-package ace-window
+  :bind (("M-o" . ace-window))
+  :config
+  (setq aw-dispatch-always t)
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 (when (jwm/mac-p)
   (setq mac-command-modifier 'meta)

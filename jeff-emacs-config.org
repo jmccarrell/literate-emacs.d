@@ -8,7 +8,7 @@
 ** To Be Done
 *** Goals to Achieve
 
-    - how to use projectile to navigate between projects as I so often want to do
+    - [X] how to use projectile to navigate between projects as I so often want to do
       - between notes and work projects specifically
     - to support jq literate programming to solve some of the salt challenges I have at work
     - enable tramp mode
@@ -389,6 +389,22 @@
      (setq-default tab-always-indent 'complete)
    #+END_SRC
 
+** Line Wrapping
+
+   In general, I prefer to see the entire line of text in the window even when it is wider than the frame.
+   Thus I prefer [[info:emacs#Visual%20Line%20Mode][Visual Line Mode]].  And, in general, I want emacs to wrap my text for me.  I chose 108 as a
+   relatively arbitrary line width value that works well for me.  Hollerith cards are dead!  Long live
+   Hollerith cards.
+
+   #+BEGIN_SRC emacs-lisp
+     ;; Hollerith cards have had their day. Norming to 80 characters seems like a poor use of screen real estate
+     ;; to me. I can't form a particular argument for 108, other than: it larger than 72 and seems to fit better.
+     (setq-default fill-column 108)
+     (auto-fill-mode)
+     (global-visual-line-mode)
+     (diminish 'visual-line-mode)
+   #+END_SRC
+
 ** Other Misc Settings
 
    Various settings I have come to prefer over the years.
@@ -396,10 +412,6 @@
    #+BEGIN_SRC emacs-lisp
      ;; always end a file with a newline
      (setq require-final-newline t)
-
-     ;; Hollerith cards have had their day. Norming to 80 characters seems like a poor use of screen real estate
-     ;; to me. I can't form a particular argument for 108, other than: it larger than 72 and seems to fit better.
-     (setq-default fill-column 108)
 
      ;; delete the region when typing, just like as we expect nowadays.
      (delete-selection-mode t)
@@ -477,6 +489,18 @@
        :diminish whitespace-mode)
    #+END_SRC
 
+* Window Movement
+
+  I prefer ace-window
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package ace-window
+      :bind (("M-o" . ace-window))
+      :config
+      (setq aw-dispatch-always t)
+      (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+  #+END_SRC
+
 * Key Bindings
 ** Option and Command Modifier Keys on a Mac
 
@@ -515,7 +539,6 @@
 
    Recall that there are several /power/ features of =bind-key=, such as rebinding, adding keys to a
    specific map etc. Here are John's [[https://github.com/jwiegley/use-package/blob/master/bind-key.el#L41-L90][pointers]] in the comments of the package.
-
 
    #+BEGIN_SRC emacs-lisp
      (bind-keys
@@ -593,7 +616,6 @@
      :config
      (counsel-projectile-mode))
  #+END_SRC
-
 
 * Helm, Ivy, Swiper and Projectile
 
