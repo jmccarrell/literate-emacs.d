@@ -7,21 +7,10 @@
 * Working Notes
 ** To Be Done
 *** Next steps
-    - [ ] on vega, reinstall links to emacs for os x in /Applications
-      - and thus deprecate brew installed emacs
-    - OR
-      - learn how to make my own variant of the brew recipe and build my own emacs using homebrew.
-      - [[https://docs.brew.sh/FAQ#can-i-edit-formulae-myself][according to this]] it is as simple as =brew edit emacs=
-      - so try it
-**** brew edit emacs
 
-     so the simple approach failed.  So follow [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Emacs%20Executable][Howards recipe]]
-     well, that failed as well.
-
-     So try [[https://www.reddit.com/r/emacs/comments/bhjtf9/now_that_homebrew_has_removed_build_options_how/eltiaj4?utm_source=share&utm_medium=web2x][another recipe]]
-     I found that emacs 27 had a strange and long delay when using swiper.
-
-     So back to emacs 26 installed by brew.
+   - =exec-path-from-shell=
+     - Daniel has an example
+     - I've seen this elsewhere as well
 
 *** Goals to Achieve
 
@@ -70,7 +59,8 @@
       - and particularly iterating on jq recipes
       - from Daniel Mai
 
-    - js2-mode
+    - [X] js2-mode
+    - [X] json-mode
     - terraform-mode
 
     - [X] crux
@@ -219,6 +209,16 @@
 
    as well as a host of smaller, clean-up type goals.
 
+** Which emacs on Mac OS X?
+
+   Circa summer 2019, I prefer [[https://emacsformacosx.com/][GNU Emacs for Mac OS X]] installed by homebrew.
+
+   #+BEGIN_SRC shell
+     brew cask install emacs
+   #+END_SRC
+
+   This installs emacs and emacsclient, which provide my emacs foundation.
+
 * Record Startup Timing
 
   Record the elapsed time of starting up emacs.
@@ -306,6 +306,26 @@
                               ((jwm/sift-mac-p) "jmccarrell@siftscience.com")
                               (t "jeff@mccarrell.org")))
    #+END_SRC
+** Emacs Server.
+
+   Start emacs server on my main windowed emacs.
+
+   #+BEGIN_SRC emacs-lisp
+     (when (window-system)
+       (server-start))
+   #+END_SRC
+
+   Maybe someday add support to edit text in emacs from Chrome.  As adapted from jwiegley.  However, we I
+   try this my emacs doesn't seem to read the entire =init.el=.  So defer this for now.
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package edit-server
+       :if (window-system)
+       :defer 5
+       :config
+       (edit-server-start))
+   #+END_SRC
+
 * Package Initialization
 ** Package Manager
 

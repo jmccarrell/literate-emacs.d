@@ -36,6 +36,9 @@
                          ((jwm/sift-mac-p) "jmccarrell@siftscience.com")
                          (t "jeff@mccarrell.org")))
 
+(when (window-system)
+  (server-start))
+
 (require 'package)
 
 (unless (assoc-default "org" package-archives)
