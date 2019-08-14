@@ -6,12 +6,6 @@
 
 * Working Notes
 ** To Be Done
-*** Next steps
-
-   - =exec-path-from-shell=
-     - Daniel has an example
-     - I've seen this elsewhere as well
-
 *** Goals to Achieve
 
     - [X] how to use projectile to navigate between projects as I so often want to do
@@ -135,9 +129,8 @@
    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
    - [X] investigate helm-occur as a replacement for isearch and/or swiper
      - no, I decided to use =swiper= for =C-s=
-   - =exec-path-from-shell=
-     - Daniel has an example
-     - I've seen this elsewhere as well
+   - [X] =exec-path-from-shell=
+     - evaluated, and I am not going to use this at this time.
    - Daniel has some interesting [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Open%20other%20apps%20from%20Emacs][open in other apps functions]] I would like to investigate as well
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*List%20buffers][ibuffer?]]
    - investigate package recentf
@@ -306,7 +299,7 @@
                               ((jwm/sift-mac-p) "jmccarrell@siftscience.com")
                               (t "jeff@mccarrell.org")))
    #+END_SRC
-** Emacs Server.
+** Emacs Server and PATH.
 
    Start emacs server on my main windowed emacs.
 
@@ -325,6 +318,32 @@
        :config
        (edit-server-start))
    #+END_SRC
+
+   I considered using =exec-path-from-shell= as [[https://github.com/danielmai/.emacs.d/blob/master/config.org#mac-customizations][Daniel Mai does]], but some experimentation shows that the
+   only added benefit I get is to set MANPATH.  At the moment, I don't consider that enough of a win.
+
+   =exec-path= is reasonably set by my usual method of invoking emacs from iTerm.
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     exec-path
+     ;; =>
+     ("/usr/local/bin" "/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Users/jeff/.pyenv/shims" "/Users/jeff/bin"
+      "/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14"
+      "/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_14"
+      "/Applications/Emacs.app/Contents/MacOS/libexec"
+      "/Applications/Emacs.app/Contents/MacOS/bin")
+   #+END_SRC
+
+   Here is what I see from =exec-path-from-shell=
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (exec-path-from-shell-initialize)
+     ;; =>
+     (("MANPATH" . "/usr/share/man:/usr/local/share/man:/Library/TeX/Distributions/.DefaultTeX/Contents/Man:/usr/local/opt/coreutils/libexec/gnuman")
+      ("PATH" . "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/jeff/.pyenv/shims:/Users/jeff/bin"))
+   #+END_SRC
+
+   which is not sufficiently better IMO.
 
 * Package Initialization
 ** Package Manager
