@@ -6,6 +6,23 @@
 
 * Working Notes
 ** To Be Done
+*** Next steps
+    - [ ] on vega, reinstall links to emacs for os x in /Applications
+      - and thus deprecate brew installed emacs
+    - OR
+      - learn how to make my own variant of the brew recipe and build my own emacs using homebrew.
+      - [[https://docs.brew.sh/FAQ#can-i-edit-formulae-myself][according to this]] it is as simple as =brew edit emacs=
+      - so try it
+**** brew edit emacs
+
+     so the simple approach failed.  So follow [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Emacs%20Executable][Howards recipe]]
+     well, that failed as well.
+
+     So try [[https://www.reddit.com/r/emacs/comments/bhjtf9/now_that_homebrew_has_removed_build_options_how/eltiaj4?utm_source=share&utm_medium=web2x][another recipe]]
+     I found that emacs 27 had a strange and long delay when using swiper.
+
+     So back to emacs 26 installed by brew.
+
 *** Goals to Achieve
 
     - [X] how to use projectile to navigate between projects as I so often want to do
@@ -140,7 +157,7 @@
      - [ ] and this [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20templates][org-structure-template-alist stuff]]
    - [X] consider moving my old revert-buffer binding from =C-x y= to =C-c u= per Daniel
    - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
-   - consider setting up abo-abo's ace-window
+   - [X] consider setting up abo-abo's ace-window
      - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Ace%20Window][Daniels use of it]]
    - Daniel uses
      - helm
@@ -148,7 +165,7 @@
      - and avy
    - Daniels config for [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Multiple%20cursors][multiple cursors]]
    - Figure out why [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Yasnippet][Daniel likes yasnippets]]
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*json-mode][json-mode]]
+   - [X] [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*json-mode][json-mode]]
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*terminal-here][terminal here?]]
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
