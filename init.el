@@ -243,7 +243,7 @@
   (
    ("C-c n" . crux-cleanup-buffer-or-region)
    ;; ("C-S-RET" . crux-smart-open-line-above)
-   ("M-o" . crux-smart-open-line)
+   ;; ("M-o" . crux-smart-open-line)
    ("C-c d" . crux-duplicate-current-line-or-region)
    ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)
    ("C-c C-r" . crux-rename-file-and-buffer)))
