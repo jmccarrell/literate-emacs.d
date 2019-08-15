@@ -8,14 +8,24 @@
 ** To Be Done
 *** Goals to Achieve
 
+    - [ ] to support jq literate programming to solve some of the salt challenges I have at work
+    - [ ] enable tramp mode
+      - show it works in important cases, like judgy
+    - [ ] can install from a new, clean .emacs.d
+
+**** Goals Achieived
+
     - [X] how to use projectile to navigate between projects as I so often want to do
       - between notes and work projects specifically
-    - to support jq literate programming to solve some of the salt challenges I have at work
-    - enable tramp mode
     - [X] create support for bash execution in org babel sections
       - ie literate programming using bash at the shell
 
-*** Todo Eventually
+** Pending Work To Do
+*** Next Up
+
+   - [ ] add the hydra so I can grow the swiper buffer
+
+*** From Howard
 
     - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
     - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
@@ -23,28 +33,69 @@
     - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
     - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
 
-*** maybe explore these
+**** maybe explore these
 
-    Howard has a bunch of _Technical Artifacts_ sections
+     Howard has a bunch of _Technical Artifacts_ sections
 
-    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
-    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
-    - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
 
-    Consider reading these for the insights they may contain
+     Consider reading these for the insights they may contain
 
-    Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
-    Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
-    Hack.
+     Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
+     Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
+     Hack.
 
-    Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
+     Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
+
+*** from Daniel Mai
+
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
+   - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+   - Daniel has some interesting [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Open%20other%20apps%20from%20Emacs][open in other apps functions]] I would like to investigate as well
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*List%20buffers][ibuffer?]]
+   - investigate package recentf
+   - Daniel has a nice example [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installation][passing an emacs-lisp variable into a shell]] buffer to execute
+     - and a [[file:/t/emacs-configs/danielmai-dotemacs/config.org::#+begin_src%20emacs-lisp%20(use-package%20exec-path-from-shell%20:ensure%20t%20:init%20(exec-path-from-shell-initialize))%20#+end_src][link to an info buffer in emacs]]
+   - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
+   - Daniel uses
+     - helm
+     - and ivy, swiper, counsel
+     - and avy
+   - Daniels config for [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Multiple%20cursors][multiple cursors]]
+   - Figure out why [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Yasnippet][Daniel likes yasnippets]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*terminal-here][terminal here?]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
+   - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
+   - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
+
+*** Cleanup
+
+**** Done
+
+    - [X] rm .emacs.jwm.d
+      - vega
+      - sift mac
+    - [X] git rm the classic config from jwm-dotfiles
+    - [X] fix diff-dot-files to use the literate emacs config
+
+*** Done
+
+   - [X] investigate helm-occur as a replacement for isearch and/or swiper
+     - no, I decided to use =swiper= for =C-s=
+   - [X] =exec-path-from-shell=
+     - evaluated, and I am not going to use this at this time.
+   - [X] consider moving my old revert-buffer binding from =C-x y= to =C-c u= per Daniel
+   - [X] consider setting up abo-abo's ace-window
+     - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Ace%20Window][Daniels use of it]]
+   - [X] [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*json-mode][json-mode]]
+   - [X] Daniels [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20babel%20languages][org-babel config]] looks good for my use case
+     - [X] and this [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20templates][org-structure-template-alist stuff]]
+     - well I didn't actually do the alist stuff, but good enough for now.
 
 ** Install Essential Packages
 *** Tier 2: Maybe, Consider These
-
-    - [X] Consider swapping out my default emacs config for this new one.
-
-    - [X] Turn off all disabled emacs commands; follow Howards config there.
 
     Packages that I most likely want to keep, but which need some investigation to validate:
 
@@ -77,12 +128,6 @@
 
     - I would like to consider [[https://github.com/syohex/emacs-git-gutter-fringe][git-gutter-fringe]]
 
-    - company
-      - do I use this now?  I am not really sure
-      - is this compatible with ivy, swiper, counsel?
-      - I don't think so.
-      - I think company and counsel are both completion frameworks
-
     - ox-twbs
       - twitter bootstrap rendering of generated org mode files
 
@@ -101,6 +146,17 @@
         (superword-mode t))
       (add-hook 'prog-mode-hook #'jwm::prog-mode-hook)
     #+END_SRC
+
+**** Done or Otherwise Completed
+
+    - [X] Consider swapping out my default emacs config for this new one.
+    - [X] Turn off all disabled emacs commands; follow Howards config there.
+
+    - NO NOT NEEDED company
+      - do I use this now?  I am not really sure
+      - is this compatible with ivy, swiper, counsel?
+      - I don't think so.
+      - I think company and counsel are both completion frameworks
 
 *** Tier 3: Drop These in this Refactor
 **** not used enough
@@ -123,37 +179,6 @@
      - wgrep
      - yasnippet
      - ztree
-
-** Pending Work To Do
-
-   - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
-   - [X] investigate helm-occur as a replacement for isearch and/or swiper
-     - no, I decided to use =swiper= for =C-s=
-   - [X] =exec-path-from-shell=
-     - evaluated, and I am not going to use this at this time.
-   - Daniel has some interesting [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Open%20other%20apps%20from%20Emacs][open in other apps functions]] I would like to investigate as well
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*List%20buffers][ibuffer?]]
-   - investigate package recentf
-   - Daniel has a nice example [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installation][passing an emacs-lisp variable into a shell]] buffer to execute
-     - and a [[file:/t/emacs-configs/danielmai-dotemacs/config.org::#+begin_src%20emacs-lisp%20(use-package%20exec-path-from-shell%20:ensure%20t%20:init%20(exec-path-from-shell-initialize))%20#+end_src][link to an info buffer in emacs]]
-   - [ ] Daniels [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20babel%20languages][org-babel config]] looks good for my use case
-     - [ ] and this [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Org%20templates][org-structure-template-alist stuff]]
-   - [X] consider moving my old revert-buffer binding from =C-x y= to =C-c u= per Daniel
-   - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
-   - [X] consider setting up abo-abo's ace-window
-     - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Ace%20Window][Daniels use of it]]
-   - Daniel uses
-     - helm
-     - and ivy, swiper, counsel
-     - and avy
-   - Daniels config for [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Multiple%20cursors][multiple cursors]]
-   - Figure out why [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Yasnippet][Daniel likes yasnippets]]
-   - [X] [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*json-mode][json-mode]]
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*terminal-here][terminal here?]]
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
-   - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
-   - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
 
 ** Open Questions
 
