@@ -1,0 +1,38 @@
+* Idiom to Apply Changes per Predicate
+
+  One problem I have never solved nor seen a good solution to is perhaps best introduced by an example:
+
+  Imagine your work, or maybe your open source projects have various coding standards.  The usual stuff.
+  So rather than fight city hall, I would like to be able to apply different coding styles defined by
+  c-add-style.  More or less straight forward.
+
+  The challenge for me is in when and how to apply a style.
+
+  I would like to have a list of predicates that get evaluated by some hook or other and when true, run
+  that function to create those effects.
+
+  I likely also would like a function that runs for every programming file that is visited, eg, to replace
+  tabs with spaces?
+
+** Read the manual
+
+   - [X] read [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Introduction.html#Introduction][CC Mode Overview]]
+     - looks like I will be most interested in:
+       - =c-mode=
+       - =java-mode=
+       - =awk-mode=
+   - [X] read CC Mode Overview
+   - [X] read [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Config-Basics.html#Config-Basics][CC Mode Config Basics]]
+
+** Todo Later
+
+   newline indents to the proper level [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Getting-Started.html#Getting-Started][as described here]]
+
+** k&r C Style
+
+   K&R is close to what I want.  Changes from K&R:
+
+   - 4 space offset, not 5
+   - replace tabs with spaces in all cases
+
+   So define a new C style based on K&R

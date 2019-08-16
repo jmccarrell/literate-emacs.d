@@ -25,6 +25,14 @@
 
    - [ ] add the hydra so I can grow the swiper buffer
 
+*** General
+
+    - Explore the three shell modes in the play emacs like an instrument video
+    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+    - Find a mechanism to apply configurations to a set of file identified by a predicate
+      - eg a way to specify a specific code formatting policy to work vs personal files
+      - ask in reddit?
+
 *** From Howard
 
     - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
@@ -49,7 +57,7 @@
 
      Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
 
-*** from Daniel Mai
+*** From Daniel Mai
 
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
@@ -776,6 +784,17 @@
    #+END_SRC
 
 * Programming Support
+** C Style
+
+   According to cc-styles.el, the function =c-add-style= is the preferred way to define C style.
+
+   #+BEGIN_QUOTE
+   Use the function `c-add-style' to add new styles or modify existing styles (it is not a good idea to
+   modify existing styles -- you should create a new style that inherits the existing style).
+   #+END_QUOTE
+
+   Here is the [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Adding-Styles.html][GNU manual on adding styles]]
+
 ** crux
 
    I use bbatsov's [[https://github.com/bbatsov/crux][crux]] at times, especially =C-c n=.
