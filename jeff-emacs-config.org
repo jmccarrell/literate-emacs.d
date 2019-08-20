@@ -33,6 +33,22 @@
       - eg a way to specify a specific code formatting policy to work vs personal files
       - ask in reddit?
 
+*** General
+
+    - Explore the three shell modes in the play emacs like an instrument video
+    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+    - Find a mechanism to apply configurations to a set of file identified by a predicate
+      - eg a way to specify a specific code formatting policy to work vs personal files
+      - ask in reddit?
+
+*** General
+
+    - Explore the three shell modes in the play emacs like an instrument video
+    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+    - Find a mechanism to apply configurations to a set of file identified by a predicate
+      - eg a way to specify a specific code formatting policy to work vs personal files
+      - ask in reddit?
+
 *** From Howard
 
     - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
