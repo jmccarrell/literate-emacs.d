@@ -23,6 +23,7 @@
 ** Pending Work To Do
 *** Next Up
 
+   - [ ] re-enable the use of counsel by reducing zsh shell load time
    - [ ] add the hydra so I can grow the swiper buffer
 
 *** General
@@ -261,6 +262,15 @@
 
    This installs emacs and emacsclient, which provide my emacs foundation.
 
+   I *always* invoke emacs from the iterm shell, so it will inherit the environment variables that get setup
+   in my login shells.  In particular, the [[https://github.com/caldwell/build-emacs/blob/master/launch.rb][emacs launcher script]] from [[https://emacsformacosx.com/][GNU Emacs for Mac OS X]] sets PATH well.
+
+** zsh Shell Support
+
+   I have been a zsh user for some time, but I also maintain a reasonable bash setup.  In this config, I
+   expect to add support for zsh idioms over time, especially as [[https://www.theverge.com/2019/6/4/18651872/apple-macos-catalina-zsh-bash-shell-replacement-features][zsh will be the default shell on MacOS
+   Catalina]].
+
 * Record Startup Timing
 
   Record the elapsed time of starting up emacs.
@@ -308,17 +318,20 @@
    Some useful predicates in customization...
 
    #+BEGIN_SRC emacs-lisp
-      (defun jwm/mac-p ()
-        (and (eq 'ns (window-system))
-             (eq 'darwin system-type)))
+     (defun jwm/mac-p ()
+       (and (eq 'ns (window-system))
+            (eq 'darwin system-type)))
 
-      (defun jwm/personal-mac-p ()
-        (and (jwm/mac-p)
-             (file-exists-p "/j/pdata/.gitignore")))
+     (defun jwm/personal-mac-p ()
+       (and (jwm/mac-p)
+            (file-exists-p "/j/pdata/.gitignore")))
 
-      (defun jwm/sift-mac-p ()
-        (and (jwm/mac-p)
-             (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
+     (defun jwm/sift-mac-p ()
+       (and (jwm/mac-p)
+            (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
+
+     (defun jwm/shell-is-zsh-p ()
+       (string-suffix-p "zsh" shell-file-name))
    #+END_SRC
 
 ** Modernizing Emacs
@@ -371,7 +384,8 @@
    I considered using =exec-path-from-shell= as [[https://github.com/danielmai/.emacs.d/blob/master/config.org#mac-customizations][Daniel Mai does]], but some experimentation shows that the
    only added benefit I get is to set MANPATH.  At the moment, I don't consider that enough of a win.
 
-   =exec-path= is reasonably set by my usual method of invoking emacs from iTerm.
+   =exec-path= is reasonably set by my usual method of invoking emacs from iTerm, which also benefits from
+   the [[https://github.com/caldwell/build-emacs/blob/master/launch.rb][emacs ruby launcher script]] from [[https://emacsformacosx.com/][GNU Emacs for Mac OS X]].
 
    #+BEGIN_SRC emacs-lisp :tangle no
      exec-path
@@ -509,6 +523,65 @@
      (global-visual-line-mode)
      (diminish 'visual-line-mode)
    #+END_SRC
+
+** Terminal and Shell (zsh) Settings
+
+*** Reduce Startup Time for zsh
+
+    I find the battle to keep my shell startup time low never ending.  I have come to regard it in the same
+    vein as spring cleaning or maybe dental visits for teeth cleaning: useful, but never my first choice.
+
+    As of this moment, my interactive zsh startup times are on the order of 1 second
+
+    #+BEGIN_EXAMPLE
+    ❯ time zsh -i -c exit
+    zsh -i -c exit  0.68s user 0.36s system 97% cpu 1.066 total
+    #+END_EXAMPLE
+
+    which is too long.  [[https://github.com/abo-abo/swiper/issues/2190#issuecomment-525385066][Especially for counsel]].  So configure the arguments given to zsh by emacs when
+    attempting to run processes via =shell-command= and friends to ignore reading initialization files.
+    That this works is dependent on already having a reasonable environment configured, including PATH.
+
+**** What is =-conorcs=?
+
+     As described in [[http://zsh.sourceforge.net/Doc/Release/Invocation.html#Invocation-2][zsh invocation]], zsh allows concatenation of single character command line options.  We
+     want both
+     - =-c=
+     - =-o norcs=
+     and as a single argument to reduce potential issues with whitespace separation.  Express that as
+     =-conorcs=.
+
+     The intuition about this setting is reinforced by measurement:
+
+     #+BEGIN_EXAMPLE
+     M-x shell-command time zsh -onorcsc exit
+     zsh -onorcsc exit  0.00s user 0.00s system 69% cpu 0.004 total
+     #+END_EXAMPLE
+
+    #+BEGIN_SRC emacs-lisp
+      (when (jwm/shell-is-zsh-p)
+        (setq shell-command-switch "-conorcs"))
+    #+END_SRC
+
+**** Effect
+
+    After this setting is in place, response time for emacs executed processes improve.
+
+    #+BEGIN_EXAMPLE
+    M-x shell-command time date
+    Fri Aug 30 08:49:12 PDT 2019
+    date  0.00s user 0.00s system 58% cpu 0.004 total
+    #+END_EXAMPLE
+
+**** What about =bash=?
+
+     An alternative would be to switch to bash, which from my measurements and current config shows shorter
+     startup time.  This difference is no doubt entirely due to my zsh initialization scripts.
+
+     #+BEGIN_EXAMPLE
+     M-x shell-command time bash -c exit
+     bash -c exit  0.00s user 0.00s system 69% cpu 0.004 total
+     #+END_EXAMPLE
 
 ** Other Misc Settings
 

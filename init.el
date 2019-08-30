@@ -31,6 +31,9 @@
   (and (jwm/mac-p)
        (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
 
+(defun jwm/shell-is-zsh-p ()
+  (string-suffix-p "zsh" shell-file-name))
+
 (setq user-full-name "Jeff McCarrell"
       user-mail-address (cond
                          ((jwm/sift-mac-p) "jmccarrell@siftscience.com")
@@ -100,6 +103,9 @@
 (auto-fill-mode)
 (global-visual-line-mode)
 (diminish 'visual-line-mode)
+
+(when (jwm/shell-is-zsh-p)
+  (setq shell-command-switch "-conorcs"))
 
 ;; always end a file with a newline
 (setq require-final-newline t)
