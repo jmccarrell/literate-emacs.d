@@ -23,7 +23,6 @@
 ** Pending Work To Do
 *** Next Up
 
-   - [ ] re-enable expand-region
    - switch to counsel and see if I prefer it to helm?
      - that might also enable tramp mode, which I would like to get done
    - or maybe work on shell mode?
@@ -651,6 +650,46 @@
        (set-face-attribute 'whitespace-newline     nil :foreground "#666666" :background nil)
        (set-face-attribute 'whitespace-indentation nil :foreground "#666666" :background nil)
        :diminish whitespace-mode)
+   #+END_SRC
+
+* Selection
+** expand-region
+
+   I have grown to prefer =expand-region=.  This is directly modified/cribbed from Howard's config.
+
+   My usage has not yet grown to benefit from Howard's additions; maybe some day.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package expand-region
+       :ensure t
+       :config
+       (defun ha/expand-region (lines)
+         "Prefix-oriented wrapper around Magnar's `er/expand-region'.
+
+          Call with LINES equal to 1 (given no prefix), it expands the
+          region as normal.  When LINES given a positive number, selects
+          the current line and number of lines specified.  When LINES is a
+          negative number, selects the current line and the previous lines
+          specified.  Select the current line if the LINES prefix is zero."
+         (interactive "p")
+         (cond ((= lines 1)   (er/expand-region 1))
+               ((< lines 0)   (ha/expand-previous-line-as-region lines))
+               (t             (ha/expand-next-line-as-region (1+ lines)))))
+
+       (defun ha/expand-next-line-as-region (lines)
+         (message "lines = %d" lines)
+         (beginning-of-line)
+         (set-mark (point))
+         (end-of-line lines))
+
+       (defun ha/expand-previous-line-as-region (lines)
+         (end-of-line)
+         (set-mark (point))
+         (beginning-of-line (1+ lines)))
+
+       ;; jwm: however, I can't seem to get C-= from my mac keyboard.
+       ;;   so prefer C-@
+       :bind ("C-@" . ha/expand-region))
    #+END_SRC
 
 * Window Movement
