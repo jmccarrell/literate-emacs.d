@@ -513,19 +513,23 @@
 
 *** Reduce Startup Time for zsh
 
-    I find the battle to keep my shell startup time low never ending.  I have come to regard it in the same
-    vein as spring cleaning or maybe dental visits for teeth cleaning: useful, but never my first choice.
+    I find the battle to keep shell startup time crisp to be never ending.  I have come to regard it in the
+    same vein as spring cleaning or maybe dental visits for teeth cleaning: useful, but never my first
+    choice.
 
-    As of this moment, my interactive zsh startup times are on the order of 1 second
+    As of this writing, my interactive zsh startup times are on the order of 1 second:
 
     #+BEGIN_EXAMPLE
     ❯ time zsh -i -c exit
     zsh -i -c exit  0.68s user 0.36s system 97% cpu 1.066 total
     #+END_EXAMPLE
 
-    which is too long.  [[https://github.com/abo-abo/swiper/issues/2190#issuecomment-525385066][Especially for counsel]].  So configure the arguments given to zsh by emacs when
+    which is too long.  [[https://github.com/abo-abo/swiper/issues/2190#issuecomment-525385066][Especially for counsel-grep]].  So configure the arguments given to zsh by emacs when
     attempting to run processes via =shell-command= and friends to ignore reading initialization files.
-    That this works is dependent on already having a reasonable environment configured, including PATH.
+
+    That this works is dependent on already having a reasonable environment configured -- including and most
+    especially PATH -- so that we don't *need* to re-execute all of that lovely zsh initialization code
+    every time emacs wants to run a process.
 
 **** What is =-conorcs=?
 
@@ -533,8 +537,8 @@
      want both
      - =-c=
      - =-o norcs=
-     and as a single argument to reduce potential issues with whitespace separation.  Express that as
-     =-conorcs=.
+     and as a single argument to reduce potential issues with whitespace evaluation at the emacs shell
+     boundary.  We can express that as =-conorcs=.
 
      The intuition about this setting is reinforced by measurement:
 
@@ -543,20 +547,25 @@
      zsh -onorcsc exit  0.00s user 0.00s system 69% cpu 0.004 total
      #+END_EXAMPLE
 
-    #+BEGIN_SRC emacs-lisp
+     Which leads to:
+
+     #+BEGIN_SRC emacs-lisp
       (when (jwm/shell-is-zsh-p)
         (setq shell-command-switch "-conorcs"))
-    #+END_SRC
+     #+END_SRC
 
 **** Effect
 
-    After this setting is in place, response time for emacs executed processes improve.
+    After this setting is in place, response time for emacs executed processes improve, for me by 3 orders
+    of magnitude.
 
     #+BEGIN_EXAMPLE
     M-x shell-command time date
     Fri Aug 30 08:49:12 PDT 2019
     date  0.00s user 0.00s system 58% cpu 0.004 total
     #+END_EXAMPLE
+
+    Your mileage will vary depending on the contents of your zsh dot files.
 
 **** What about =bash=?
 
@@ -618,6 +627,8 @@
    #+BEGIN_SRC shell
      brew cask install caskroom/fonts/font-hack
    #+END_SRC
+
+   and use it for all frames:
 
    #+BEGIN_SRC emacs-lisp
      (defun jwm/font-exists-p (f)
@@ -809,16 +820,16 @@
       (global-set-key "\C-s" 'swiper))
   #+END_SRC
 
-** former config now discarded
+** Former Config Now Discarded
 
- I have some questions about completion and file searching.  So disable =counsel-projectile= for now to
- reduce the surface area to search for answers in.
+   I have some questions about completion and file searching.  So disable =counsel-projectile= for now to
+   reduce the surface area to search for answers in.
 
- #+BEGIN_SRC emacs-lisp :tangle no
-   (use-package counsel-projectile
-     :config
-     (counsel-projectile-mode))
- #+END_SRC
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package counsel-projectile
+       :config
+       (counsel-projectile-mode))
+   #+END_SRC
 
 * Helm, Ivy, Swiper and Projectile
 
