@@ -322,9 +322,6 @@
      (defun jwm/sift-mac-p ()
        (and (jwm/mac-p)
             (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
-
-     (defun jwm/shell-is-zsh-p ()
-       (string-suffix-p "zsh" shell-file-name))
    #+END_SRC
 
 ** Modernizing Emacs
@@ -558,8 +555,11 @@
      Which leads to:
 
      #+BEGIN_SRC emacs-lisp
-      (when (jwm/shell-is-zsh-p)
-        (setq shell-command-switch "-conorcs"))
+       (defun jwm/shell-is-zsh-p ()
+         (string-suffix-p "zsh" shell-file-name))
+
+       (when (jwm/shell-is-zsh-p)
+         (setq shell-command-switch "-conorcs"))
      #+END_SRC
 
 **** Effect
