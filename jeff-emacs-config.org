@@ -23,13 +23,21 @@
 ** Pending Work To Do
 *** Next Up
 
+   - or maybe work on shell mode?!
+     - Explore the three shell modes in the play emacs like an instrument video ([[file:///Users/jeff/Downloads/emacs-videos/Play Emacs like an instrument.mp4][local copy]])
+       - it looks like Alain was using eshell mostly
+     - and there is Howards Introcution to Eshell ([[file:/Users/jeff/Downloads/emacs-videos/Introduction%20to%20EShell.mp4][local copy]])
+       - and the [[http://www.howardism.org/Technical/Emacs/eshell-present.html][notes to the talk]]
    - switch to counsel and see if I prefer it to helm?
      - that might also enable tramp mode, which I would like to get done
-   - or maybe work on shell mode?
+   - explore winner mode to manipulate a stack of window configurations
+   - explore undo-tree
+   - explore the limits of dired mode
+     - learn to make new directories
+     - move files around within those directories
 
 *** General
 
-    - Explore the three shell modes in the play emacs like an instrument video
     - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
     - Find a mechanism to apply configurations to a set of file identified by a predicate
       - eg a way to specify a specific code formatting policy to work vs personal files
