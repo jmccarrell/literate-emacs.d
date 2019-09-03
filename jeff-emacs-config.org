@@ -18,55 +18,36 @@
 ** Pending Work To Do
 *** Next Up
 
-   - [X] do I have access to Alain's config?
-     - Alain M. Lafon
-     - [[https://www.youtube.com/user/preek666][preek666]] on Youtube
-     - He is =munen= on github.  His literate emacs config is: https://github.com/munen/emacs.d/
-     - So I do have [[file:/t/emacs-configs/munen-emacs.d/configuration.org][his config locally]]
-   - [X] add Alain into the video authors I admire
    - [ ] make a links section to these authors' config files
      - both on the web and to my local copies
-   - [ ] add some bindings for:
-     - split window
-       - vertically
-       - horizontally
    - [ ] or maybe work on shell mode?!
    - [ ] setup occur and how it works with swiper
-   - switch to counsel and see if I prefer it to helm?
-     - that might also enable tramp mode, which I would like to get done
-   - explore winner mode to manipulate a stack of window configurations
+   - [X] NO PREFER EYEBROWSE explore winner mode to manipulate a stack of window configurations
    - explore undo-tree
    - explore the limits of dired mode
+     - Zamasky video
      - learn to make new directories
      - move files around within those directories
 
-*** DONE explore a window configuration manager
-    - State "DONE"       from "DOING"      [2019-09-02 Mon 21:18]
-    - State "DOING"      from              [2019-09-02 Mon 20:52]
+*** DOING switch to counsel, counsel-projectile [25%]
+    - State "DOING"      from              [2019-09-02 Mon 21:50]
 
-    - reddit topic: [[https://www.reddit.com/r/emacs/comments/akykio/looking_for_a_window_resizing_package_suggestion/][suggestions for a window resizer]]
-      - mentions:
-        - ivy-push-view
-        - golden ratio
-        - Zoom
-        - HyControl
-          - [[https://www.youtube.com/watch?v=M3-aMh1ccJk][video from the author]]  ([[file:~/Downloads/emacs-videos/GNU%20Hyperbole%20-%20HyControl,%20the%20fast%20frame%20and%20window%20manager%20for%20GNU%20Emacs.mp4][local copy]])
-    - winner is built in apparently
-    - what is [[https://github.com/wasamasa/eyebrowse][eyebrowse]]?
-      - provides bindings to window configurations
-    - what does Zamansky use?
-      - he has a video on eyebrowse
-
-    Ok, I setup eyebrowse.
+    - [X] enable the config
+    - [ ] Read [[https://github.com/ericdanan/counsel-projectile][the docs]] to get the basic key bindings down.
+    - [ ] set up counsel-rg to use ripgrep
+      - on vega
+      - on sift mac
+    - [ ] explore tramp mode
 
 **** DOING investigate ivy-push-view
-
      - State "DOING"      from              [2019-09-02 Mon 20:52]
+
      [[file:~/.emacs.d/elpa/ivy-20190803.1121/ivy.el::(defun%20ivy-push-view%20(&optional%20arg)][ivy-push-view]] appears to have some basic window layout capture functionality.  And since I am wanting
      to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
      as part of that refactoring.
 
-*** Get a working eshell
+*** DOING Get a working eshell
+    - State "DOING"      from              [2019-09-02 Mon 22:09]
 
     Well, it appears that my [[https://github.com/jmccarrell/literate-emacs.d/blob/master/jeff-emacs-config.org#reduce-startup-time-for-zsh][hack to disable reading init files for zsh]] has had the side effect of making
     zsh be an effective shell for eshell.  Huzzah!
@@ -794,7 +775,7 @@
 
   So model after the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]].
 
-  #+BEGIN_SRC emacs-lisp :tangle no
+  #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :init
       (setq projectile-completion-system 'ivy)
@@ -808,12 +789,9 @@
       (global-set-key "\C-s" 'swiper))
   #+END_SRC
 
-** Former Config Now Discarded
+** Counsel Projectile
 
-   I have some questions about completion and file searching.  So disable =counsel-projectile= for now to
-   reduce the surface area to search for answers in.
-
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp
      (use-package counsel-projectile
        :config
        (counsel-projectile-mode))
@@ -821,7 +799,11 @@
 
 * Helm, Ivy, Swiper and Projectile
 
-** Helm Config
+** Former Helm Config
+
+   I want to try the abo-abo's counsel stuff.  So leave helm behind for now.
+
+*** Former, now-commented out helm config
 
   Look at how Howard, Sacha and Daniel Mai configure helm
   - [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Helm][Howard's config]]
@@ -835,7 +817,7 @@
     - Looks like I based my former config on Daniels config.
     - So pick some blend of Daniel and Sacha's work to move forward here.
 
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp :tangle no
     (use-package helm
       :diminish helm-mode
       :bind (("C-c h" . helm-command-prefix)
@@ -870,6 +852,23 @@
      - investigate =projectile-switch-project-action=
 
    #+BEGIN_SRC emacs-lisp
+     (use-package projectile
+       :ensure t
+       :diminish projectile-mode
+       :commands (projectile-mode projectile-switch-project)
+       :bind (("C-c p p" . projectile-switch-project)
+              ("C-c p s s" . projectile-ag)
+              ("C-c p s r" . projectile-ripgrep))
+       :config
+       (setq projectile-keymap-prefix (kbd "C-c p"))
+       (projectile-global-mode t)
+       (setq projectile-enable-caching t)
+       (setq projectile-switch-project-action 'projectile-dired))
+   #+END_SRC
+
+*** Former helm projectile config
+
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package projectile
        :diminish projectile-mode
        :bind-keymap ("C-c p" . projectile-command-map)

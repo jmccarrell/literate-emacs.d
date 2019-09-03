@@ -234,41 +234,34 @@
 (use-package ag
   :commands ag)
 
-(use-package helm
-  :diminish helm-mode
-  :bind (("C-c h" . helm-command-prefix)
-         ("C-x b" . helm-mini)
-         ("C-`" . helm-resume)
-         ("M-x" . helm-M-x)
-         ("C-x C-f" . helm-find-files)
-         ("C-x C-r" . helm-recentf))
-  :init
-  (require 'helm-config)
-  :config
-  (setq helm-locate-command "mdfind -interpret -name %s %s"
-        helm-ff-newfile-prompt-p nil
-        helm-M-x-fuzzy-match t)
-  (helm-mode))
-(use-package helm-projectile
-  :after helm-mode
-  :commands helm-projectile)
-(use-package helm-ag
-  :ensure t
-  :after helm-mode)
-(use-package helm-swoop
-  :ensure t
-  :after helm-mode
-  :bind ("s-w" . helm-swoop))
-
 (use-package projectile
-  :diminish projectile-mode
-  :bind-keymap ("C-c p" . projectile-command-map)
   :init
   (setq projectile-completion-system 'ivy)
   :config
-  (bind-key "s p" 'helm-do-ag-project-root 'projectile-command-map)
-  (bind-key "s a" 'helm-do-ag 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
+
+(use-package swiper
+  :config
+  (global-set-key "\C-s" 'swiper))
+
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-mode))
+
+(use-package projectile
+  :ensure t
+  :diminish projectile-mode
+  :commands (projectile-mode projectile-switch-project)
+  :bind (("C-c p p" . projectile-switch-project)
+         ("C-c p s s" . projectile-ag)
+         ("C-c p s r" . projectile-ripgrep))
+  :config
+  (setq projectile-keymap-prefix (kbd "C-c p"))
+  (projectile-global-mode t)
+  (setq projectile-enable-caching t)
+  (setq projectile-switch-project-action 'projectile-dired))
 
 (use-package ivy
   :diminish (ivy-mode . "")

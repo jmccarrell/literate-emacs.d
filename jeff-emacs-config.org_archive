@@ -175,3 +175,29 @@ Archived entries from file /j/proj/literate-emacs.d/jeff-emacs-config.org
  - [X] create support for bash execution in org babel sections
    - ie literate programming using bash at the shell
 
+
+* DONE explore a window configuration manager
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2019-09-02 Mon 21:50
+  :ARCHIVE_FILE: /j/proj/literate-emacs.d/jeff-emacs-config.org
+  :ARCHIVE_OLPATH: Working Notes/Pending Work To Do
+  :ARCHIVE_CATEGORY: jeff-emacs-config
+  :ARCHIVE_TODO: DONE
+  :END:
+  - State "DONE"       from "DOING"      [2019-09-02 Mon 21:18]
+  - State "DOING"      from              [2019-09-02 Mon 20:52]
+
+  - reddit topic: [[https://www.reddit.com/r/emacs/comments/akykio/looking_for_a_window_resizing_package_suggestion/][suggestions for a window resizer]]
+    - mentions:
+      - ivy-push-view
+      - golden ratio
+      - Zoom
+      - HyControl
+        - [[https://www.youtube.com/watch?v=M3-aMh1ccJk][video from the author]]  ([[file:~/Downloads/emacs-videos/GNU%20Hyperbole%20-%20HyControl,%20the%20fast%20frame%20and%20window%20manager%20for%20GNU%20Emacs.mp4][local copy]])
+  - winner is built in apparently
+  - what is [[https://github.com/wasamasa/eyebrowse][eyebrowse]]?
+    - provides bindings to window configurations
+  - what does Zamansky use?
+    - he has a video on eyebrowse
+
+  Ok, I setup eyebrowse.
