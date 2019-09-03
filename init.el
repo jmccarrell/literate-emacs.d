@@ -190,6 +190,9 @@
   (setq aw-dispatch-always t)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
+(use-package eyebrowse)
+(eyebrowse-mode)
+
 (when (jwm/mac-p)
   (setq mac-command-modifier 'meta)
   (setq mac-option-modifier 'super)
