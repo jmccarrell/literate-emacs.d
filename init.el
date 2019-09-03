@@ -25,7 +25,7 @@
 
 (defun jwm/personal-mac-p ()
   (and (jwm/mac-p)
-       (file-exists-p "/j/pdata/.gitignore")))
+       (file-exists-p (concat (getenv "HOME") "/jdocs"))))
 
 (defun jwm/sift-mac-p ()
   (and (jwm/mac-p)

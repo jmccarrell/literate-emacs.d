@@ -267,15 +267,15 @@
    #+BEGIN_SRC emacs-lisp
      (defun jwm/mac-p ()
        (and (eq 'ns (window-system))
-            (eq 'darwin system-type)))
+	    (eq 'darwin system-type)))
 
      (defun jwm/personal-mac-p ()
        (and (jwm/mac-p)
-            (file-exists-p "/j/pdata/.gitignore")))
+	    (file-exists-p (concat (getenv "HOME") "/jdocs"))))
 
      (defun jwm/sift-mac-p ()
        (and (jwm/mac-p)
-            (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
+	    (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
    #+END_SRC
 
 ** Modernizing Emacs
