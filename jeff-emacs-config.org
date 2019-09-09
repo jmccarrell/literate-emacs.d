@@ -59,6 +59,22 @@
      - [ ] and there is Howards Introduction to Eshell ([[file:/Users/jeff/Downloads/emacs-videos/Introduction%20to%20EShell.mp4][local copy]])
        - and the [[http://www.howardism.org/Technical/Emacs/eshell-present.html][notes to the talk]]
 
+*** DONE explore smex
+    - State "DONE"       from "TODO"       [2019-09-09 Mon 07:55]
+
+    - [X] read the smex docs
+      - [[http://github.com/nonsequitur/smex/blob/master/README.markdown][github README]]
+      > Smex is a M-x enhancement for Emacs. Built on top of Ido, it provides a convenient interface to your
+      recently and most frequently used commands. And to all the other commands, too.
+    - [ ] does abo-abo use smex in his configuration?
+      - A: [[file:/t/emacs-configs/abo-abo-dotemacs/init.el::(let%20((file-name-handler-alist%20nil))%20(require%20'eclipse-theme)%20(load-theme%20'eclipse%20t)%20(require%20'use-package)%20(require%20'smex))][he loads it]], but doesn't appear to configure it
+    - so I don't think smex is going to work for me with counsel
+    - there is helm-smex though, so I could have smex if I went back to helm it appears
+
+*** explore tramp
+
+    - my tramp notes
+
 *** General
 
     - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
