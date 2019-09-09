@@ -679,7 +679,9 @@
 
   Lets try out eyebrowse.
 
-  #+BEGIN_SRC emacs-lisp
+  However, its default binding =C-c C-w= conflicts with org-refile, so it has to go.
+
+  #+BEGIN_SRC emacs-lisp :tangle no
     (use-package eyebrowse)
     (eyebrowse-mode)
   #+END_SRC
