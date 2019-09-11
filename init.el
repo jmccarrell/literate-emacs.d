@@ -227,6 +227,22 @@
   (setq which-key-max-description-length nil)
   (which-key-mode 1))
 
+(use-package dired
+  :config
+  ;; dired - reuse current buffer by pressing 'a'
+  ;; (put 'dired-find-alternate-file 'disabled nil)
+
+  ;; always delete and copy recursively
+  ;; (setq dired-recursive-deletes 'always)
+  ;; (setq dired-recursive-copies 'always)
+
+  ;; if there is a dired buffer displayed in the next window, use its
+  ;; current subdir, instead of the current subdir of this dired buffer
+  (setq dired-dwim-target t)
+
+  ;; enable some really cool extensions like C-x C-j (dired-jump)
+  (require 'dired-x))
+
 ;; ag config derived from danielmai's config
 (use-package ag
   :commands ag)
@@ -265,7 +281,9 @@
   :config
   (ivy-mode 1)
   ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-  (setq ivy-use-virtual-buffers t))
+  (setq ivy-use-virtual-buffers t)
+  ;; show both the index and count of matching items
+  (setq ivy-count-format "%d/%d "))
 
 (use-package swiper
   :config

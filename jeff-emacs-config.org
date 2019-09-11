@@ -5,7 +5,7 @@
 #+PROPERTY: header-args:emacs-lisp  :tangle "init.el"
 
 * Working Notes
-** To Be Done
+** Pending Work To Do
 *** Goals to Achieve
 
     - [ ] enable tramp mode
@@ -15,7 +15,6 @@
     - [ ] to support jq literate programming to solve some of the salt challenges I have at work
     - [ ] can install from a new, clean .emacs.d
 
-** Pending Work To Do
 *** Next Up
 
    - [ ] make a links section to these authors' config files
@@ -40,7 +39,8 @@
       - [ ] read the dired+ docs
       - A: IDK; I couldn't find a package =dired+=
 
-**** DOING investigate dired-x
+**** DONE investigate dired-x
+     - State "DONE"       from "DOING"      [2019-09-11 Wed 21:27]
      - State "DOING"      from              [2019-09-11 Wed 08:07]
     - [ ] read the manual [[info:dired-x#Top][Dired Extra]]
       - [ ] do any of the emacs folks I follow use dired-x?  A: yes they do.
@@ -95,10 +95,11 @@
 
     - I definitely want [[info:dired-x#Miscellaneous%20Commands][=dired-jump= and =dired-dump-other-window=]]
     - here is [[info:dired-x#Special%20Marking%20Function][how to write elisp to mark files]] in dired buffer
-    - I think I do not want the [[info:dired-x#Find%20File%20At%20Point][=dired-x-find-file= stuff
+    - I think I do not want the [[info:dired-x#Find%20File%20At%20Point][=dired-x-find-file=]] stuff
 
-**** DOING read about how abo-abo uses dired
+**** DONE read about how abo-abo uses dired
 
+     - State "DONE"       from "DOING"      [2019-09-11 Wed 21:27]
      - State "DOING"      from              [2019-09-11 Wed 08:07]
      - [X] read [[https://oremacs.com/2017/11/18/dired-occur/][abo-abo dired article]]
      - [X] a [[https://oremacs.com/2015/01/10/dired-ansi-term/][2015 article about how he uses ansi-term and dired]]
@@ -107,7 +108,9 @@
      - [X] more discussion of [[https://oremacs.com/2015/01/13/dired-options/][his dired switches]]
 
 **** other dired investigations
-    - [ ] read [[http://irreal.org/blog/?p=6760][jcs dired article]]
+
+    - [X] read [[http://irreal.org/blog/?p=6760][jcs dired article]]
+      - but apparently I need ivy-occur to make this all work?
     - [ ] read about dired-narrow
       - [ ] the full docs are in [[https://github.com/Fuco1/dired-hacks][dired-hacks]]
     - [ ] learn to make new directories?
@@ -120,17 +123,12 @@
        - ie mark all .jpeg files
        - then mark all files in the directory that are not .jpeg files
 
-**** interesting dired bindings
+*** DOING explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
 
-| keys  | command | notes |
-|-------+---------+-------|
-| C-x d | dired   | -     |
-|       |         |       |
+    - State "DOING"      from              [2019-09-11 Wed 22:49]
+    In particular, I would like to be able to find file at point in a given window using =ace-window=
 
-*** explore using PCRE regexp patterns across emacs
-
-    this seems like a win to me; only one regex syntax to remember.
-    - package: pcre2el
+    There is find-file-in-project, which is closely related to ivy.
 
 *** edit filenames inline
 
@@ -397,15 +395,15 @@
    #+BEGIN_SRC emacs-lisp
      (defun jwm/mac-p ()
        (and (eq 'ns (window-system))
-	    (eq 'darwin system-type)))
+            (eq 'darwin system-type)))
 
      (defun jwm/personal-mac-p ()
        (and (jwm/mac-p)
-	    (file-exists-p (concat (getenv "HOME") "/jdocs"))))
+            (file-exists-p (concat (getenv "HOME") "/jdocs"))))
 
      (defun jwm/sift-mac-p ()
        (and (jwm/mac-p)
-	    (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
+            (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
    #+END_SRC
 
 ** Modernizing Emacs
@@ -891,6 +889,35 @@
        (which-key-mode 1))
    #+END_SRC
 
+* Dired
+
+  Start simple.  The main keystrokes I want to train my fingers to execute are:
+
+  | keys      | command                 | what it does                                          |
+  |-----------+-------------------------+-------------------------------------------------------|
+  | C-x C-j   | dired-jump              | Jump to Dired buffer corresponding to current buffer. |
+  | C-x 4 C-j | dired-jump-other-window |                                                       |
+
+  This config is copied from bbatsov
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package dired
+      :config
+      ;; dired - reuse current buffer by pressing 'a'
+      ;; (put 'dired-find-alternate-file 'disabled nil)
+
+      ;; always delete and copy recursively
+      ;; (setq dired-recursive-deletes 'always)
+      ;; (setq dired-recursive-copies 'always)
+
+      ;; if there is a dired buffer displayed in the next window, use its
+      ;; current subdir, instead of the current subdir of this dired buffer
+      (setq dired-dwim-target t)
+
+      ;; enable some really cool extensions like C-x C-j (dired-jump)
+      (require 'dired-x))
+  #+END_SRC
+
 * Search
 ** ag
 
@@ -1020,7 +1047,9 @@
        :config
        (ivy-mode 1)
        ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-       (setq ivy-use-virtual-buffers t))
+       (setq ivy-use-virtual-buffers t)
+       ;; show both the index and count of matching items
+       (setq ivy-count-format "%d/%d "))
 
      (use-package swiper
        :config
