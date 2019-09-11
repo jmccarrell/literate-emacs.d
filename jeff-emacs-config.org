@@ -24,10 +24,120 @@
    - [ ] setup occur and how it works with swiper
    - [X] NO PREFER EYEBROWSE explore winner mode to manipulate a stack of window configurations
    - explore undo-tree
-   - explore the limits of dired mode
-     - Zamasky video
-     - learn to make new directories
-     - move files around within those directories
+   - [-] explore the limits of dired mode
+
+*** DOING explore dired mode
+    - State "DOING"      from "TODO"       [2019-09-09 Mon 08:11]
+
+    - [X] read the *Help* for dired
+    - [X] Zamansky videos
+      - [X] Using emacs 38 - dired
+        - [[/Users/jeff/Downloads/emacs-videos/Using%20Emacs%2038%20-%20Dired.mp4][local copy]]
+        - and the [[https://cestlaz.github.io/posts/using-emacs-38-dired/][blog entry]] which has interesting links by abo-abo and jcs
+      - [X] Using emacs 57 - dired narrow
+        - [[/Users/jeff/Downloads/emacs-videos/Using%20Emacs%20Episode%2057%20-%20dired-narrow.mp4][local copy]]
+    - [ ] what does dired+ add to the picture?
+      - [ ] read the dired+ docs
+      - A: IDK; I couldn't find a package =dired+=
+
+**** DOING investigate dired-x
+     - State "DOING"      from              [2019-09-11 Wed 08:07]
+    - [ ] read the manual [[info:dired-x#Top][Dired Extra]]
+      - [ ] do any of the emacs folks I follow use dired-x?  A: yes they do.
+
+      #+BEGIN_SRC shell :results output
+      find /t/emacs-configs -type f -name \*.el -maxdepth 4 | xargs fgrep -l dired-x
+      #+END_SRC
+
+      #+RESULTS:
+      : /t/emacs-configs/bbatsov-dotemacs/init.el
+      : /t/emacs-configs/jwiegley-dotemacs/init.el
+      : /t/emacs-configs/prelude/core/prelude-editor.el
+      : /t/emacs-configs/prelude/elpa/async-20170610.2241/dired-async.el
+      : /t/emacs-configs/prelude/elpa/magit-20170709.1106/magit.el
+      : /t/emacs-configs/prelude/elpa/magit-20170709.1106/magit-diff.el
+      : /t/emacs-configs/prelude/elpa/helm-20170709.1054/helm-files.el
+      : /t/emacs-configs/abo-abo-dotemacs/modes/ora-dired.el
+      : /t/emacs-configs/abo-abo-dotemacs/init.el
+
+      - bbatsov has a nice config
+
+        #+BEGIN_SRC emacs-lisp :tangle no
+          (use-package dired
+            :config
+            ;; dired - reuse current buffer by pressing 'a'
+            (put 'dired-find-alternate-file 'disabled nil)
+
+            ;; always delete and copy recursively
+            (setq dired-recursive-deletes 'always)
+            (setq dired-recursive-copies 'always)
+
+            ;; if there is a dired buffer displayed in the next window, use its
+            ;; current subdir, instead of the current subdir of this dired buffer
+            (setq dired-dwim-target t)
+
+            ;; enable some really cool extensions like C-x C-j(dired-jump)
+            (require 'dired-x))
+        #+END_SRC
+      - abo-abo has an involved config
+      - and a simple one
+        #+BEGIN_SRC emacs-lisp :tangle no
+          (use-package dired
+            :commands dired
+            :init
+            (setq dired-listing-switches
+                  (if (memq system-type '(windows-nt darwin))
+                      "-alh"
+                      "-laGh1v --group-directories-first")))
+          (use-package dired-x
+            :commands dired-jump)
+        #+END_SRC
+
+    - I definitely want [[info:dired-x#Miscellaneous%20Commands][=dired-jump= and =dired-dump-other-window=]]
+    - here is [[info:dired-x#Special%20Marking%20Function][how to write elisp to mark files]] in dired buffer
+    - I think I do not want the [[info:dired-x#Find%20File%20At%20Point][=dired-x-find-file= stuff
+
+**** DOING read about how abo-abo uses dired
+
+     - State "DOING"      from              [2019-09-11 Wed 08:07]
+     - [X] read [[https://oremacs.com/2017/11/18/dired-occur/][abo-abo dired article]]
+     - [X] a [[https://oremacs.com/2015/01/10/dired-ansi-term/][2015 article about how he uses ansi-term and dired]]
+       - some good stuff about =C-x C-j= and invoking a shell at point, including using tramp to ssh to remote files
+     - [X] [[https://oremacs.com/2015/01/12/dired-file-size/][file sizes in dired]]
+     - [X] more discussion of [[https://oremacs.com/2015/01/13/dired-options/][his dired switches]]
+
+**** other dired investigations
+    - [ ] read [[http://irreal.org/blog/?p=6760][jcs dired article]]
+    - [ ] read about dired-narrow
+      - [ ] the full docs are in [[https://github.com/Fuco1/dired-hacks][dired-hacks]]
+    - [ ] learn to make new directories?
+    - [ ] move files around within those directories
+
+**** notes
+
+     - One can mark based on regex
+     - and invert the selection
+       - ie mark all .jpeg files
+       - then mark all files in the directory that are not .jpeg files
+
+**** interesting dired bindings
+
+| keys  | command | notes |
+|-------+---------+-------|
+| C-x d | dired   | -     |
+|       |         |       |
+
+*** explore using PCRE regexp patterns across emacs
+
+    this seems like a win to me; only one regex syntax to remember.
+    - package: pcre2el
+
+*** edit filenames inline
+
+    - edit dired inline
+    - use =C-x C-q= to edit a filename inline
+    - it looks like this is a function provided by dired+, not in stock dired.
+    - and with =mc= mark all, one can edit multiple filenames at once.
 
 *** DOING switch to counsel, counsel-projectile [25%]
     - State "DOING"      from              [2019-09-02 Mon 21:50]
@@ -37,7 +147,6 @@
     - [ ] set up counsel-rg to use ripgrep
       - on vega
       - on sift mac
-    - [ ] explore tramp mode
 
 **** DOING investigate ivy-push-view
      - State "DOING"      from              [2019-09-02 Mon 20:52]
@@ -59,6 +168,10 @@
      - [ ] and there is Howards Introduction to Eshell ([[file:/Users/jeff/Downloads/emacs-videos/Introduction%20to%20EShell.mp4][local copy]])
        - and the [[http://www.howardism.org/Technical/Emacs/eshell-present.html][notes to the talk]]
 
+**** evaluate better shell
+
+     - [[https://github.com/zamansky/using-emacs/blob/master/myinit.org#better-shell][Zamansky uses it?]]
+
 *** DONE explore smex
     - State "DONE"       from "TODO"       [2019-09-09 Mon 07:55]
 
@@ -66,7 +179,7 @@
       - [[http://github.com/nonsequitur/smex/blob/master/README.markdown][github README]]
       > Smex is a M-x enhancement for Emacs. Built on top of Ido, it provides a convenient interface to your
       recently and most frequently used commands. And to all the other commands, too.
-    - [ ] does abo-abo use smex in his configuration?
+    - [X] does abo-abo use smex in his configuration?
       - A: [[file:/t/emacs-configs/abo-abo-dotemacs/init.el::(let%20((file-name-handler-alist%20nil))%20(require%20'eclipse-theme)%20(load-theme%20'eclipse%20t)%20(require%20'use-package)%20(require%20'smex))][he loads it]], but doesn't appear to configure it
     - so I don't think smex is going to work for me with counsel
     - there is helm-smex though, so I could have smex if I went back to helm it appears
@@ -181,7 +294,7 @@
    setup in the literate style. I have previously and continue to follow the lead of many fine emacs
    devotees, among them:
 
-   - [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][Howard Abrams]]
+   - [[https://github.com/howardabrams/dot-files/blob/master/emacs.org][Howard Abrams]]
    - [[https://github.com/sachac/.emacs.d][Sacha Chua]]
    - [[https://github.com/danielmai/.emacs.d][Daniel Mai]]
    - [[https://www.wisdomandwonder.com/tag/emacs][Grant aka Wisdom and Wonder]]
@@ -199,6 +312,7 @@
    - [[https://www.youtube.com/playlist?list=PLVtKhBrRV_ZkPnBtt_TD1Cs9PJlU0IIdE][Ranier König]]
    - [[https://www.youtube.com/channel/UClT2UAbC6j7TqOWurVhkuHQ][Sacha Chua]]
    - [[https://www.youtube.com/playlist?list=PL9KxKa8NpFxIcNQa9js7dQQIHc81b0-Xg][Mike Zamansky]]
+     - [[https://cestlaz.github.io/stories/emacs/][blog series]]
    - [[https://www.youtube.com/user/howardabrams/videos][Howard Abrams]]
    - [[https://www.youtube.com/playlist?list=PL0sMmOaE_gs3GbuZV_sNjwMREw9rfElTV][John Kitchen]]
    - [[https://www.youtube.com/channel/UCCRdRbI93UGW0AZttVH3SbA/feed][Daniel Gopar]]
