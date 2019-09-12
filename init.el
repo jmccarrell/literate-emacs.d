@@ -228,6 +228,7 @@
   (which-key-mode 1))
 
 (use-package dired
+  :ensure nil
   :config
   ;; dired - reuse current buffer by pressing 'a'
   ;; (put 'dired-find-alternate-file 'disabled nil)

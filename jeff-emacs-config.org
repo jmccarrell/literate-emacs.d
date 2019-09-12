@@ -900,8 +900,17 @@
 
   This config is copied from bbatsov
 
+  But apparently =dired= is a non-package package -- whatever that means.  So to correct this startup error:
+
+  #+BEGIN_QUOTE
+  Error (use-package): Failed to install dired: Package ‘dired-’ is unavailable
+  #+END_QUOTE
+
+  I have added =:ensure nil=, following [[https://emacs.stackexchange.com/questions/26810/why-doesnt-use-package-dired-work-for-me][this advice]]
+
   #+BEGIN_SRC emacs-lisp
     (use-package dired
+      :ensure nil
       :config
       ;; dired - reuse current buffer by pressing 'a'
       ;; (put 'dired-find-alternate-file 'disabled nil)
