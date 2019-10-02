@@ -378,6 +378,8 @@
            (string= lang "sqlite"))))
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
+(setq org-babel-python-command "python3")
+
 (use-package crux
   :bind
   (

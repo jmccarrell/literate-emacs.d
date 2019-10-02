@@ -107,8 +107,9 @@
      - [X] [[https://oremacs.com/2015/01/12/dired-file-size/][file sizes in dired]]
      - [X] more discussion of [[https://oremacs.com/2015/01/13/dired-options/][his dired switches]]
 
-**** other dired investigations
+**** DOING other dired investigations
 
+     - State "DOING"      from              [2019-09-30 Mon 11:56]
     - [X] read [[http://irreal.org/blog/?p=6760][jcs dired article]]
       - but apparently I need ivy-occur to make this all work?
     - [ ] read about dired-narrow
@@ -124,8 +125,8 @@
        - then mark all files in the directory that are not .jpeg files
 
 *** DOING explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
-
     - State "DOING"      from              [2019-09-11 Wed 22:49]
+
     In particular, I would like to be able to find file at point in a given window using =ace-window=
 
     There is find-file-in-project, which is closely related to ivy.
@@ -1194,6 +1195,15 @@
                 (string= lang "sqlite"))))
      (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
    #+END_SRC
+
+*** prefer python3
+
+    Circa fall 2019 as python2 heads towards its final deprecation date, I want to prefer =python3= over
+    =python2= in all cases.  So start with ob.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq org-babel-python-command "python3")
+    #+END_SRC
 
 * Programming Support
 ** C Style
