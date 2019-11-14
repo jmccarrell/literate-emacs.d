@@ -303,7 +303,7 @@
 
 ;; I prefer dropbox; too bad my work does not.
 (setq org-directory
-      (cond ((jwm/sift-mac-p) "/s/notes/org")
+      (cond ((jwm/sift-mac-p) "~/sift/notes/org")
             (t "~/Dropbox/org")))
 
 ;; The default place to put notes for capture mode
