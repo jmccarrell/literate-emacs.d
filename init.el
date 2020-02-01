@@ -303,8 +303,8 @@
 
 ;; I prefer dropbox; too bad my work does not.
 (setq org-directory
-      (cond ((jwm/sift-mac-p) "~/sift/notes/org")
-            (t "~/Dropbox/org")))
+      (cond ((jwm/sift-mac-p) "~/sift/todo")
+            (t "~/jwm/todo")))
 
 ;; The default place to put notes for capture mode
 (setq org-default-notes-file
@@ -317,14 +317,14 @@
 (setq org-agenda-files
       (delq nil
             (mapcar (lambda (x) (and (file-exists-p x) x))
-                    `("~/Dropbox/org/notes.org",
+                    `("~/jwm/todo/notes.org",
                       org-default-notes-file))))
 
 ;; capture template.
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
          "* TODO %?\n %t\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "~/Dropbox/org/journal.org")
+        ("j" "Journal" entry (file+datetree "~/jwm/todo/journal.org")
          "* %?\nEntered on %U\n  %i\n  %a")))
 
 ;; Jeff task states
