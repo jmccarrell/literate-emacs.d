@@ -95,7 +95,8 @@
 (setq-default tab-always-indent 'complete)
 
 ;; Hollerith cards have had their day. Norming to 80 characters seems like a poor use of screen real estate
-;; to me. I can't form a particular argument for 108, other than: it larger than 72 and seems to fit better.
+;; to me. I can't form a particular argument for 108, other than: it is larger than 72 and seems to fit
+;; better.
 (setq-default fill-column 108)
 (auto-fill-mode)
 (global-visual-line-mode)
