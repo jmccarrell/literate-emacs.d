@@ -609,6 +609,24 @@
        (which-key-mode 1))
    #+END_SRC
 
+* Hooks
+** Whitespace Cleanup Hook
+
+   I want to run ~whitespace-cleanup~ on ~save-buffer~ scoped to specific scopes I manage.  In general, I
+   don't want to run in it shared -- especially code -- spaces where rewriting some existing convention might
+   cause unintended changes.
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar jwm/run-whitespace-cleanup-on-save-p nil
+       "run whitespace-cleanup on buffer-save. set to t where desired in file or directory local scopes.")
+
+     (defun jwm/save-buffer-whitespace-cleanup-hook ()
+       "run whitespace-cleanup when enabled by jwm/run-whitespace-cleanup-on-save-p."
+       (whitespace-cleanup))
+
+     (add-hook 'before-save-hook 'jwm/save-buffer-whitespace-cleanup-hook)
+   #+END_SRC
+
 * Dired
 
   Start simple.  The main keystrokes I want to train my fingers to execute are:

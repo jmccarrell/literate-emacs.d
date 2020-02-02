@@ -12,13 +12,6 @@
      - what does this mean?  I am not really sure.
 
 ** Next Up
-*** NEXT write an emacs <something> hook that runs whitespace-cleanup
-    - State "NEXT"       from "TODO"       [2020-02-01 Sat 18:16]
-    <2019-10-28 Mon>
-
-    - define a directory local variable?
-      - then the file save hook runs based on that?
-
 *** DOING add a key-binding C-c ~ to insert ~~ pairs           :emacs:@train:
     - State "DOING"      from "TODO"       [2019-05-06 Mon 08:39]
    <2018-09-13 Thu>

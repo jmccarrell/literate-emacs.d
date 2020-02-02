@@ -461,3 +461,52 @@ She names the output file in a file-scoped property, then runs =C-c C-v t= to ge
 
 For now, I am going to stick with counsel and swiper.
 
+
+* DONE write an emacs <something> hook that runs whitespace-cleanup
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2020-02-02 Sun 10:38
+  :ARCHIVE_FILE: ~/jwm/proj/literate-emacs.d/convert-emacs-init-to-literate.org
+  :ARCHIVE_OLPATH: Working Notes/Next Up
+  :ARCHIVE_CATEGORY: convert-emacs-init-to-literate
+  :ARCHIVE_TODO: DONE
+  :END:
+  - State "DONE"       from "NEXT"       [2020-02-02 Sun 10:38]
+  - State "NEXT"       from "TODO"       [2020-02-01 Sat 18:16]
+  <2019-10-28 Mon>
+
+** dir-locals.el approach
+  define a directory local variable?
+    - then the file save hook runs based on that?
+
+  I have an example ~/Users/jeff/jwm/proj/zsh-hacking/.dir-locals.el~
+
+  Here is an [[https://github.com/emacs-mirror/emacs/blob/master/lisp/emacs-lisp/copyright.el][example from copyright.el of a before-save-hook]]
+
+  How do I create a dir-locals.el file?  A: M-x add-dir-locals
+
+  #+BEGIN_SRC lisp
+    (add-hook 'before-save-hook (lambda () (whitespace-cleanup)))
+  #+END_SRC
+
+  when I think the hook was working, I had this for the value of before-save-hook
+
+  #+BEGIN_SRC elisp
+    ((lambda nil
+       (whitespace-cleanup)))
+  #+END_SRC
+
+  well this, didn't work so well for me.  Mostly because I could not rationalize how to evaluate the
+  variable at the correct time.  Should I use `add-hook`?  Wouldn't that cause multiple copies of the hook
+  to be added?
+
+  so bind it to org-mode at init time?  No.
+
+  make a function (hook) that runs whitespace-cleanup based on some jwm- variable on hooked to `before-save-buffer`.
+  then set that variable in a dir-locals.el to apply to the scopes that I want that behavior in:
+  - ~/jwm
+  - ~/sift
+
+** jwm-clean-whitespace-on-save-buffer
+   [[file:jeff-emacs-config.org::*Whitespace%20Cleanup%20Hook][Working code]]
+
+   then run `add-dir-local` at a directory scope to set jwm/run-whitespace-cleanup-on-save-p where desired.
