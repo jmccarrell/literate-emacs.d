@@ -321,22 +321,14 @@
               (cond ((jwm/sift-mac-p) "/sift.org")
                     (t "/todo.org"))))
 
-;; my agenda files
-;;  code shamelessly stolen from Sacha Chua's config
-(setq org-agenda-files
-      (delq nil
-            (mapcar (lambda (x) (and (file-exists-p x) x))
-                    `("~/pdata/investing/investing-plan-2020.org",
-                      "~/pdata/home-purchae-2020/home-purchase-notes.org",
-                      "~/jwm/proj/literate-emacs.d/convert-emacs-init-to-literate.org",
-                      org-default-notes-file))))
+(setq org-agenda-files (jwm/emacs-subdirectory "org-agenda-files-list"))
 
 ;; capture template.
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
-         "* TODO %?\n %t\n  %i\n  %a")
+         "* TODO %?\n %t\n  %i\n  %a\n")
         ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
-         "* %?\nEntered on %U\n  %i\n  %a")))
+         "* %?\nEntered on %U\n  %i\n  %a\n")))
 
 ;; Jeff task states
 (setq org-todo-keywords

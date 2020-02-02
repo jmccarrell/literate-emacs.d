@@ -844,17 +844,37 @@
             (concat org-directory
                     (cond ((jwm/sift-mac-p) "/sift.org")
                           (t "/todo.org"))))
-
-      ;; my agenda files
-      ;;  code shamelessly stolen from Sacha Chua's config
-      (setq org-agenda-files
-            (delq nil
-                  (mapcar (lambda (x) (and (file-exists-p x) x))
-                          `("~/pdata/investing/investing-plan-2020.org",
-                            "~/pdata/home-purchae-2020/home-purchase-notes.org",
-                            "~/jwm/proj/literate-emacs.d/convert-emacs-init-to-literate.org",
-                            org-default-notes-file))))
     #+END_SRC
+
+**** Agenda Files
+
+     Recall that if `org-agenda-files` is a single file name, then that symbol names a file which is read
+     for the list of agenda files to manage.
+
+     Further, the functions `org-agenda-file-to-front` and `org-remove-file` can be used to manage that list.
+
+     This is the mechanism I want to utilize here.
+
+     #+BEGIN_SRC emacs-lisp
+       (setq org-agenda-files (jwm/emacs-subdirectory "org-agenda-files-list"))
+     #+END_SRC
+
+**** Former Agenda Files
+
+     I used to name individual files to put in the agenda, however, no longer.  This section could be
+     deleted.
+
+     #+BEGIN_SRC emacs-lisp :tangle no
+       ;; my agenda files
+       ;;  code shamelessly stolen from Sacha Chua's config
+       (setq org-agenda-files
+             (delq nil
+                   (mapcar (lambda (x) (and (file-exists-p x) x))
+                           `("~/pdata/investing/investing-plan-2020.org",
+                             "~/pdata/home-purchae-2020/home-purchase-notes.org",
+                             "~/jwm/proj/literate-emacs.d/convert-emacs-init-to-literate.org",
+                             org-default-notes-file))))
+     #+END_SRC
 
 *** Templates, Tasks, Refiling
 
