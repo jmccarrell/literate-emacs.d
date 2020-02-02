@@ -301,7 +301,6 @@
  ("C-c a" . org-agenda)
  ("C-c b" . org-iswitchb))
 
-;; I prefer dropbox; too bad my work does not.
 (setq org-directory
       (cond ((jwm/sift-mac-p) "~/sift/todo")
             (t "~/jwm/todo")))
@@ -317,14 +316,16 @@
 (setq org-agenda-files
       (delq nil
             (mapcar (lambda (x) (and (file-exists-p x) x))
-                    `("~/jwm/todo/notes.org",
+                    `("~/pdata/investing/investing-plan-2020.org",
+                      "~/pdata/home-purchae-2020/home-purchase-notes.org",
+                      "~/jwm/proj/literate-emacs.d/convert-emacs-init-to-literate.org",
                       org-default-notes-file))))
 
 ;; capture template.
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
          "* TODO %?\n %t\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "~/jwm/todo/journal.org")
+        ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
          "* %?\nEntered on %U\n  %i\n  %a")))
 
 ;; Jeff task states
