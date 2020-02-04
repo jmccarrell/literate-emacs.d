@@ -196,7 +196,8 @@
   (setq mac-option-modifier 'super)
   (setq mac-right-option-modifier 'none)
 
-  ;; mirror the mac user gesture for switching frames
+  ;; mirror the mac user gesture for switching emacs frames
+  ;;  this supports my habit of using two emacs frames side by side.
   (bind-key "M-`" 'other-frame)
 
   ;; prevent my thumb from triggering this menu on the trackpad when in open laptop mode

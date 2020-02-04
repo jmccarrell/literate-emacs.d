@@ -161,7 +161,7 @@
        (server-start))
    #+END_SRC
 
-   Maybe someday add support to edit text in emacs from Chrome.  As adapted from jwiegley.  However, we I
+   Maybe someday add support to edit text in emacs from Chrome.  As adapted from jwiegley.  However, when I
    try this my emacs doesn't seem to read the entire =init.el=.  So defer this for now.
 
    #+BEGIN_SRC emacs-lisp :tangle no
@@ -303,7 +303,7 @@
 
    In general, I prefer to see the entire line of text in the window even when it is wider than the frame.
    Thus I prefer [[info:emacs#Visual%20Line%20Mode][Visual Line Mode]].  And, in general, I want emacs to wrap my text for me.  I chose 108 as a
-   relatively arbitrary line width value that works well for me.  Hollerith cards are dead!  Long live
+   relatively arbitrary line width value that works well for me.  [[https://en.wikipedia.org/wiki/Punched_card#Hollerith's_early_punched_card_formats][Hollerith cards]] are dead!  Long live
    Hollerith cards.
 
    #+BEGIN_SRC emacs-lisp
@@ -419,7 +419,7 @@
    which I used to be quite proud of, and then solarized. Now I have come to prefer zenburn. It works well in
    the terminal as well.
 
-   Here is how Sacha overrides and [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(defun%20my/setup-color-theme%20()%20(interactive)%20(when%20(display-graphic-p)%20(color-theme-solarized))%20(set-background-color%20"black")%20(set-face-foreground%20'secondary-selection%20"darkblue")%20(set-face-background%20'secondary-selection%20"lightblue")%20(set-face-background%20'font-lock-doc-face%20"black")%20(set-face-foreground%20'font-lock-doc-face%20"wheat")%20(set-face-background%20'font-lock-string-face%20"black"))%20(use-package%20color-theme-solarized%20:config%20(my/setup-color-theme))][customizes her use of solarized]].
+   For reference, here is how Sacha overrides and [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(defun%20my/setup-color-theme%20()%20(interactive)%20(when%20(display-graphic-p)%20(color-theme-solarized))%20(set-background-color%20"black")%20(set-face-foreground%20'secondary-selection%20"darkblue")%20(set-face-background%20'secondary-selection%20"lightblue")%20(set-face-background%20'font-lock-doc-face%20"black")%20(set-face-foreground%20'font-lock-doc-face%20"wheat")%20(set-face-background%20'font-lock-string-face%20"black"))%20(use-package%20color-theme-solarized%20:config%20(my/setup-color-theme))][customizes her use of solarized]].
 
    #+BEGIN_SRC emacs-lisp
     (use-package zenburn-theme
@@ -525,9 +525,8 @@
       (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
   #+END_SRC
 
-  Lets try out eyebrowse.
-
-  However, its default binding =C-c C-w= conflicts with org-refile, so it has to go.
+  I did experiment with eyebrowse.  However, its default binding =C-c C-w= conflicts with =org-refile=, so
+  it has to go.
 
   #+BEGIN_SRC emacs-lisp :tangle no
     (use-package eyebrowse)
@@ -549,7 +548,7 @@
 
    I leave right-option for the OS X combiner keys, like √ from right-option v.
 
-   And I prefer to switch between emacs frames using the standard mac gesture Command-`
+   And I prefer to switch between emacs frames using the standard mac gesture =Command-`=
 
    #+BEGIN_SRC emacs-lisp
      (when (jwm/mac-p)
@@ -557,7 +556,8 @@
        (setq mac-option-modifier 'super)
        (setq mac-right-option-modifier 'none)
 
-       ;; mirror the mac user gesture for switching frames
+       ;; mirror the mac user gesture for switching emacs frames
+       ;;  this supports my habit of using two emacs frames side by side.
        (bind-key "M-`" 'other-frame)
 
        ;; prevent my thumb from triggering this menu on the trackpad when in open laptop mode
@@ -613,8 +613,8 @@
 ** Whitespace Cleanup Hook
 
    I want to run ~whitespace-cleanup~ on ~save-buffer~ scoped to specific scopes I manage.  In general, I
-   don't want to run in it shared -- especially code -- spaces where rewriting some existing convention might
-   cause unintended changes.
+   don't want to run it in shared spaces -- especially code spaces -- where rewriting some existing
+   whitespace convention might cause unintended changes.
 
    #+BEGIN_SRC emacs-lisp
      (defvar jwm/run-whitespace-cleanup-on-save-p nil
@@ -848,10 +848,10 @@
 
 **** Agenda Files
 
-     Recall that if `org-agenda-files` is a single file name, then that symbol names a file which is read
+     Recall that if =org-agenda-files= is a single file name, then that symbol names a file which is read
      for the list of agenda files to manage.
 
-     Further, the functions `org-agenda-file-to-front` and `org-remove-file` can be used to manage that list.
+     Further, the functions =org-agenda-file-to-front= and =org-remove-file= can be used to manage that list.
 
      This is the mechanism I want to utilize here.
 
@@ -969,7 +969,7 @@
    According to cc-styles.el, the function =c-add-style= is the preferred way to define C style.
 
    #+BEGIN_QUOTE
-   Use the function `c-add-style' to add new styles or modify existing styles (it is not a good idea to
+   Use the function =c-add-style= to add new styles or modify existing styles (it is not a good idea to
    modify existing styles -- you should create a new style that inherits the existing style).
    #+END_QUOTE
 
