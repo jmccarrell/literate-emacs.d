@@ -31,6 +31,80 @@
    So Left-option is already bound to "s-".   So I am good to go there.
    It looks like Howard has set up an org-mode-map.  I should do that as well.
 
+**** DOING bind-key vs define-key
+     - State "DOING"      from "DONE"       [2020-02-03 Mon 13:38]
+     - State "DONE"       from "NEXT"       [2020-02-03 Mon 13:24]
+     - State "NEXT"       from              [2020-02-03 Mon 13:18]
+
+     Howard uses ~bind-key~ in his definitions
+     however, the emacs manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Key-Bindings.html#Changing-Key-Bindings][changing key bindings]] does not mention bind-key, instead uses define-key.  Why?
+
+     well, it looks like `bind-key` is a use-package level macro with different evaluation implications.
+
+     Here is the full snippet that Howard uses to [[file:~/thirdparty/emacs-configs/howardabrams-dot-files/emacs-org.org::*Local%20Key%20Bindings][define some of his org mode keys]]:
+
+       #+BEGIN_SRC elisp
+         (use-package org
+           :config
+            (bind-keys :map org-mode-map
+            ("A-b" . (surround-text-with "+"))
+            ("s-b" . (surround-text-with "*"))
+            ("A-i" . (surround-text-with "/"))
+            ("s-i" . (surround-text-with "/"))
+            ("A-=" . (surround-text-with "="))
+            ("s-=" . (surround-text-with "="))
+            ("A-`" . (surround-text-with "~"))
+            ("s-`" . (surround-text-with "~"))
+
+            ("C-s-f" . forward-sentence)
+            ("C-s-b" . backward-sentence)))
+       #+END_SRC
+
+       however, Howard [[file:~/thirdparty/emacs-configs/howardabrams-dot-files/emacs-org.org::*Initial%20Settings][used define-key at the top of his org file as well]]:
+
+         #+BEGIN_SRC emacs-lisp
+                 (define-key org-mode-map (kbd "M-C-n") 'org-end-of-item-list)
+                 (define-key org-mode-map (kbd "M-C-p") 'org-beginning-of-item-list)
+                 (define-key org-mode-map (kbd "M-C-u") 'outline-up-heading)
+                 (define-key org-mode-map (kbd "M-C-w") 'org-table-copy-region)
+                 (define-key org-mode-map (kbd "M-C-y") 'org-table-paste-rectangle)
+
+                 (define-key org-mode-map [remap org-return] (lambda () (interactive)
+                                                               (if (org-in-src-block-p)
+                                                                   (org-return)
+                                                                 (org-return-indent)))))
+         #+END_SRC
+
+       so there seems to be some clear evaluation time discrimination going on here.
+
+       hypothesis:
+       - ~surround-text-with~ is not defined until initialization time
+       - bind-keys defers the actual call (it is a special form) until it is evaluated at init time
+         - reducing the ordering problem on which set of Howard's many init files get evaluated first
+       - bind-keys calls define-key under the covers
+
+***** does bind-key call define-key?
+
+      - [ ] read the comments / usage guide for [[https://github.com/jwiegley/use-package/blob/master/bind-key.el#L28-L33][~bind-keys~]]
+
+**** DONE what is the difference in org mode between equals, tilde and back quote?
+
+     - State "DONE"       from              [2020-02-03 Mon 13:30]
+According to the [[https://orgmode.org/guide/Markup.html][org mode markup guide]], specifically [[https://orgmode.org/guide/Emphasis-and-Monospace.html#Emphasis-and-Monospace][emphasis and monospace]],
+
+#+BEGIN_QUOTE
+You can make words ‘*bold*’, ‘/italic/’, ‘_underlined_’, ‘=verbatim=’ and ‘~code~’, and, if you must, ‘+strike-through+’. Text in the code and verbatim string is not processed for Org specific syntax; it is exported verbatim.
+#+END_QUOTE
+
+So the answer is that:
+- backquote does not have any special meaning
+- tilde is for code
+- equals is for verbatim
+
+**** NEXT does org-mode define the symbol org-mode-map?
+     - State "NEXT"       from              [2020-02-03 Mon 13:30]
+
+     It certainly appears to.
 **** NEXT create a org-mode-map keymap?
 
      and/or investigate if I can generate an Alt or Super keyboard prefix from my mac os x keyboard.

@@ -1,0 +1,504 @@
+* Dired
+** Key bindings
+
+   | key          | usage                             |
+   |--------------+-----------------------------------|
+   | C-0 w or 0 w | dired copy full path to clipboard |
+
+* Narrow
+** Narrow Common Key Bindings
+
+   | key     | usage                                     |
+   |---------+-------------------------------------------|
+   | C-x n n | narrow down to between point and mark     |
+   | C-x n w | widen to make entire buffer visible again |
+   | C-x n p | narrow to current page                    |
+   | C-x n d | narrow-to-defun                           |
+
+* Rectangles
+
+  | key                                          | usage                                                                                                     |
+  |----------------------------------------------+-----------------------------------------------------------------------------------------------------------|
+  | C-x r k                                      | kill the text of the region-rectangle, saving its contents as the last killed rectangle                   |
+  | C-x r M-w                                    | Save the text of the region-rectangle as the last killed rectangle                                        |
+  | C-x r d                                      | Delete the text of the region-rectangle                                                                   |
+  | C-x r y                                      | Yank the last killed rectangle with its upper left corner at point                                        |
+  | C-x r o                                      | Insert blank space to fill the space of the region-rectangle.  Pushes the previous contents to the right. |
+  | C-x r N                                      | Insert line numbers along the left edge of the region rectangle.  Pushes content right                    |
+  | C-x r c                                      | Clear region-rectangle by replacing its contents with spaces.                                             |
+  | M-x delete-whitespace-rectangle              | Delete whitespace in each of the lines of the rectangle, starting from the left edge column of the rect   |
+  | C-x r t _string_ RET                         | Replace rectangle contents with _string_ on each line                                                     |
+  | M-x string-insert-rectangle RET _string_ RET | Insert _string_ on each line of rectangle.                                                                |
+  | C-x SPC                                      | Toggle Rectangle Mark mode.                                                                               |
+
+** Rectangle Mark Mode
+
+   when active, the region-rectangle is highlighted and can be shrunk/grown.  the standard kill and yank commands operate on it.
+
+** Rectangle Registers
+
+   - fill this out from [Rectangle Registers](https://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangle-Registers.html#Rectangle-Registers)
+
+* Outline key bindings
+
+  - outline minor mode (not used in org mode) uses prefix `C-c @`
+
+** Outline Motion
+
+   | key     | used for                                                                  |
+   |---------+---------------------------------------------------------------------------|
+   | C-c C-n | move point to next visible heading line                                   |
+   | C-c C-p | ... previous ...                                                          |
+   | C-c C-f | move point to next visibile heading line at the same level                |
+   | C-c C-b | ... previous ...                                                          |
+   | C-c C-u | move point to a lower-level (bigger, more inclusive) visible heading line |
+
+** Outline Visibility
+
+   - the outline visibility commands are superceded in org mode by TAB cycling.
+
+   | key     | used for                                                         |
+   |---------+------------------------------------------------------------------|
+   | C-c C-c | make current heading line invisibile  (not in org mode; use TAB) |
+   | C-c C-e | ... visible (not in org mode; use TAB)                           |
+   | ...     | many others that are not terribly releveant in org mode          |
+
+* Org key bindings
+** References
+
+   - textual reference card [http://orgmode.org/orgcard.txt]
+   - pdf reference card [http://orgmode.org/orgcard.pdf]
+
+** End Notes
+
+   [1] Only a suggested keybinding for this command.  Choose your own under ACTIVATION.
+   [2] Keybinding is subject to org-support-shift-select and org-replace-disputed-keys
+
+** Visibility Cycling
+
+   | key             | good for                                      |
+   |-----------------+-----------------------------------------------|
+   | TAB             | rotate current subtree between states         |
+   | S-TAB           | rotate the entire buffer between states       |
+   | C-u C-u TAB     | restore property-dependent startup visibility |
+   | C-u C-u C-u TAB | show the whole file, including drawers        |
+   | C-c C-r         | reveal context around point                   |
+
+** Motion
+
+   | key       | good for                           |
+   |-----------+------------------------------------|
+   | C-c C-n/p | next/previous heading              |
+   | C-c C-f/b | next/previous heading, same level  |
+   | C-c C-u   | backward to a higher level heading |
+   | C-c C-j   | jump to another place in document  |
+   | S-UP/DOWN | previous/next plain list item [2]  |
+
+** Structure Editing
+
+   | key                | good for                                   |
+   |--------------------+--------------------------------------------|
+   | M-RET              | insert new heading/item at current level   |
+   | C-RET              | insert new heading after subtree           |
+   | M-S-RET            | insert TODO entry/checkbox after subtree   |
+   | C-c -              | turn (head)line into item, cycle item type |
+   | C-c *              | turn item/line into headline               |
+   | M-LEFT/RIGHT       | promote/demote heading                     |
+   | C-c C-</C->        | promote / demote sub tree                  |
+   | M-S-UP/DOWN        | move subtree/list item up/down             |
+   | C-c ^              | sort subtree/region/plain-list             |
+   | C-c C-x c          | clone a subtree                            |
+   | C-c C-x v          | copy visible text                          |
+   | C-c C-x C-w/M-w    | kill/copy subtree                          |
+   | C-c C-x C-y or C-y | yank subtree                               |
+   | C-x n s/w          | narrow buffer to subtree / widen           |
+
+** Capture / Refile / Archiving
+
+   | key         | good for                                      |
+   |-------------+-----------------------------------------------|
+   | C-c c       | capture a new item (C-u C-u == goto last) [1] |
+   | C-c C-w     | refile subtree (C-u C-u == goto last)         |
+   | C-c C-x C-a | archive subtree using the default command     |
+   | C-c C-x C-s | move subtree to archive file                  |
+   | C-c C-x a/A | toggle ARCHIVE tag / to ARCHIVE sibling       |
+   | C-TAB       | force cycling of an ARCHIVEd tree             |
+
+** Filtering and Sparse Trees
+
+   | key       | good for                                     |
+   |-----------+----------------------------------------------|
+   | C-c /     | construct a sparse tree by various criterial |
+   | C-c / t/T | view TODO's in a sparse tree                 |
+   | C-c a t   | global TODO list in agenda mode [1]          |
+   | C-c a L   | time sorted view of current org file         |
+
+** Tables
+
+*** Table Creation
+
+    just start typing, eg,   |key|good for| - TAB
+
+    | key       | good for                                                    |
+    | C-c \vert     | convert region to table                                     |
+    | C-3 C-c \vert | convert region to table with separator of at least 3 spaces |
+
+*** Commands Inside a Table
+
+    the following commands work when the cursor is inside a table.
+    Outside of tables, these bindings may have other functionality.
+
+*** Re-aligning and Field Motion
+
+    | key     | command | good for                                    |
+    |---------+---------+---------------------------------------------|
+    | C-c C-c |         | realign the table without moving the cursor |
+    | TAB     |         | realign the table, move to the next field   |
+    | S-TAB   |         | previous field                              |
+    | RET     |         | realign the table; move to next row         |
+    | M-a/e   |         | move to beginning/end of field              |
+
+*** Row and Column Editing
+
+    | key          | good for                                               |
+    |--------------+--------------------------------------------------------|
+    | M-LEFT/RIGHT | move the column left/right                             |
+    | M-S-LEFT     | kill the current column                                |
+    | M-S-RIGHT    | insert new column to the left of point                 |
+    |              |                                                        |
+    | M-UP/DOWN    | move the current row up/down                           |
+    | M-S-UP       | kill the current row or horizontal line                |
+    | M-S-DOWN     | insert new row above the current row                   |
+    | C-c -        | insert horizontal line below (C-u : above) current row |
+    | C-c RET      | insert horizontal line and move to the line below it   |
+    | C-c ^        | sort lines region                                      |
+
+*** Regions
+
+    | key                 | good for                             |
+    |---------------------+--------------------------------------|
+    | C-c C-x C-w/M-w/C-y | cut/copy/paste rectangular region    |
+    | C-c C-q             | fill paragraph across selected cells |
+
+*** Miscellaneous
+
+    | key                  | good for                                    |
+    |----------------------+---------------------------------------------|
+    | ...\vert <N> \vert...        | to limit column width to N characters wide  |
+    | C-c `                | edit the current field in a separate window |
+    | C-u TAB              | make the current field fully visible        |
+    | M-x org-table-export | export as tab-separated file                |
+    | M-x org-table-import | import tab-separated file                   |
+    | C-c +                | sum numbers in current column/rectangle     |
+
+*** Tables created with the table.el package
+
+    | key     | good for                             |
+    |---------+--------------------------------------|
+    | C-c ~   | insert a new table.el table          |
+    | C-c C-c | recognize existing table.el table    |
+    | C-c ~   | convert table (Org-mod <-> table.el) |
+
+*** Spreadsheet
+
+    - Formulas type in field are executed by TAB, RET and C-c C-c.
+    - = introduces a column formula.
+    - := a field formula
+
+    - jwm: this looks quite powerful, but I'll have to go through the tutorial to make sense of it.
+    - in particular, I don't quite understand how expressions are evaluated, and how to correct errors.
+
+    | key                    | good for                             |       a |  b |      sum |
+    |------------------------+--------------------------------------+---------+----+----------|
+    | #+TBLFM: =$3+$4        | Eg: add col3 and col4                |      42 | 33 |       75 |
+    | #+TBLFM: $5=$3+$4;%.2f | ... with printf format spec          | 3.14159 | 42 | 45.14159 |
+    |                        | ... with constants from constants.el |         |    |          |
+    | :=vsum(@II.@III)       | sum from second to third horiz line  |         |    |          |
+    | XXX                    | jwm: more work needed here           |         |    |          |
+    #+TBLFM: $5=$3+$4::@5$1=vsum(@II.@III)
+
+*** Formula Editor
+
+    - fill this out from formula editor section
+
+** Links
+
+   | key                 | usage                                           |
+   |---------------------+-------------------------------------------------|
+   | C-c l               | globally store link to the current location [1] |
+   | C-c C-l             | insert a link (TAB completes stored links)      |
+   | C-u C-c C-l         | insert a file link with file name completion    |
+   | C-c C-l             | edit (also hidden part of) link at point        |
+   |                     |                                                 |
+   | C-c C-o/mouse-1/2   | open file links in emacs                        |
+   | C-u C-c C-o/mouse-3 | ...force open in emacs/other window             |
+   | C-c %               | record a position in the mark ring              |
+   | C-c &               | jump back to last followed link(s)              |
+   | C-c C-x C-n/C-p     | find next/previous link                         |
+   | C-c '               | edit code snippet of file at point              |
+   | C-c C-x C-v         | toggle inline display of linked images          |
+
+** Working with Code (Babel)
+
+   | key         | usage                                                         |
+   |-------------+---------------------------------------------------------------|
+   | C-c C-c     | execute code block at point                                   |
+   | C-c C-o     | open results of code block at point                           |
+   | C-c C-v c   | check code block at point for errors.                         |
+   | C-c C-v j   | insert a header argument with completion                      |
+   | C-c C-v v   | view expanded body of code block at point                     |
+   | C-c C-v I   | view info about code block at point                           |
+   | C-c C-v g   | goto named code block                                         |
+   | C-c C-v r   | goto named result                                             |
+   | C-c C-v u   | goto head of the current code block                           |
+   | C-c C-v n/p | goto next/previous code block                                 |
+   | C-c C-v d   | demarcate a code block; how to insert the markers             |
+   | C-c C-v x   | execute the next key sequence in the code edit buffer         |
+   | C-c C-v b   | execute all the code blocks in current buffer                 |
+   | C-c C-v s   | ... subtree                                                   |
+   | C-c C-v t   | tangle code blocks in current file                            |
+   | C-c C-v f   | ... supplied file                                             |
+   | C-c C-v i   | ingest all code blocks in supplied file into Library of Bable |
+   | C-c C-v z   | switch to the session of the current code block               |
+   | C-c C-v l   | load the current code block into a session                    |
+   | C-c C-v a   | view the SHA1 of the current code block                       |
+
+** Completion
+
+   - In-buffer completion completes:
+     - TODO keywords at headline start
+     - TeX macros after backslash \
+     - option keywords after #-
+     - TAGS after :
+     - dictionary words elsewhere
+
+   - no doubt this is influenced by helm.
+
+   | key   | usage                  |
+   |-------+------------------------|
+   | M-TAB | complete-word-at-point |
+
+** TODO Items and Checkboxes
+
+   | key            | usage                                         |
+   |----------------+-----------------------------------------------|
+   | C-c C-t        | rotate the state of the current item          |
+   | S-LEFT/RIGHT   | select next/previous state                    |
+   | C-S-LEFT/RIGHT | select next/previous set                      |
+   | C-c C-x o      | toggle ORDERED property                       |
+   | C-c C-v        | view TODO items in a sparse tree              |
+   | C-3 C-v C-v    | view 3rd TODO keyword's sparse tree           |
+   |                |                                               |
+   | C-c , [ABC]    | set the priority of the current item          |
+   | C-c , SPC      | remove priority cookie from current item      |
+   | S-UP/DOWN      | raise/lower priority of current item [1]      |
+   | M-S-RET        | insert new checkbox item in plain list        |
+   | C-c C-x C-b    | toggle checkbox(es) in region/entry/at point  |
+   | C-c C-c        | toggle checkbox at point                      |
+   | C-c #          | update checkbox statistics (C-u : whole file) |
+
+** Tags
+
+   | key         | usage                                  |
+   |-------------+----------------------------------------|
+   | C-c C-q     | set tags for current heading           |
+   | C-u C-c C-q | realign tags in all headings           |
+   | C-c \\      | create sparse tree with matching tags  |
+   | C-c C-o     | globally (agenda) match tags at cursor |
+
+** Properties and Column View
+
+   | key                 | usage                                 |
+   |---------------------+---------------------------------------|
+   | C-c C-x p/e         | set property/effort                   |
+   | C-c C-c             | special commands in property lines    |
+   | S-LEFT/RIGHT        | next/previous allowed value           |
+   | C-c C-x C-c         | turn on column view                   |
+   | C-c C-x i           | capture columns view in dynamic block |
+   |                     |                                       |
+   | q                   | quit column view                      |
+   | v                   | show full value                       |
+   | e                   | edit value                            |
+   | n/p or S-LEFT/RIGHT | next/previous allowed value           |
+   | a                   | edit allowed values list              |
+   | >/<                 | make column wider/narrower            |
+   | M-LEFT/RIGHT        | move column left/right                |
+   | M-S-RIGHT           | add new column                        |
+   | M-S-LEFT            | delete current column                 |
+
+** Timestamps
+
+   | key          | usage                                           |
+   |--------------+-------------------------------------------------|
+   | C-c .        | prompt for date and insert timestamp            |
+   | C-u C-c .    | ... but prompt for date/time format             |
+   | C-c !        | ... but make timestamp inactive                 |
+   | C-c C-d      | insert DEADLINE timestamp                       |
+   | C-c C-s      | insert SCHEDULED timestamp                      |
+   | C-c / d      | create sparse tree with all deadlines due       |
+   | C-c C-y      | the time between 2 dates in a time range        |
+   | S-RIGHT/LEFT | change timestamp at point +/- one day [2]       |
+   | S-UP/DOWN    | change year/month/day at point +/- one unit [2] |
+   | C-c >        | access calendar for the current date            |
+   | C-c <        | insert timestamp matching date in calendar      |
+   | C-c C-o      | access agenda for current date                  |
+   | RET/mouse-1  | select date while prompted                      |
+   | C-c C-x C-t  | toggle custom format display for dates/time     |
+
+*** Clocking Time
+
+    | key           | usage                                 |
+    |---------------+---------------------------------------|
+    | C-c C-x C-i   | start clock on current item           |
+    | C-c C-x C-o/x | stop/cancel clock on current item     |
+    | C-c C-x C-d   | display total subtree times           |
+    | C-c C-c       | remove displayed times                |
+    | C-c C-x C-r   | insert/update table with clock report |
+
+** Agenda Views
+
+   | key         | usage                                     |
+   |-------------+-------------------------------------------|
+   | C-c [       | add/move current file to front of agenda  |
+   | C-c ]       | remove current file from your agenda      |
+   | C-'         | cycle through agenda file list            |
+   | C-c C-x </> | set/remove restriction lock               |
+   |             |                                           |
+   | C-c a a     | compile agenda for the current week [1]   |
+   | C-c a t     | compile global TODO list [1]              |
+   | C-c a T     | compile TODO list for keyword [1]         |
+   | C-c a m     | match tags, TODO keywords, properties [1] |
+   | C-c a M     | match only TODO items [1]                 |
+   | C-c a #     | find stuck projects [1]                   |
+   | C-c a L     | show timeline of current org file [1]     |
+   | C-c a C     | configure custom commands [1]             |
+   | C-c C-o     | agenda for date at cursor                 |
+
+* Register key bindings
+
+  recall registers are named: [a-z][A-Z][0-9], denoted as R in the keybindings
+
+  | key                     | description                                                         |
+  |-------------------------+---------------------------------------------------------------------|
+  | C-x r <SPC> R           | record position of point and the current buffer in R                |
+  | C-x r j R               | jump to the position and buffer saved in R                          |
+  |-------------------------+---------------------------------------------------------------------|
+  | C-x r s R               | copy region into R                                                  |
+  | C-u C-x r s R           | copy region into R; then delete it from buffer                      |
+  | C-x r i R               | insert text from region R                                           |
+  | M-x append-to-register  | append region to text in register R; with prefix delete from buffer |
+  | M-x prepend-to-register | prepend                                                             |
+  |-------------------------+---------------------------------------------------------------------|
+  | C-x r r R               | copy region into register                                           |
+  | C-x r i R               | insert rectangle                                                    |
+  |-------------------------+---------------------------------------------------------------------|
+  | C-x r w R               | save the state of selected frames windows to R                      |
+  | C-x r f R               | save the state of all frames                                        |
+  | C-x r j R               | restore window or frame positions; same as position                 |
+  |-------------------------+---------------------------------------------------------------------|
+  | C-x r n R               | store 0 in register                                                 |
+  | C-u NUMBER C-x r n R    | store NUMBER in register                                            |
+  | C-x r + R               | increment by 1                                                      |
+  | C-u NUMBER C-x r + R    | if R contains a number, increment by NUMBER                         |
+  | C-x r i R               | insert the number                                                   |
+  |-------------------------+---------------------------------------------------------------------|
+  | C-x C-k x R             | store last keyboard macro in register                               |
+  | C-x r j R               | execute the keyboard macro                                          |
+
+* Bookmark key bindings
+
+  | key binding | description              |
+  |-------------+--------------------------|
+  | C-x r l     | list available bookmarks |
+  | C-x r m     | set a bookmark           |
+  | C-x r b     | jump to a bookmark       |
+
+* Jeffs Frequently Used Bindings
+** Global bindings
+
+   | key         | description                                              |
+   |-------------+----------------------------------------------------------|
+   | C-c C-u     | outline: move "out"; up to a higher, broader level       |
+   | C-c C-s     | schedule a task on a date                                |
+   | C-C l       | store a link, like in a file; region becomes search text |
+   | C-c C-l     | create or edit an org mode link                          |
+   | C-c C-x C-s | archive a subtree                                        |
+
+** Org mode bindings
+
+   | key         | description                                  |
+   |-------------+----------------------------------------------|
+   | C-c %       | Push the current position onto the mark ring |
+   | C-c C-v d   | demarcate a block (select region first)      |
+   | C-c C-x C-s | move subtree to archive file                 |
+
+** Register, Bookmark & Mark bindings
+
+   | key binding | description                                  |
+   |-------------+----------------------------------------------|
+   | C-x r l     | list available bookmarks                     |
+   | C-x r m     | set a bookmark                               |
+   | C-x r b     | jump to a bookmark                           |
+   |-------------+----------------------------------------------|
+   | C-x r s     | store region in register                     |
+   | C-x r i     | insert contents of register                  |
+   | C-x r SPC   | store point in register                      |
+   | C-x r j     | jump to register                             |
+   |-------------+----------------------------------------------|
+   | C-SPC       | set the mark                                 |
+   | C-u C-SPC   | jump to mark; repeat to go back in mark ring |
+
+** Agenda view bindings
+
+   | key    | description                    |
+   |--------+--------------------------------|
+   | t      | move a task through its states |
+   | z      | add a note to a task           |
+   | a or $ | archive done tasks             |
+
+** Company bindings
+
+*** While completing
+
+    | key         | description                  |
+    |-------------+------------------------------|
+    | M-n/p       | next/prev in completion list |
+    | C-s C-r C-o | search in completions        |
+    | M-(digit)   | pick the nth item in list    |
+
+*** When a completion is selected
+
+    | key  | description                  |
+    |------+------------------------------|
+    | <f1> | display docs                 |
+    | C-w  | see source of completed item |
+
+** projectile bindings
+
+   bbatsov's [[https://github.com/bbatsov/projectile/blob/master/doc/usage.md#interactive-commands][key bindings table]]
+
+   | key       | description             |
+   |-----------+-------------------------|
+   | C-c p f   | list files in project   |
+   | C-c p s s | grep project for string |
+   | C-c p k   | kill project buffers    |
+
+* Clojure / CIDER key bindings
+
+** Clojure key bindings
+
+   | key binding | description                                  |
+   |-------------+----------------------------------------------|
+   | C-c M-n     | switch to namespace of current buffer        |
+   | C-x C-e     | eval expression preceding point              |
+   | C-c C-k     | compile current buffer                       |
+   | C-c C-d C-d | display docs for symbol under point          |
+   | M-. and M-, | jump/return to source for symbol under point |
+   | C-c C-d C-a | apropos search over func names and docs      |
+
+** CIDER key bindings
+
+   | key binding | description                |
+   |-------------+----------------------------|
+   | M-n, M-p    | cycle through repl history |
+   | C-<ret>     | close parentheses and eval |
