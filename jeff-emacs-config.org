@@ -7,9 +7,9 @@
 * Introduction
 ** About This File
 
-   After many years of emacs evolution via hunting and pecking, I finally refactored my existing emacs init
-   setup in the literate style. I have previously and continue to follow the lead of many fine emacs
-   devotees, among them:
+   After many years of emacs evolution via hunting and pecking, I finally refactored my existing emacs setup
+   in the literate style. I have previously and continue to follow the lead of many fine emacs devotees,
+   among them:
 
    - [[https://github.com/howardabrams/dot-files/blob/master/emacs.org][Howard Abrams]]
    - [[https://github.com/sachac/.emacs.d][Sacha Chua]]
@@ -18,6 +18,7 @@
    - [[https://github.com/jwiegley/dot-emacs][John Weigley]]
    - [[https://github.com/purcell/emacs.d][Steve Purcell]]
    - [[https://github.com/abo-abo/oremacs][abo-abo]]
+   - [[https://github.com/NicolasPetton/emacs.d][Nicolas Petton]]
    - and many others
 
    To all of these contributors, I doff my cap in salute. Your published work has inspired and -- to be honest
@@ -39,6 +40,8 @@
 
    In this refactor, I have the following major goals:
 
+   - create a more functional emacs leveraging recent innovation
+   - KISS: smaller is better; only add where there is significant reason to
    - use the literate programming style
      - learn babel and tangle in the process
    - learn more emacs-lisp; even become competent?
@@ -844,6 +847,9 @@
             (concat org-directory
                     (cond ((jwm/sift-mac-p) "/sift.org")
                           (t "/todo.org"))))
+
+      ;; where I store periodic reminders, ie, ticklers in GTD-talk
+      (defvar jwm/org-tickler-file (concat org-directory "/tickler.org"))
     #+END_SRC
 
 **** Agenda Files
@@ -859,7 +865,7 @@
        (setq org-agenda-files (jwm/emacs-subdirectory "org-agenda-files-list"))
      #+END_SRC
 
-**** Former Agenda Files
+**** Former Named Individual Agenda Files
 
      I used to name individual files to put in the agenda, however, no longer.  This section could be
      deleted.
@@ -878,11 +884,15 @@
 
 *** Templates, Tasks, Refiling
 
+    I lifted the [[https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.htm][tickler capture entry from Nicolas Petton]].
+
     #+BEGIN_SRC emacs-lisp
       ;; capture template.
       (setq org-capture-templates
             '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
                "* TODO %?\n %t\n  %i\n  %a\n")
+              ("T" "Tickler" entry (file+headline jwm/org-tickler-file "Tickler")
+               "* %i%?\n %U\n")
               ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
                "* %?\nEntered on %U\n  %i\n  %a\n")))
     #+END_SRC

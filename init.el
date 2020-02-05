@@ -322,12 +322,17 @@
               (cond ((jwm/sift-mac-p) "/sift.org")
                     (t "/todo.org"))))
 
+;; where I store periodic reminders, ie, ticklers in GTD-talk
+(defvar jwm/org-tickler-file (concat org-directory "/tickler.org"))
+
 (setq org-agenda-files (jwm/emacs-subdirectory "org-agenda-files-list"))
 
 ;; capture template.
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
          "* TODO %?\n %t\n  %i\n  %a\n")
+        ("T" "Tickler" entry (file+headline jwm/org-tickler-file "Tickler")
+         "* %i%?\n %U\n")
         ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
          "* %?\nEntered on %U\n  %i\n  %a\n")))
 

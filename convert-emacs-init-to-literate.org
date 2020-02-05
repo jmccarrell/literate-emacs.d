@@ -250,7 +250,8 @@ So the answer is that:
      to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
      as part of that refactoring.
 
-*** DOING Get a working eshell
+*** DONE Get a working eshell
+    - State "DONE"       from "DOING"      [2020-02-03 Mon 19:13]
     - State "DOING"      from              [2019-09-02 Mon 22:09]
 
     Well, it appears that my [[https://github.com/jmccarrell/literate-emacs.d/blob/master/jeff-emacs-config.org#reduce-startup-time-for-zsh][hack to disable reading init files for zsh]] has had the side effect of making
