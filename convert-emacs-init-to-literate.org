@@ -1,4 +1,6 @@
 #+TITLE: Reconstruct my emacs init file in the Literate style
+#+author: Jeff McCarrell
+#+date: 2020:03:09
 
 * Working Notes
 ** Goals to Achieve
@@ -6,7 +8,7 @@
    - [ ] enable tramp mode
      - show it works in important cases, like judgy
      - to get there, I need:
-       - eshell mode that works?
+       - [X] eshell mode that works?
    - [ ] to support jq literate programming to solve some of the salt challenges I have at work
    - [ ] can install from a new, clean .emacs.d
      - what does this mean?  I am not really sure.
@@ -119,6 +121,2134 @@ So the answer is that:
     - both on the web and to my local copies
 
 *** setup occur and how it works with swiper
+*** DOING configure yasnippet and auto yasnippet
+    - State "DOING"      from              [2020-03-10 Tue 20:49]
+
+    Mike Z has a couple of nice videos here
+
+    use case: github issue template
+    use case: table to report in financial review meetings
+
+    In particular, the auto snippet functionality looks useful to my normal flow.
+    and auto yasnippets is from aboabo
+
+     Read the docs for:
+     - yasnippet
+     - auto-yasnippet
+
+
+**** DONE what snippets do I have loaded?
+     - State "DONE"       from              [2020-03-10 Tue 21:42]
+
+     #+BEGIN_SRC emacs-lisp
+       yas-snippet-dirs
+     #+END_SRC
+
+     #+RESULTS:
+     | /Users/jeff/.emacs.d/snippets | yasnippet-snippets-dir |
+
+     #+BEGIN_SRC shell :results output
+       tree ~/.emacs.d/elpa/yasnippet-snippets-20200122.1140
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     /Users/jeff/.emacs.d/elpa/yasnippet-snippets-20200122.1140
+     ├── snippets
+     │   ├── antlr-mode
+     │   │   ├── project
+     │   │   ├── property
+     │   │   └── target
+     │   ├── apples-mode
+     │   │   ├── comment
+     │   │   ├── considering
+     │   │   ├── considering-application-responses
+     │   │   ├── display-dialog
+     │   │   ├── if
+     │   │   ├── ignoring
+     │   │   ├── ignoring-application-responses
+     │   │   ├── on
+     │   │   ├── repeat
+     │   │   ├── repeat-until
+     │   │   ├── repeat-while
+     │   │   ├── repeat-with
+     │   │   ├── tell-application
+     │   │   ├── tell-application-to-activate
+     │   │   ├── try
+     │   │   ├── using-terms-from-application
+     │   │   ├── with-timeout-of-seconds
+     │   │   └── with-transaction
+     │   ├── applescript-mode
+     │   │   ├── comment
+     │   │   ├── considering
+     │   │   ├── considering-application-responses
+     │   │   ├── display-dialog
+     │   │   ├── if
+     │   │   ├── ignoring
+     │   │   ├── ignoring-application-responses
+     │   │   ├── on
+     │   │   ├── repeat
+     │   │   ├── repeat-until
+     │   │   ├── repeat-while
+     │   │   ├── repeat-with
+     │   │   ├── tell-application
+     │   │   ├── tell-application-to-activate
+     │   │   ├── try
+     │   │   ├── using-terms-from-application
+     │   │   ├── with-timeout-of-seconds
+     │   │   └── with-transaction
+     │   ├── bazel-mode
+     │   │   ├── alias
+     │   │   ├── ccb
+     │   │   ├── cci
+     │   │   ├── ccinc
+     │   │   ├── ccl
+     │   │   ├── ccp
+     │   │   ├── cct
+     │   │   ├── fg
+     │   │   ├── genq
+     │   │   ├── jbin
+     │   │   ├── jimp
+     │   │   ├── jlib
+     │   │   ├── jrun
+     │   │   ├── jtest
+     │   │   ├── pybin
+     │   │   ├── pylib
+     │   │   ├── pyrun
+     │   │   ├── pytest
+     │   │   ├── shbin
+     │   │   ├── shlib
+     │   │   ├── shtest
+     │   │   └── ws
+     │   ├── bibtex-mode
+     │   │   ├── article
+     │   │   ├── book
+     │   │   ├── booklet
+     │   │   ├── conference
+     │   │   ├── inbook
+     │   │   ├── incollection
+     │   │   ├── inproceedings
+     │   │   ├── manual
+     │   │   ├── masterthesis
+     │   │   ├── misc
+     │   │   ├── phdthesis
+     │   │   ├── proceedings
+     │   │   ├── techreport
+     │   │   └── unpublished
+     │   ├── c++-mode
+     │   │   ├── acl
+     │   │   ├── acm
+     │   │   ├── ajf
+     │   │   ├── alo
+     │   │   ├── ano
+     │   │   ├── assert
+     │   │   ├── beginend
+     │   │   ├── boost_require
+     │   │   ├── cerr
+     │   │   ├── cin
+     │   │   ├── class
+     │   │   ├── class11
+     │   │   ├── cni
+     │   │   ├── cnt
+     │   │   ├── const_[]
+     │   │   ├── constructor
+     │   │   ├── cout
+     │   │   ├── cpb
+     │   │   ├── cpi
+     │   │   ├── cpn
+     │   │   ├── cpp
+     │   │   ├── cpy
+     │   │   ├── cstd
+     │   │   ├── d+=
+     │   │   ├── d_operator
+     │   │   ├── d_operator[]
+     │   │   ├── d_operator[]_const
+     │   │   ├── d_operator_istream
+     │   │   ├── d_operator_ostream
+     │   │   ├── delete
+     │   │   ├── delete[]
+     │   │   ├── doc
+     │   │   ├── dynamic_casting
+     │   │   ├── enum
+     │   │   ├── eql
+     │   │   ├── erm
+     │   │   ├── ffo
+     │   │   ├── fil
+     │   │   ├── fin
+     │   │   ├── fixture
+     │   │   ├── fln
+     │   │   ├── fnd
+     │   │   ├── fne
+     │   │   ├── fni
+     │   │   ├── fori
+     │   │   ├── fre
+     │   │   ├── friend
+     │   │   ├── fun_declaration
+     │   │   ├── gnn
+     │   │   ├── gnr
+     │   │   ├── gtest
+     │   │   ├── ignore
+     │   │   ├── ihp
+     │   │   ├── ihu
+     │   │   ├── inline
+     │   │   ├── io
+     │   │   ├── ipr
+     │   │   ├── ipt
+     │   │   ├── iss
+     │   │   ├── isu
+     │   │   ├── ita
+     │   │   ├── iterator
+     │   │   ├── ltr
+     │   │   ├── lwr
+     │   │   ├── lxc
+     │   │   ├── map
+     │   │   ├── member_function
+     │   │   ├── mkh
+     │   │   ├── mme
+     │   │   ├── mne
+     │   │   ├── module
+     │   │   ├── mpb
+     │   │   ├── mrg
+     │   │   ├── msm
+     │   │   ├── mxe
+     │   │   ├── namespace
+     │   │   ├── nno
+     │   │   ├── ns
+     │   │   ├── nth
+     │   │   ├── nxp
+     │   │   ├── oit
+     │   │   ├── operator!=
+     │   │   ├── operator+
+     │   │   ├── operator+=
+     │   │   ├── operator=
+     │   │   ├── operator==
+     │   │   ├── operator[]
+     │   │   ├── operator_istream
+     │   │   ├── operator_ostream
+     │   │   ├── ostream
+     │   │   ├── pack
+     │   │   ├── phh
+     │   │   ├── ppt
+     │   │   ├── private
+     │   │   ├── protected
+     │   │   ├── prp
+     │   │   ├── psc
+     │   │   ├── pst
+     │   │   ├── ptc
+     │   │   ├── ptn
+     │   │   ├── public
+     │   │   ├── rci
+     │   │   ├── rmc
+     │   │   ├── rmf
+     │   │   ├── rmi
+     │   │   ├── rmv
+     │   │   ├── rpc
+     │   │   ├── rpi
+     │   │   ├── rpl
+     │   │   ├── rtc
+     │   │   ├── rte
+     │   │   ├── rvc
+     │   │   ├── rvr
+     │   │   ├── shf
+     │   │   ├── spt
+     │   │   ├── srh
+     │   │   ├── srn
+     │   │   ├── srt
+     │   │   ├── sstream
+     │   │   ├── std
+     │   │   ├── std_colon
+     │   │   ├── sth
+     │   │   ├── sti
+     │   │   ├── sto
+     │   │   ├── str
+     │   │   ├── sts
+     │   │   ├── stv
+     │   │   ├── swr
+     │   │   ├── template
+     │   │   ├── test\ case
+     │   │   ├── test_main
+     │   │   ├── test_suite
+     │   │   ├── tfm
+     │   │   ├── this
+     │   │   ├── throw
+     │   │   ├── trm
+     │   │   ├── try
+     │   │   ├── tryw
+     │   │   ├── ucp
+     │   │   ├── upr
+     │   │   ├── uqe
+     │   │   ├── using
+     │   │   └── vector
+     │   ├── c-lang-common
+     │   │   ├── fopen
+     │   │   ├── function_doxygen_doc
+     │   │   ├── ifdef
+     │   │   ├── inc
+     │   │   ├── inc.1
+     │   │   ├── main
+     │   │   ├── math
+     │   │   ├── once
+     │   │   └── typedef
+     │   ├── c-mode
+     │   │   ├── assert
+     │   │   ├── compile
+     │   │   ├── define
+     │   │   ├── fgets
+     │   │   ├── fprintf
+     │   │   ├── malloc
+     │   │   ├── packed
+     │   │   ├── printf
+     │   │   ├── scanf
+     │   │   ├── stdio
+     │   │   ├── stdlib
+     │   │   ├── string
+     │   │   ├── strstr
+     │   │   ├── union
+     │   │   └── unistd
+     │   ├── cc-mode
+     │   │   ├── case
+     │   │   ├── do
+     │   │   ├── else
+     │   │   ├── file_description
+     │   │   ├── for
+     │   │   ├── for_n
+     │   │   ├── function_description
+     │   │   ├── if
+     │   │   ├── member_description
+     │   │   ├── printf
+     │   │   ├── struct
+     │   │   ├── switch
+     │   │   ├── ternary
+     │   │   └── while
+     │   ├── chef-mode
+     │   │   ├── action
+     │   │   ├── bash
+     │   │   ├── cookbook_file
+     │   │   ├── cron
+     │   │   ├── cronf
+     │   │   ├── deploy
+     │   │   ├── directory
+     │   │   ├── directoryf
+     │   │   ├── env
+     │   │   ├── execute
+     │   │   ├── executef
+     │   │   ├── file
+     │   │   ├── filef
+     │   │   ├── git
+     │   │   ├── group
+     │   │   ├── http_request
+     │   │   ├── http_requestp
+     │   │   ├── ignore_failure
+     │   │   ├── inc
+     │   │   ├── link
+     │   │   ├── linkf
+     │   │   ├── log
+     │   │   ├── machine
+     │   │   ├── meta
+     │   │   ├── not_if
+     │   │   ├── notifies
+     │   │   ├── only_if
+     │   │   ├── pac
+     │   │   ├── pak
+     │   │   ├── provider
+     │   │   ├── python
+     │   │   ├── remote_file
+     │   │   ├── retries
+     │   │   ├── role
+     │   │   ├── ruby
+     │   │   ├── script
+     │   │   ├── service
+     │   │   ├── servicep
+     │   │   ├── subscribes
+     │   │   ├── supports
+     │   │   ├── template
+     │   │   ├── templatev
+     │   │   └── user
+     │   ├── cider-repl-mode
+     │   ├── clojure-mode
+     │   │   ├── bench
+     │   │   ├── bp
+     │   │   ├── def
+     │   │   ├── defm
+     │   │   ├── defn
+     │   │   ├── defr
+     │   │   ├── deft
+     │   │   ├── doseq
+     │   │   ├── fn
+     │   │   ├── for
+     │   │   ├── if
+     │   │   ├── ifl
+     │   │   ├── import
+     │   │   ├── is
+     │   │   ├── let
+     │   │   ├── map
+     │   │   ├── map.lambda
+     │   │   ├── mdoc
+     │   │   ├── ns
+     │   │   ├── opts
+     │   │   ├── pr
+     │   │   ├── print
+     │   │   ├── reduce
+     │   │   ├── require
+     │   │   ├── test
+     │   │   ├── try
+     │   │   ├── use
+     │   │   ├── when
+     │   │   └── whenl
+     │   ├── cmake-mode
+     │   │   ├── add_executable
+     │   │   ├── add_library
+     │   │   ├── cmake_minimum_required
+     │   │   ├── foreach
+     │   │   ├── function
+     │   │   ├── if
+     │   │   ├── ifelse
+     │   │   ├── include
+     │   │   ├── macro
+     │   │   ├── message
+     │   │   ├── option
+     │   │   ├── project
+     │   │   └── set
+     │   ├── conf-unix-mode
+     │   │   └── section
+     │   ├── coq-mode
+     │   │   ├── definitions
+     │   │   │   ├── definition.yasnippet
+     │   │   │   ├── fixpoint-with.yasnippet
+     │   │   │   ├── fixpoint.yasnippet
+     │   │   │   ├── fun.yasnippet
+     │   │   │   └── inductive.yasnippet
+     │   │   ├── lookup
+     │   │   │   ├── check.yasnippet
+     │   │   │   ├── locate.yasnippet
+     │   │   │   ├── print.yasnippet
+     │   │   │   ├── search.yasnippet
+     │   │   │   ├── searchabout.yasnippet
+     │   │   │   └── searchpattern.yasnippet
+     │   │   ├── misc
+     │   │   │   ├── forall.yasnippet
+     │   │   │   ├── if.yasnippet
+     │   │   │   ├── infix.yasnippet
+     │   │   │   ├── match.yasnippet
+     │   │   │   ├── notation.yasnippet
+     │   │   │   └── require.yasnippet
+     │   │   ├── propositions
+     │   │   │   ├── axiom.yasnippet
+     │   │   │   ├── conjecture.yasnippet
+     │   │   │   ├── corollary.yasnippet
+     │   │   │   ├── example.yasnippet
+     │   │   │   ├── fact.yasnippet
+     │   │   │   ├── hypotheses.yasnippet
+     │   │   │   ├── hypothesis.yasnippet
+     │   │   │   ├── instance.yasnippet
+     │   │   │   ├── lemma.yasnippet
+     │   │   │   ├── parameter.yasnippet
+     │   │   │   ├── proposition.yasnippet
+     │   │   │   ├── remark.yasnippet
+     │   │   │   ├── theorem.yasnippet
+     │   │   │   ├── variable.yasnippet
+     │   │   │   └── variables.yasnippet
+     │   │   └── tactics
+     │   │       ├── case.yasnippet
+     │   │       ├── destruct.yasnippet
+     │   │       ├── induction.yasnippet
+     │   │       ├── rename.yasnippet
+     │   │       ├── rewrite-left.yasnippet
+     │   │       ├── rewrite-right.yasnippet
+     │   │       └── rewrite.yasnippet
+     │   ├── cperl-mode
+     │   ├── cpp-omnet-mode
+     │   │   ├── EV
+     │   │   ├── emit_signal
+     │   │   ├── intuniform
+     │   │   ├── math
+     │   │   ├── nan
+     │   │   ├── omnet
+     │   │   ├── parameter_omnetpp
+     │   │   ├── scheduleAt
+     │   │   └── uniform
+     │   ├── crystal-mode
+     │   │   ├── any
+     │   │   ├── case
+     │   │   ├── cls
+     │   │   ├── def
+     │   │   ├── ea
+     │   │   ├── eac
+     │   │   ├── eai
+     │   │   ├── eawi
+     │   │   ├── el
+     │   │   ├── esi
+     │   │   ├── for
+     │   │   ├── forin
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── inc
+     │   │   ├── init
+     │   │   ├── map
+     │   │   ├── mod
+     │   │   ├── red
+     │   │   ├── reject
+     │   │   ├── req
+     │   │   ├── select
+     │   │   ├── upt
+     │   │   ├── when
+     │   │   ├── while
+     │   │   └── zip
+     │   ├── csharp-mode
+     │   │   ├── attrib
+     │   │   ├── attrib.1
+     │   │   ├── attrib.2
+     │   │   ├── class
+     │   │   ├── comment
+     │   │   ├── comment.1
+     │   │   ├── comment.2
+     │   │   ├── comment.3
+     │   │   ├── fore
+     │   │   ├── main
+     │   │   ├── method
+     │   │   ├── namespace
+     │   │   ├── prop
+     │   │   ├── read
+     │   │   ├── readline
+     │   │   ├── region
+     │   │   ├── trycatch
+     │   │   ├── using
+     │   │   ├── using.1
+     │   │   ├── using.2
+     │   │   ├── write
+     │   │   └── writeline
+     │   ├── css-mode
+     │   │   ├── bg
+     │   │   ├── bg.1
+     │   │   ├── bor
+     │   │   ├── cl
+     │   │   ├── disp.block
+     │   │   ├── disp.inline
+     │   │   ├── disp.none
+     │   │   ├── ff
+     │   │   ├── fs
+     │   │   ├── mar.bottom
+     │   │   ├── mar.left
+     │   │   ├── mar.mar
+     │   │   ├── mar.margin
+     │   │   ├── mar.right
+     │   │   ├── mar.top
+     │   │   ├── pad.bottom
+     │   │   ├── pad.left
+     │   │   ├── pad.pad
+     │   │   ├── pad.padding
+     │   │   ├── pad.right
+     │   │   ├── pad.top
+     │   │   └── v
+     │   ├── d-mode
+     │   │   ├── class
+     │   │   ├── debug
+     │   │   ├── debugm
+     │   │   ├── enum
+     │   │   ├── fe
+     │   │   ├── fer
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── im
+     │   │   ├── main
+     │   │   ├── me
+     │   │   ├── r
+     │   │   ├── struct
+     │   │   ├── tc
+     │   │   ├── tcf
+     │   │   ├── tf
+     │   │   ├── unit
+     │   │   ├── version
+     │   │   └── while
+     │   ├── dart-mode
+     │   │   ├── aclass
+     │   │   ├── class
+     │   │   ├── didchangedependencies
+     │   │   ├── dispose
+     │   │   ├── ext
+     │   │   ├── for
+     │   │   ├── fori
+     │   │   ├── func
+     │   │   ├── funca
+     │   │   ├── getset
+     │   │   ├── getter
+     │   │   ├── impl
+     │   │   ├── import
+     │   │   ├── initstate
+     │   │   ├── main
+     │   │   ├── part
+     │   │   ├── setter
+     │   │   ├── statefulwidget
+     │   │   └── statelesswidget
+     │   ├── dix-mode
+     │   │   ├── call-macro
+     │   │   ├── choose
+     │   │   ├── clip
+     │   │   ├── e-in-mono-section
+     │   │   ├── e-in-pardef
+     │   │   ├── let
+     │   │   ├── lit
+     │   │   ├── lit-tag
+     │   │   ├── otherwise
+     │   │   ├── p
+     │   │   ├── par
+     │   │   ├── pardef
+     │   │   ├── s
+     │   │   ├── sdef
+     │   │   ├── section
+     │   │   ├── var
+     │   │   ├── when
+     │   │   └── with-param
+     │   ├── dockerfile-mode
+     │   │   └── dockerize
+     │   ├── elixir-mode
+     │   │   ├── after
+     │   │   ├── call
+     │   │   ├── case
+     │   │   ├── cast
+     │   │   ├── cond
+     │   │   ├── def
+     │   │   ├── defmacro
+     │   │   ├── defmacrop
+     │   │   ├── defmodule
+     │   │   ├── defmodule_filename
+     │   │   ├── defp
+     │   │   ├── do
+     │   │   ├── doc
+     │   │   ├── fn
+     │   │   ├── for
+     │   │   ├── function
+     │   │   ├── function-one-line
+     │   │   ├── hcall
+     │   │   ├── hcast
+     │   │   ├── hinfo
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── io
+     │   │   ├── iop
+     │   │   ├── mdoc
+     │   │   ├── pry
+     │   │   ├── receive
+     │   │   ├── test
+     │   │   └── unless
+     │   ├── emacs-lisp-mode
+     │   │   ├── add-hook
+     │   │   ├── and
+     │   │   ├── aref
+     │   │   ├── aset
+     │   │   ├── assq
+     │   │   ├── autoload
+     │   │   ├── backward-char
+     │   │   ├── beginning-of-line
+     │   │   ├── bounds-of-thing-at-point
+     │   │   ├── buffer-file-name
+     │   │   ├── buffer-modified-p
+     │   │   ├── buffer-substring
+     │   │   ├── buffer-substring-no-properties
+     │   │   ├── cond
+     │   │   ├── condition-case
+     │   │   ├── const
+     │   │   ├── copy-directory
+     │   │   ├── copy-file
+     │   │   ├── current-buffer
+     │   │   ├── custom-autoload
+     │   │   ├── defalias
+     │   │   ├── defcustom
+     │   │   ├── define-key
+     │   │   ├── defun
+     │   │   ├── defvar
+     │   │   ├── delete-char
+     │   │   ├── delete-directory
+     │   │   ├── delete-file
+     │   │   ├── delete-region
+     │   │   ├── directory-files
+     │   │   ├── dired.process_marked
+     │   │   ├── end-of-line
+     │   │   ├── error
+     │   │   ├── ert-deftest
+     │   │   ├── expand-file-name
+     │   │   ├── fboundp
+     │   │   ├── file-name-directory
+     │   │   ├── file-name-extension
+     │   │   ├── file-name-nondirectory
+     │   │   ├── file-name-sans-extension
+     │   │   ├── file-relative-name
+     │   │   ├── file.process
+     │   │   ├── file.read-lines
+     │   │   ├── find-file
+     │   │   ├── find-replace
+     │   │   ├── format
+     │   │   ├── forward-char
+     │   │   ├── forward-line
+     │   │   ├── get
+     │   │   ├── global-set-key
+     │   │   ├── goto-char
+     │   │   ├── grabstring
+     │   │   ├── grabthing
+     │   │   ├── header
+     │   │   ├── insert
+     │   │   ├── insert-file-contents
+     │   │   ├── interactive
+     │   │   ├── kbd
+     │   │   ├── kill-buffer
+     │   │   ├── lambda
+     │   │   ├── let
+     │   │   ├── line-beginning-position
+     │   │   ├── line-end-position
+     │   │   ├── looking-at
+     │   │   ├── make-directory
+     │   │   ├── make-local-variable
+     │   │   ├── mapc
+     │   │   ├── match-beginning
+     │   │   ├── match-end
+     │   │   ├── match-string
+     │   │   ├── memq
+     │   │   ├── message
+     │   │   ├── minor_mode
+     │   │   ├── not
+     │   │   ├── nth
+     │   │   ├── number-to-string
+     │   │   ├── or
+     │   │   ├── point
+     │   │   ├── point-max
+     │   │   ├── point-min
+     │   │   ├── put
+     │   │   ├── re-search-backward
+     │   │   ├── re-search-forward
+     │   │   ├── region-active-p
+     │   │   ├── region-beginning
+     │   │   ├── region-end
+     │   │   ├── rename-file
+     │   │   ├── replace-regexp
+     │   │   ├── replace-regexp-in-string
+     │   │   ├── save-buffer
+     │   │   ├── save-excursion
+     │   │   ├── search-backward
+     │   │   ├── search-backward-regexp
+     │   │   ├── search-forward
+     │   │   ├── search-forward-regexp
+     │   │   ├── set-buffer
+     │   │   ├── set-file-modes
+     │   │   ├── set-mark
+     │   │   ├── setq
+     │   │   ├── should
+     │   │   ├── skip-chars-backward
+     │   │   ├── skip-chars-forward
+     │   │   ├── split-string
+     │   │   ├── string-match
+     │   │   ├── string-to-number
+     │   │   ├── string=
+     │   │   ├── substring
+     │   │   ├── thing-at-point
+     │   │   ├── traverse_dir
+     │   │   ├── use-package
+     │   │   ├── use-package-binding
+     │   │   ├── vector
+     │   │   ├── when
+     │   │   ├── widget-get
+     │   │   ├── with-current-buffer
+     │   │   ├── word-or-region
+     │   │   ├── word_regexp
+     │   │   ├── x-dired.process_marked
+     │   │   ├── x-file.process
+     │   │   ├── x-file.read-lines
+     │   │   ├── x-find-replace
+     │   │   ├── x-grabstring
+     │   │   ├── x-grabthing
+     │   │   ├── x-traverse_dir
+     │   │   ├── x-word-or-region
+     │   │   └── yes-or-no-p
+     │   ├── enh-ruby-mode
+     │   ├── ensime-mode
+     │   ├── erc-mode
+     │   │   ├── blist
+     │   │   └── help
+     │   ├── erlang-mode
+     │   │   ├── after
+     │   │   ├── begin
+     │   │   ├── beh
+     │   │   ├── case
+     │   │   ├── compile
+     │   │   ├── def
+     │   │   ├── exp
+     │   │   ├── fun
+     │   │   ├── if
+     │   │   ├── ifdef
+     │   │   ├── ifndef
+     │   │   ├── imp
+     │   │   ├── inc
+     │   │   ├── inc.lib
+     │   │   ├── loop
+     │   │   ├── mod
+     │   │   ├── rcv
+     │   │   ├── rcv.after
+     │   │   ├── rec
+     │   │   ├── try
+     │   │   └── undef
+     │   ├── f90-mode
+     │   │   ├── bd
+     │   │   ├── c
+     │   │   ├── ch
+     │   │   ├── cx
+     │   │   ├── dc
+     │   │   ├── do
+     │   │   ├── dp
+     │   │   ├── forall
+     │   │   ├── function
+     │   │   ├── if
+     │   │   ├── in
+     │   │   ├── inc
+     │   │   ├── intr
+     │   │   ├── l
+     │   │   ├── module
+     │   │   ├── pa
+     │   │   ├── program
+     │   │   ├── puref
+     │   │   ├── pures
+     │   │   ├── re
+     │   │   ├── subroutine
+     │   │   ├── until
+     │   │   ├── where
+     │   │   ├── while
+     │   │   └── wr
+     │   ├── faust-mode
+     │   │   ├── button
+     │   │   ├── case
+     │   │   ├── checkbox
+     │   │   ├── component
+     │   │   ├── declare
+     │   │   ├── declareauthor
+     │   │   ├── declarelicense
+     │   │   ├── declarename
+     │   │   ├── declareversion
+     │   │   ├── hbargraph
+     │   │   ├── header
+     │   │   ├── hgroup
+     │   │   ├── hslider
+     │   │   ├── import
+     │   │   ├── nentry
+     │   │   ├── par
+     │   │   ├── process
+     │   │   ├── processx
+     │   │   ├── prod
+     │   │   ├── rule
+     │   │   ├── seq
+     │   │   ├── sum
+     │   │   ├── tgroup
+     │   │   ├── vbargraph
+     │   │   ├── vgroup
+     │   │   ├── vslider
+     │   │   └── with
+     │   ├── fish-mode
+     │   │   ├── bang
+     │   │   ├── block
+     │   │   ├── bp
+     │   │   ├── for
+     │   │   ├── function
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── sw
+     │   │   └── while
+     │   ├── git-commit-mode
+     │   │   ├── fixes
+     │   │   ├── references
+     │   │   └── type
+     │   ├── go-mode
+     │   │   ├── benchmark
+     │   │   ├── const
+     │   │   ├── const(
+     │   │   ├── dd
+     │   │   ├── default
+     │   │   ├── else
+     │   │   ├── error
+     │   │   ├── example
+     │   │   ├── for
+     │   │   ├── forrange
+     │   │   ├── func
+     │   │   ├── if
+     │   │   ├── iferr
+     │   │   ├── import
+     │   │   ├── import(
+     │   │   ├── lambda
+     │   │   ├── main
+     │   │   ├── map
+     │   │   ├── method
+     │   │   ├── parallel_benchmark
+     │   │   ├── printf
+     │   │   ├── select
+     │   │   ├── switch
+     │   │   ├── test
+     │   │   ├── testmain
+     │   │   ├── type
+     │   │   ├── var
+     │   │   └── var(
+     │   ├── groovy-mode
+     │   │   ├── class
+     │   │   ├── def
+     │   │   ├── dict
+     │   │   ├── for
+     │   │   ├── println
+     │   │   └── times
+     │   ├── haskell-mode
+     │   │   ├── case
+     │   │   ├── data
+     │   │   ├── doc
+     │   │   ├── efix
+     │   │   ├── function
+     │   │   ├── functione
+     │   │   ├── import
+     │   │   ├── instance
+     │   │   ├── main
+     │   │   ├── module
+     │   │   ├── new\ class
+     │   │   ├── pragma
+     │   │   └── print
+     │   ├── html-mode
+     │   │   ├── dd
+     │   │   ├── dl
+     │   │   ├── doctype
+     │   │   ├── doctype.html5
+     │   │   ├── doctype.xhtml1
+     │   │   ├── doctype.xhtml1_1
+     │   │   ├── doctype.xhtml1_strict
+     │   │   ├── doctype.xhtml1_transitional
+     │   │   ├── dt
+     │   │   ├── form
+     │   │   ├── html
+     │   │   ├── html.xmlns
+     │   │   ├── link.import
+     │   │   ├── link.stylesheet
+     │   │   ├── link.stylesheet-ie
+     │   │   ├── mailto
+     │   │   ├── meta
+     │   │   ├── meta.http-equiv
+     │   │   ├── script.javascript
+     │   │   ├── script.javascript-src
+     │   │   ├── textarea
+     │   │   └── th
+     │   ├── hy-mode
+     │   │   ├── class
+     │   │   ├── cond
+     │   │   ├── def
+     │   │   ├── defm
+     │   │   ├── do
+     │   │   ├── for
+     │   │   ├── if
+     │   │   ├── ifn
+     │   │   ├── imp
+     │   │   ├── let
+     │   │   ├── main
+     │   │   ├── req
+     │   │   ├── s
+     │   │   ├── unless
+     │   │   └── when
+     │   ├── java-mode
+     │   │   ├── apr_assert
+     │   │   ├── assert
+     │   │   ├── assertEquals
+     │   │   ├── cls
+     │   │   ├── constructor
+     │   │   ├── define\ test\ method
+     │   │   ├── doc
+     │   │   ├── equals
+     │   │   ├── file_class
+     │   │   ├── for
+     │   │   ├── fori
+     │   │   ├── getter
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── import
+     │   │   ├── iterator
+     │   │   ├── javadoc
+     │   │   ├── lambda
+     │   │   ├── main
+     │   │   ├── main_class
+     │   │   ├── method
+     │   │   ├── new
+     │   │   ├── override
+     │   │   ├── param
+     │   │   ├── printf
+     │   │   ├── println
+     │   │   ├── return
+     │   │   ├── test
+     │   │   ├── testClass
+     │   │   ├── this
+     │   │   ├── toString
+     │   │   ├── try
+     │   │   └── value
+     │   ├── js-mode
+     │   │   ├── al
+     │   │   ├── anfn
+     │   │   ├── bnd
+     │   │   ├── class
+     │   │   ├── cmmb
+     │   │   ├── com
+     │   │   ├── console
+     │   │   │   ├── cas
+     │   │   │   ├── ccl
+     │   │   │   ├── cco
+     │   │   │   ├── cdi
+     │   │   │   ├── cer
+     │   │   │   ├── cge
+     │   │   │   ├── cgr
+     │   │   │   ├── cin
+     │   │   │   ├── clg
+     │   │   │   ├── clo
+     │   │   │   ├── cte
+     │   │   │   └── cwa
+     │   │   ├── const
+     │   │   ├── dar
+     │   │   ├── debugger
+     │   │   ├── dob
+     │   │   ├── each
+     │   │   ├── edf
+     │   │   ├── el
+     │   │   ├── enf
+     │   │   ├── exa
+     │   │   ├── exd
+     │   │   ├── exp
+     │   │   ├── fin
+     │   │   ├── flow
+     │   │   ├── fof
+     │   │   ├── for
+     │   │   ├── fre
+     │   │   ├── function
+     │   │   ├── if
+     │   │   ├── ima
+     │   │   ├── imd
+     │   │   ├── ime
+     │   │   ├── imn
+     │   │   ├── imp
+     │   │   ├── init
+     │   │   ├── let
+     │   │   ├── met
+     │   │   ├── metb
+     │   │   ├── multiline-comment
+     │   │   ├── nfn
+     │   │   ├── param-comment
+     │   │   ├── pge
+     │   │   ├── prom
+     │   │   ├── pse
+     │   │   ├── return-comment
+     │   │   ├── sti
+     │   │   ├── sto
+     │   │   ├── switch
+     │   │   ├── try-catch
+     │   │   ├── type-inline-comment
+     │   │   └── type-multiline-comment
+     │   ├── js2-mode
+     │   ├── js3-mode
+     │   ├── julia-mode
+     │   │   ├── atype
+     │   │   ├── begin
+     │   │   ├── do
+     │   │   ├── for
+     │   │   ├── fun
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── let
+     │   │   ├── macro
+     │   │   ├── module
+     │   │   ├── mutstr
+     │   │   ├── ptype
+     │   │   ├── quote
+     │   │   ├── struct
+     │   │   ├── try
+     │   │   ├── tryf
+     │   │   ├── using
+     │   │   └── while
+     │   ├── kotlin-mode
+     │   │   ├── anonymous
+     │   │   ├── closure
+     │   │   ├── exfun
+     │   │   ├── exval
+     │   │   ├── exvar
+     │   │   ├── fun
+     │   │   ├── ifn
+     │   │   ├── inn
+     │   │   ├── interface
+     │   │   ├── iter
+     │   │   ├── main
+     │   │   ├── psvm
+     │   │   ├── serr
+     │   │   ├── singleton
+     │   │   ├── sout
+     │   │   ├── soutv
+     │   │   └── void
+     │   ├── latex-mode
+     │   │   ├── acronym
+     │   │   ├── alertblock
+     │   │   ├── alg
+     │   │   ├── align
+     │   │   ├── article
+     │   │   ├── begin
+     │   │   ├── bigcap
+     │   │   ├── bigcup
+     │   │   ├── binom
+     │   │   ├── block
+     │   │   ├── capgls
+     │   │   ├── caption
+     │   │   ├── cite
+     │   │   ├── code
+     │   │   ├── columns
+     │   │   ├── description
+     │   │   ├── documentclass
+     │   │   ├── emph
+     │   │   ├── enumerate
+     │   │   ├── equation
+     │   │   ├── figure
+     │   │   ├── frac
+     │   │   ├── frame
+     │   │   ├── german-quotes
+     │   │   ├── german-quotes-single
+     │   │   ├── gls
+     │   │   ├── glspl
+     │   │   ├── if
+     │   │   ├── includegraphics
+     │   │   ├── int
+     │   │   ├── item
+     │   │   ├── itemize
+     │   │   ├── label
+     │   │   ├── labelcref
+     │   │   ├── left-right
+     │   │   ├── listing
+     │   │   ├── moderncv
+     │   │   ├── moderncv-cvcomputer
+     │   │   ├── moderncv-cventry
+     │   │   ├── moderncv-cvlanguage
+     │   │   ├── moderncv-cvline
+     │   │   ├── moderncv-cvlistdoubleitem
+     │   │   ├── moderncv-cvlistitem
+     │   │   ├── movie
+     │   │   ├── newcommand
+     │   │   ├── newglossaryentry
+     │   │   ├── note
+     │   │   ├── prod
+     │   │   ├── python
+     │   │   ├── question
+     │   │   ├── section
+     │   │   ├── subf
+     │   │   ├── subfigure
+     │   │   ├── subsec
+     │   │   ├── sum
+     │   │   ├── textbf
+     │   │   └── usepackage
+     │   ├── lisp-interaction-mode
+     │   │   └── defun
+     │   ├── lisp-mode
+     │   │   ├── class
+     │   │   ├── comment
+     │   │   ├── cond
+     │   │   ├── defpackage
+     │   │   ├── do
+     │   │   ├── for
+     │   │   ├── foreach
+     │   │   ├── format
+     │   │   ├── if
+     │   │   ├── ifelse
+     │   │   ├── ifnot
+     │   │   ├── slot
+     │   │   └── typecast
+     │   ├── lua-mode
+     │   │   ├── do
+     │   │   ├── eif
+     │   │   ├── eife
+     │   │   ├── fun
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── ipairs
+     │   │   ├── pairs
+     │   │   ├── repeat
+     │   │   ├── require
+     │   │   └── while
+     │   ├── m4-mode
+     │   │   └── def
+     │   ├── makefile-automake-mode
+     │   │   └── noinst_HEADERS
+     │   ├── makefile-bsdmake-mode
+     │   │   ├── PHONY
+     │   │   ├── echo
+     │   │   ├── gen
+     │   │   ├── if
+     │   │   └── var
+     │   ├── makefile-gmake-mode
+     │   │   ├── abspath
+     │   │   ├── addprefix
+     │   │   ├── addsuffix
+     │   │   ├── dir
+     │   │   ├── make
+     │   │   ├── notdir
+     │   │   ├── patsubst
+     │   │   ├── phony
+     │   │   ├── shell
+     │   │   ├── special
+     │   │   ├── template
+     │   │   └── wildcard
+     │   ├── makefile-mode
+     │   │   ├── all
+     │   │   └── clean
+     │   ├── malabar-mode
+     │   │   └── variable
+     │   ├── markdown-mode
+     │   │   ├── back-quote
+     │   │   ├── code
+     │   │   ├── emphasis
+     │   │   ├── h1.1
+     │   │   ├── h1.2
+     │   │   ├── h2.1
+     │   │   ├── h2.2
+     │   │   ├── h3
+     │   │   ├── h4
+     │   │   ├── h5
+     │   │   ├── h6
+     │   │   ├── highlight
+     │   │   ├── hr.1
+     │   │   ├── hr.2
+     │   │   ├── hyphen
+     │   │   ├── img
+     │   │   ├── link
+     │   │   ├── ordered-list
+     │   │   ├── plus
+     │   │   ├── rimg
+     │   │   ├── rlb
+     │   │   ├── rlink
+     │   │   ├── strong-emphasis
+     │   │   └── utf8
+     │   ├── nasm-mode
+     │   │   └── function_doxygen_doc
+     │   ├── ned-mode
+     │   │   ├── chan
+     │   │   ├── connections
+     │   │   ├── for
+     │   │   ├── import
+     │   │   ├── network
+     │   │   ├── simple
+     │   │   └── submodules
+     │   ├── nesc-mode
+     │   │   ├── TOSSIM
+     │   │   ├── command
+     │   │   ├── dbg
+     │   │   ├── event
+     │   │   ├── ifdef
+     │   │   ├── interface
+     │   │   ├── module
+     │   │   ├── nx
+     │   │   ├── provides
+     │   │   ├── sim
+     │   │   ├── uint8_t
+     │   │   └── uses
+     │   ├── nix-mode
+     │   │   ├── buildPhase
+     │   │   ├── checkPhase
+     │   │   ├── configurePhase
+     │   │   ├── distPhase
+     │   │   ├── fixPhase
+     │   │   ├── installCheckPhase
+     │   │   ├── installPhase
+     │   │   ├── package_github
+     │   │   ├── package_url
+     │   │   ├── patchPhase
+     │   │   ├── phases
+     │   │   └── unpackPhase
+     │   ├── nsis-mode
+     │   │   ├── define
+     │   │   ├── function
+     │   │   ├── if
+     │   │   ├── include
+     │   │   ├── insert_macro
+     │   │   ├── instdir
+     │   │   ├── macro
+     │   │   ├── message
+     │   │   ├── outdir
+     │   │   ├── outfile
+     │   │   └── section
+     │   ├── nxml-mode
+     │   │   ├── body
+     │   │   ├── br
+     │   │   ├── doctype
+     │   │   ├── doctype_xhtml1_strict
+     │   │   ├── doctype_xhtml1_transitional
+     │   │   ├── form
+     │   │   ├── href
+     │   │   ├── html
+     │   │   ├── img
+     │   │   ├── input
+     │   │   ├── link
+     │   │   ├── meta
+     │   │   ├── name
+     │   │   ├── quote
+     │   │   ├── style
+     │   │   ├── tag
+     │   │   ├── tag_closing
+     │   │   └── tag_newline
+     │   ├── octave-mode
+     │   │   ├── for
+     │   │   ├── function
+     │   │   └── if
+     │   ├── org-mode
+     │   │   ├── author
+     │   │   ├── center
+     │   │   ├── date
+     │   │   ├── description
+     │   │   ├── dot
+     │   │   ├── elisp
+     │   │   ├── emacs-lisp
+     │   │   ├── email
+     │   │   ├── embedded
+     │   │   ├── entry
+     │   │   ├── exampleblock
+     │   │   ├── export
+     │   │   ├── figure
+     │   │   ├── html
+     │   │   ├── image
+     │   │   ├── img
+     │   │   ├── include
+     │   │   ├── ipython
+     │   │   ├── keywords
+     │   │   ├── language
+     │   │   ├── link
+     │   │   ├── matrix
+     │   │   ├── options
+     │   │   ├── python
+     │   │   ├── quote
+     │   │   ├── rv_background
+     │   │   ├── rv_image_background
+     │   │   ├── setup
+     │   │   ├── src
+     │   │   ├── style
+     │   │   ├── table
+     │   │   ├── title
+     │   │   ├── uml
+     │   │   ├── verse
+     │   │   └── video
+     │   ├── perl-mode
+     │   │   ├── bang
+     │   │   ├── enc
+     │   │   ├── eval
+     │   │   ├── for
+     │   │   ├── fore
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── ifee
+     │   │   ├── strict
+     │   │   ├── sub
+     │   │   ├── unless
+     │   │   ├── while
+     │   │   ├── xfore
+     │   │   ├── xif
+     │   │   ├── xunless
+     │   │   └── xwhile
+     │   ├── php-mode
+     │   │   ├── __call
+     │   │   ├── __callStatic
+     │   │   ├── catch
+     │   │   ├── cls
+     │   │   ├── clse
+     │   │   ├── clsi
+     │   │   ├── const
+     │   │   ├── define
+     │   │   ├── doc-comment-multiline
+     │   │   ├── doc-comment-oneline
+     │   │   ├── else
+     │   │   ├── elseif
+     │   │   ├── fn
+     │   │   ├── foreach
+     │   │   ├── foreach_value
+     │   │   ├── function
+     │   │   ├── function-return-type
+     │   │   ├── get
+     │   │   ├── if
+     │   │   ├── interface
+     │   │   ├── license-doc
+     │   │   ├── license-doc-apache
+     │   │   ├── license-doc-gplv2
+     │   │   ├── license-doc-mit
+     │   │   ├── license-doc-mpl
+     │   │   ├── method-doc
+     │   │   ├── param-doc
+     │   │   ├── property-doc
+     │   │   ├── psysh
+     │   │   ├── return-doc
+     │   │   ├── set
+     │   │   ├── stdout
+     │   │   ├── switch
+     │   │   ├── ticks
+     │   │   ├── trait
+     │   │   ├── try
+     │   │   ├── var-doc
+     │   │   ├── var-oneline
+     │   │   ├── vd
+     │   │   ├── vde
+     │   │   └── ve
+     │   ├── powershell-mode
+     │   │   ├── cmdletbinding
+     │   │   ├── comment-based-help
+     │   │   ├── function
+     │   │   └── parameter
+     │   ├── prog-mode
+     │   │   ├── comment
+     │   │   ├── commentblock
+     │   │   ├── commentline
+     │   │   ├── fixme
+     │   │   ├── todo
+     │   │   └── xxx
+     │   ├── protobuf-mode
+     │   │   ├── message
+     │   │   └── syntax
+     │   ├── python-mode
+     │   │   ├── __contains__
+     │   │   ├── __enter__
+     │   │   ├── __exit__
+     │   │   ├── __getitem__
+     │   │   ├── __len__
+     │   │   ├── __new__
+     │   │   ├── __setitem__
+     │   │   ├── all
+     │   │   ├── arg
+     │   │   ├── arg_positional
+     │   │   ├── assert
+     │   │   ├── assertEqual
+     │   │   ├── assertFalse
+     │   │   ├── assertIn
+     │   │   ├── assertNotEqual
+     │   │   ├── assertNotIn
+     │   │   ├── assertRaises
+     │   │   ├── assertRaises.with
+     │   │   ├── assertTrue
+     │   │   ├── bang
+     │   │   ├── celery_pdb
+     │   │   ├── class_doxygen_doc
+     │   │   ├── classmethod
+     │   │   ├── cls
+     │   │   ├── dataclass
+     │   │   ├── dec
+     │   │   ├── deftest
+     │   │   ├── django_test_class
+     │   │   ├── doc
+     │   │   ├── doctest
+     │   │   ├── embed
+     │   │   ├── enum
+     │   │   ├── eq
+     │   │   ├── for
+     │   │   ├── from
+     │   │   ├── function
+     │   │   ├── function_docstring
+     │   │   ├── function_docstring_numpy
+     │   │   ├── function_doxygen_doc
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── ifmain
+     │   │   ├── import
+     │   │   ├── init
+     │   │   ├── init_docstring
+     │   │   ├── init_docstring_numpy
+     │   │   ├── interact
+     │   │   ├── ipdb
+     │   │   ├── iter
+     │   │   ├── lambda
+     │   │   ├── list
+     │   │   ├── logger_name
+     │   │   ├── logging
+     │   │   ├── main
+     │   │   ├── metaclass
+     │   │   ├── method
+     │   │   ├── method_docstring
+     │   │   ├── method_docstring_numpy
+     │   │   ├── not_impl
+     │   │   ├── np
+     │   │   ├── parse_args
+     │   │   ├── parser
+     │   │   ├── pass
+     │   │   ├── pdb
+     │   │   ├── pl
+     │   │   ├── print
+     │   │   ├── prop
+     │   │   ├── pudb
+     │   │   ├── reg
+     │   │   ├── repr
+     │   │   ├── return
+     │   │   ├── scls
+     │   │   ├── script
+     │   │   ├── self
+     │   │   ├── self_without_dot
+     │   │   ├── selfassign
+     │   │   ├── setdef
+     │   │   ├── setup
+     │   │   ├── size
+     │   │   ├── static
+     │   │   ├── str
+     │   │   ├── super
+     │   │   ├── test_class
+     │   │   ├── test_file
+     │   │   ├── try
+     │   │   ├── tryelse
+     │   │   ├── unicode
+     │   │   ├── unicode_literals
+     │   │   ├── utf8
+     │   │   ├── while
+     │   │   ├── with
+     │   │   └── with_statement
+     │   ├── racket-mode
+     │   │   ├── case
+     │   │   ├── caselambda
+     │   │   ├── cond
+     │   │   ├── define
+     │   │   ├── do
+     │   │   ├── for
+     │   │   ├── if
+     │   │   ├── lambda
+     │   │   ├── let
+     │   │   ├── match
+     │   │   ├── unless
+     │   │   └── when
+     │   ├── reason-mode
+     │   │   ├── component
+     │   │   ├── for
+     │   │   ├── function
+     │   │   ├── functor
+     │   │   ├── if
+     │   │   ├── ifelse
+     │   │   ├── let
+     │   │   ├── match_case
+     │   │   ├── module
+     │   │   ├── switch
+     │   │   └── while
+     │   ├── rjsx-mode
+     │   │   ├── GraphQL
+     │   │   │   ├── expgql
+     │   │   │   └── graphql
+     │   │   ├── Jest
+     │   │   │   ├── desc
+     │   │   │   ├── snrtest
+     │   │   │   ├── sntest
+     │   │   │   ├── srtest
+     │   │   │   ├── stest
+     │   │   │   ├── test
+     │   │   │   └── tit
+     │   │   ├── React
+     │   │   │   ├── cdm
+     │   │   │   ├── cdup
+     │   │   │   ├── cp
+     │   │   │   ├── cref
+     │   │   │   ├── cs
+     │   │   │   ├── cwm
+     │   │   │   ├── cwr
+     │   │   │   ├── cwun
+     │   │   │   ├── cwup
+     │   │   │   ├── est
+     │   │   │   ├── fref
+     │   │   │   ├── gdsfp
+     │   │   │   ├── gsbu
+     │   │   │   ├── hoc
+     │   │   │   ├── impt
+     │   │   │   ├── imr
+     │   │   │   ├── imrc
+     │   │   │   ├── imrcp
+     │   │   │   ├── imrd
+     │   │   │   ├── imrm
+     │   │   │   ├── imrmp
+     │   │   │   ├── imrpc
+     │   │   │   ├── imrpcp
+     │   │   │   ├── imrr
+     │   │   │   ├── props
+     │   │   │   ├── pta
+     │   │   │   ├── ptany
+     │   │   │   ├── ptao
+     │   │   │   ├── ptaor
+     │   │   │   ├── ptar
+     │   │   │   ├── ptb
+     │   │   │   ├── ptbr
+     │   │   │   ├── pte
+     │   │   │   ├── ptel
+     │   │   │   ├── ptelr
+     │   │   │   ├── pter
+     │   │   │   ├── ptet
+     │   │   │   ├── ptetr
+     │   │   │   ├── ptf
+     │   │   │   ├── ptfr
+     │   │   │   ├── pti
+     │   │   │   ├── ptir
+     │   │   │   ├── ptn
+     │   │   │   ├── ptnd
+     │   │   │   ├── ptndr
+     │   │   │   ├── ptnr
+     │   │   │   ├── pto
+     │   │   │   ├── ptoo
+     │   │   │   ├── ptoor
+     │   │   │   ├── ptor
+     │   │   │   ├── pts
+     │   │   │   ├── ptsh
+     │   │   │   ├── ptshr
+     │   │   │   ├── ptsr
+     │   │   │   ├── ptypes
+     │   │   │   ├── rafc
+     │   │   │   ├── rafce
+     │   │   │   ├── rafcp
+     │   │   │   ├── rcc
+     │   │   │   ├── rccp
+     │   │   │   ├── rce
+     │   │   │   ├── rcep
+     │   │   │   ├── rconst
+     │   │   │   ├── rcontext
+     │   │   │   ├── ren
+     │   │   │   ├── rfc
+     │   │   │   ├── rfce
+     │   │   │   ├── rfcp
+     │   │   │   ├── rmc
+     │   │   │   ├── rmcp
+     │   │   │   ├── rpc
+     │   │   │   ├── rpce
+     │   │   │   ├── rpcp
+     │   │   │   ├── scu
+     │   │   │   ├── ssf
+     │   │   │   ├── sst
+     │   │   │   └── state
+     │   │   ├── React-Native
+     │   │   │   ├── imrn
+     │   │   │   ├── rnc
+     │   │   │   ├── rnce
+     │   │   │   ├── rncs
+     │   │   │   ├── rnpc
+     │   │   │   ├── rnpce
+     │   │   │   └── rnstyle
+     │   │   └── Redux
+     │   │       ├── hocredux
+     │   │       ├── rcredux
+     │   │       ├── redux
+     │   │       ├── reduxmap
+     │   │       ├── rncredux
+     │   │       ├── rxaction
+     │   │       ├── rxconst
+     │   │       ├── rxreducer
+     │   │       └── rxselect
+     │   ├── rst-mode
+     │   │   ├── autoclass
+     │   │   ├── autofunction
+     │   │   ├── automodule
+     │   │   ├── chapter
+     │   │   ├── class
+     │   │   ├── code
+     │   │   ├── digraph
+     │   │   ├── function
+     │   │   ├── graph
+     │   │   ├── graphviz
+     │   │   ├── image
+     │   │   ├── inheritance
+     │   │   ├── literal_include
+     │   │   ├── meta
+     │   │   ├── module
+     │   │   ├── parsed_literal
+     │   │   ├── pause
+     │   │   ├── section
+     │   │   ├── term
+     │   │   ├── title
+     │   │   ├── url
+     │   │   ├── verbatim
+     │   │   └── warning
+     │   ├── ruby-mode
+     │   │   ├── #
+     │   │   ├── =b
+     │   │   ├── Comp
+     │   │   ├── Enum
+     │   │   ├── GLOB
+     │   │   ├── all
+     │   │   ├── am
+     │   │   ├── any
+     │   │   ├── app
+     │   │   ├── attribute
+     │   │   ├── bench
+     │   │   ├── bm
+     │   │   ├── case
+     │   │   ├── cla
+     │   │   ├── cls
+     │   │   ├── collect
+     │   │   ├── dee
+     │   │   ├── def
+     │   │   ├── deli
+     │   │   ├── det
+     │   │   ├── dow
+     │   │   ├── ea
+     │   │   ├── eac
+     │   │   ├── eai
+     │   │   ├── eav
+     │   │   ├── eawi
+     │   │   ├── for
+     │   │   ├── forin
+     │   │   ├── formula
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── inc
+     │   │   ├── init
+     │   │   ├── inject
+     │   │   ├── map
+     │   │   ├── mm
+     │   │   ├── mod
+     │   │   ├── pry
+     │   │   ├── r
+     │   │   ├── rb
+     │   │   ├── red
+     │   │   ├── reject
+     │   │   ├── rel
+     │   │   ├── req
+     │   │   ├── rpry
+     │   │   ├── rw
+     │   │   ├── select
+     │   │   ├── str
+     │   │   ├── test\ class
+     │   │   ├── tim
+     │   │   ├── to_
+     │   │   ├── tu
+     │   │   ├── until
+     │   │   ├── upt
+     │   │   ├── w
+     │   │   ├── when
+     │   │   ├── while
+     │   │   ├── y
+     │   │   └── zip
+     │   ├── rust-mode
+     │   │   ├── allow
+     │   │   ├── allow!
+     │   │   ├── assert
+     │   │   ├── asserteq
+     │   │   ├── case
+     │   │   ├── cfg
+     │   │   ├── cfg=
+     │   │   ├── closure
+     │   │   ├── crate
+     │   │   ├── deny
+     │   │   ├── deny!
+     │   │   ├── derive
+     │   │   ├── display
+     │   │   ├── drop
+     │   │   ├── enum
+     │   │   ├── eprint
+     │   │   ├── eprintln
+     │   │   ├── fn
+     │   │   ├── fnr
+     │   │   ├── fns
+     │   │   ├── fnw
+     │   │   ├── for
+     │   │   ├── from
+     │   │   ├── fromstr
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── ifl
+     │   │   ├── impl
+     │   │   ├── implt
+     │   │   ├── let
+     │   │   ├── letm
+     │   │   ├── lett
+     │   │   ├── lettm
+     │   │   ├── loop
+     │   │   ├── macro
+     │   │   ├── main
+     │   │   ├── match
+     │   │   ├── new
+     │   │   ├── pfn
+     │   │   ├── pfnr
+     │   │   ├── pfns
+     │   │   ├── pfnw
+     │   │   ├── print
+     │   │   ├── println
+     │   │   ├── result
+     │   │   ├── spawn
+     │   │   ├── static
+     │   │   ├── struct
+     │   │   ├── test
+     │   │   ├── testmod
+     │   │   ├── trait
+     │   │   ├── type
+     │   │   ├── union
+     │   │   ├── warn
+     │   │   ├── warn!
+     │   │   ├── while
+     │   │   └── whilel
+     │   ├── scala-mode
+     │   │   ├── app
+     │   │   ├── case
+     │   │   ├── cc
+     │   │   ├── co
+     │   │   ├── cons
+     │   │   ├── def
+     │   │   ├── doc
+     │   │   ├── docfun
+     │   │   ├── for
+     │   │   ├── if
+     │   │   ├── ls
+     │   │   ├── main
+     │   │   ├── match
+     │   │   ├── ob
+     │   │   ├── throw
+     │   │   ├── try
+     │   │   └── valueclass
+     │   ├── sh-mode
+     │   │   ├── args
+     │   │   ├── bang
+     │   │   ├── case
+     │   │   ├── for\ loop
+     │   │   ├── function
+     │   │   ├── if
+     │   │   ├── ife
+     │   │   ├── safe-bang
+     │   │   ├── script-dir
+     │   │   ├── select
+     │   │   ├── until
+     │   │   └── while
+     │   ├── snippet-mode
+     │   │   ├── cont
+     │   │   ├── elisp
+     │   │   ├── field
+     │   │   ├── group
+     │   │   ├── mirror
+     │   │   └── vars
+     │   ├── sql-mode
+     │   │   ├── column
+     │   │   ├── constraint
+     │   │   ├── constraint.1
+     │   │   ├── create
+     │   │   ├── create.1
+     │   │   ├── insert
+     │   │   └── references
+     │   ├── swift-mode
+     │   │   ├── available
+     │   │   ├── checkversion
+     │   │   ├── dispatchafter
+     │   │   ├── dispatchasync
+     │   │   ├── dispatchmain
+     │   │   ├── documentdirectory
+     │   │   ├── forcase
+     │   │   ├── fori
+     │   │   ├── func
+     │   │   ├── if
+     │   │   ├── initcoder
+     │   │   ├── let
+     │   │   ├── mark
+     │   │   ├── prop
+     │   │   ├── sortarrayofstrings
+     │   │   ├── trycatch
+     │   │   ├── uialertcontroller
+     │   │   ├── uicollectionviewdatasource
+     │   │   ├── uicollectionviewdelegate
+     │   │   ├── uitableviewdatasource
+     │   │   ├── uitableviewdelegate
+     │   │   ├── uiviewcontrollerlifecycle
+     │   │   ├── var
+     │   │   └── while
+     │   ├── terraform-mode
+     │   │   ├── data
+     │   │   ├── google
+     │   │   │   ├── app_engine_resources
+     │   │   │   │   └── google_app_engine_application
+     │   │   │   ├── bigquery_resources
+     │   │   │   │   ├── google_bigquery_dataset
+     │   │   │   │   └── google_bigquery_table
+     │   │   │   ├── bigtable_resources
+     │   │   │   │   ├── google_bigtable_instance
+     │   │   │   │   └── google_bigtable_table
+     │   │   │   ├── binary_authorization_resources
+     │   │   │   │   ├── google_binary_authorization_attestor
+     │   │   │   │   └── google_binary_authorization_policy
+     │   │   │   ├── cloud_build_resources
+     │   │   │   │   └── google_cloudbuild_trigger
+     │   │   │   ├── cloud_composer_resources
+     │   │   │   │   └── google_composer_environment
+     │   │   │   ├── cloud_functions_resources
+     │   │   │   │   └── google_cloudfunctions_function
+     │   │   │   ├── compute_engine_resources
+     │   │   │   │   ├── google_compute_address
+     │   │   │   │   ├── google_compute_attached_disk
+     │   │   │   │   ├── google_compute_autoscaler
+     │   │   │   │   ├── google_compute_backend_bucket
+     │   │   │   │   ├── google_compute_backend_service
+     │   │   │   │   ├── google_compute_disk
+     │   │   │   │   ├── google_compute_firewall
+     │   │   │   │   ├── google_compute_forwarding_rule
+     │   │   │   │   ├── google_compute_global_address
+     │   │   │   │   ├── google_compute_global_forwarding_rule
+     │   │   │   │   ├── google_compute_health_check
+     │   │   │   │   ├── google_compute_http_health_check
+     │   │   │   │   ├── google_compute_https_health_check
+     │   │   │   │   ├── google_compute_image
+     │   │   │   │   ├── google_compute_instance
+     │   │   │   │   ├── google_compute_instance_from_template
+     │   │   │   │   ├── google_compute_instance_group
+     │   │   │   │   ├── google_compute_instance_group_manager
+     │   │   │   │   ├── google_compute_instance_template
+     │   │   │   │   ├── google_compute_interconnect_attachment
+     │   │   │   │   ├── google_compute_network
+     │   │   │   │   ├── google_compute_network_peering
+     │   │   │   │   ├── google_compute_project_metadata
+     │   │   │   │   ├── google_compute_project_metadata_item
+     │   │   │   │   ├── google_compute_region_autoscaler
+     │   │   │   │   ├── google_compute_region_backend_service
+     │   │   │   │   ├── google_compute_region_disk
+     │   │   │   │   ├── google_compute_region_instance_group_manager
+     │   │   │   │   ├── google_compute_route
+     │   │   │   │   ├── google_compute_router
+     │   │   │   │   ├── google_compute_router_interface
+     │   │   │   │   ├── google_compute_router_nat
+     │   │   │   │   ├── google_compute_router_peer
+     │   │   │   │   ├── google_compute_security_policy
+     │   │   │   │   ├── google_compute_shared_vpc_host_project
+     │   │   │   │   ├── google_compute_shared_vpc_service_project
+     │   │   │   │   ├── google_compute_snapshot
+     │   │   │   │   ├── google_compute_ssl_certificate
+     │   │   │   │   ├── google_compute_ssl_policy
+     │   │   │   │   ├── google_compute_subnetwork
+     │   │   │   │   ├── google_compute_subnetwork_iam_binding
+     │   │   │   │   ├── google_compute_subnetwork_iam_member
+     │   │   │   │   ├── google_compute_subnetwork_iam_policy
+     │   │   │   │   ├── google_compute_target_http_proxy
+     │   │   │   │   ├── google_compute_target_https_proxy
+     │   │   │   │   ├── google_compute_target_pool
+     │   │   │   │   ├── google_compute_target_ssl_proxy
+     │   │   │   │   ├── google_compute_target_tcp_proxy
+     │   │   │   │   ├── google_compute_url_map
+     │   │   │   │   ├── google_compute_vpn_gateway
+     │   │   │   │   └── google_compute_vpn_tunnel
+     │   │   │   ├── container_analysis_resources
+     │   │   │   │   └── google_container_analysis_note
+     │   │   │   ├── container_engine_resources
+     │   │   │   │   ├── google_container_cluster
+     │   │   │   │   └── google_container_node_pool
+     │   │   │   ├── data_sources
+     │   │   │   │   ├── google_active_folder
+     │   │   │   │   ├── google_billing_account
+     │   │   │   │   ├── google_client_config
+     │   │   │   │   ├── google_cloudfunctions_function_data
+     │   │   │   │   ├── google_compute_address_data
+     │   │   │   │   ├── google_compute_backend_service_data
+     │   │   │   │   ├── google_compute_default_service_account
+     │   │   │   │   ├── google_compute_forwarding_rule_data
+     │   │   │   │   ├── google_compute_global_address_data
+     │   │   │   │   ├── google_compute_image_data
+     │   │   │   │   ├── google_compute_instance_data
+     │   │   │   │   ├── google_compute_instance_group_data
+     │   │   │   │   ├── google_compute_lb_ip_ranges
+     │   │   │   │   ├── google_compute_network_data
+     │   │   │   │   ├── google_compute_region_instance_group
+     │   │   │   │   ├── google_compute_regions
+     │   │   │   │   ├── google_compute_ssl_policy_data
+     │   │   │   │   ├── google_compute_subnetwork_data
+     │   │   │   │   ├── google_compute_vpn_gateway_data
+     │   │   │   │   ├── google_compute_zones
+     │   │   │   │   ├── google_container_cluster_data
+     │   │   │   │   ├── google_container_engine_versions
+     │   │   │   │   ├── google_container_registry_image
+     │   │   │   │   ├── google_container_registry_repository
+     │   │   │   │   ├── google_dns_managed_zone_data
+     │   │   │   │   ├── google_folder_data
+     │   │   │   │   ├── google_iam_policy
+     │   │   │   │   ├── google_iam_role
+     │   │   │   │   ├── google_kms_secret
+     │   │   │   │   ├── google_netblock_ip_ranges
+     │   │   │   │   ├── google_organization
+     │   │   │   │   ├── google_project_data
+     │   │   │   │   ├── google_project_services_data
+     │   │   │   │   ├── google_service_account_data
+     │   │   │   │   ├── google_service_account_key_data
+     │   │   │   │   ├── google_storage_object_signed_url
+     │   │   │   │   └── google_storage_project_service_account
+     │   │   │   ├── dataflow_resources
+     │   │   │   │   └── google_dataflow_job
+     │   │   │   ├── dataproc_resources
+     │   │   │   │   ├── google_dataproc_cluster
+     │   │   │   │   └── google_dataproc_job
+     │   │   │   ├── dns_resources
+     │   │   │   │   ├── google_dns_managed_zone
+     │   │   │   │   └── google_dns_record_set
+     │   │   │   ├── endpoints_resources
+     │   │   │   │   └── google_endpoints_service
+     │   │   │   ├── filestore_resources
+     │   │   │   │   └── google_filestore_instance
+     │   │   │   ├── gcp_resources
+     │   │   │   │   ├── google_billing_account_iam_binding
+     │   │   │   │   ├── google_billing_account_iam_member
+     │   │   │   │   ├── google_billing_account_iam_policy
+     │   │   │   │   ├── google_folder
+     │   │   │   │   ├── google_folder_iam_binding
+     │   │   │   │   ├── google_folder_iam_member
+     │   │   │   │   ├── google_folder_iam_policy
+     │   │   │   │   ├── google_folder_organization_policy
+     │   │   │   │   ├── google_organization_iam_binding
+     │   │   │   │   ├── google_organization_iam_custom_role
+     │   │   │   │   ├── google_organization_iam_member
+     │   │   │   │   ├── google_organization_iam_policy
+     │   │   │   │   ├── google_organization_policy
+     │   │   │   │   ├── google_project
+     │   │   │   │   ├── google_project_iam_binding
+     │   │   │   │   ├── google_project_iam_custom_role
+     │   │   │   │   ├── google_project_iam_member
+     │   │   │   │   ├── google_project_iam_policy
+     │   │   │   │   ├── google_project_organization_policy
+     │   │   │   │   ├── google_project_service
+     │   │   │   │   ├── google_project_services
+     │   │   │   │   ├── google_project_usage_export_bucket
+     │   │   │   │   ├── google_resource_manager_lien
+     │   │   │   │   ├── google_service_account
+     │   │   │   │   ├── google_service_account_iam_binding
+     │   │   │   │   ├── google_service_account_iam_member
+     │   │   │   │   ├── google_service_account_iam_policy
+     │   │   │   │   └── google_service_account_key
+     │   │   │   ├── iot_core
+     │   │   │   │   └── google_cloudiot_registry
+     │   │   │   ├── key_management_service_resources
+     │   │   │   │   ├── google_kms_crypto_key
+     │   │   │   │   ├── google_kms_crypto_key_iam_binding
+     │   │   │   │   ├── google_kms_crypto_key_iam_member
+     │   │   │   │   ├── google_kms_key_ring
+     │   │   │   │   ├── google_kms_key_ring_iam_binding
+     │   │   │   │   ├── google_kms_key_ring_iam_member
+     │   │   │   │   └── google_kms_key_ring_iam_policy
+     │   │   │   ├── pubsub_resources
+     │   │   │   │   ├── google_pubsub_subscription
+     │   │   │   │   ├── google_pubsub_subscription_iam_binding
+     │   │   │   │   ├── google_pubsub_subscription_iam_member
+     │   │   │   │   ├── google_pubsub_subscription_iam_policy
+     │   │   │   │   ├── google_pubsub_topic
+     │   │   │   │   ├── google_pubsub_topic_iam_binding
+     │   │   │   │   ├── google_pubsub_topic_iam_member
+     │   │   │   │   └── google_pubsub_topic_iam_policy
+     │   │   │   ├── redis_resources
+     │   │   │   │   └── google_redis_instance
+     │   │   │   ├── runtimeconfig_resources
+     │   │   │   │   ├── google_runtimeconfig_config
+     │   │   │   │   └── google_runtimeconfig_variable
+     │   │   │   ├── service_networking_resources
+     │   │   │   │   └── google_service_networking_connection
+     │   │   │   ├── source_repositories_resources
+     │   │   │   │   └── google_sourcerepo_repository
+     │   │   │   ├── spanner_resources
+     │   │   │   │   ├── google_spanner_database
+     │   │   │   │   ├── google_spanner_database_iam_binding
+     │   │   │   │   ├── google_spanner_database_iam_member
+     │   │   │   │   ├── google_spanner_database_iam_policy
+     │   │   │   │   ├── google_spanner_instance
+     │   │   │   │   ├── google_spanner_instance_iam_binding
+     │   │   │   │   ├── google_spanner_instance_iam_member
+     │   │   │   │   └── google_spanner_instance_iam_policy
+     │   │   │   ├── sql_resources
+     │   │   │   │   ├── google_sql_database
+     │   │   │   │   ├── google_sql_database_instance
+     │   │   │   │   ├── google_sql_ssl_cert
+     │   │   │   │   └── google_sql_user
+     │   │   │   ├── stackdriver_logging_resources
+     │   │   │   │   ├── google_logging_billing_account_exclusion
+     │   │   │   │   ├── google_logging_billing_account_sink
+     │   │   │   │   ├── google_logging_folder_exclusion
+     │   │   │   │   ├── google_logging_folder_sink
+     │   │   │   │   ├── google_logging_organization_exclusion
+     │   │   │   │   ├── google_logging_organization_sink
+     │   │   │   │   ├── google_logging_project_exclusion
+     │   │   │   │   └── google_logging_project_sink
+     │   │   │   ├── stackdriver_monitoring_resources
+     │   │   │   │   ├── google_monitoring_alert_policy
+     │   │   │   │   ├── google_monitoring_group
+     │   │   │   │   ├── google_monitoring_notification_channel
+     │   │   │   │   └── google_monitoring_uptime_check_config
+     │   │   │   └── storage_resources
+     │   │   │       ├── google_storage_bucket
+     │   │   │       ├── google_storage_bucket_acl
+     │   │   │       ├── google_storage_bucket_iam_binding
+     │   │   │       ├── google_storage_bucket_iam_member
+     │   │   │       ├── google_storage_bucket_iam_policy
+     │   │   │       ├── google_storage_bucket_object
+     │   │   │       ├── google_storage_default_object_access_control
+     │   │   │       ├── google_storage_default_object_acl
+     │   │   │       ├── google_storage_notification
+     │   │   │       ├── google_storage_object_access_control
+     │   │   │       └── google_storage_object_acl
+     │   │   ├── locals
+     │   │   ├── module
+     │   │   ├── output
+     │   │   ├── provider
+     │   │   ├── resource
+     │   │   ├── terraform
+     │   │   └── variable
+     │   ├── text-mode
+     │   ├── tuareg-mode
+     │   │   ├── assert
+     │   │   ├── docstring
+     │   │   ├── for
+     │   │   ├── fun
+     │   │   ├── guard
+     │   │   ├── ifthen
+     │   │   ├── ifthenelse
+     │   │   ├── let
+     │   │   ├── list_comprehension
+     │   │   ├── main
+     │   │   ├── match
+     │   │   ├── module
+     │   │   ├── open
+     │   │   ├── printf
+     │   │   ├── rec
+     │   │   ├── try
+     │   │   ├── type
+     │   │   ├── type_type
+     │   │   ├── val
+     │   │   └── while
+     │   ├── typerex-mode
+     │   ├── typescript-mode
+     │   ├── udev-mode
+     │   │   ├── ENV
+     │   │   ├── GOTO
+     │   │   ├── KERNEL
+     │   │   ├── add
+     │   │   ├── env$
+     │   │   └── run
+     │   ├── web-mode
+     │   └── yaml-mode
+     │       ├── entry
+     │       ├── list
+     │       └── section
+     ├── yasnippet-snippets-autoloads.el
+     ├── yasnippet-snippets-pkg.el
+     ├── yasnippet-snippets.el
+     └── yasnippet-snippets.elc
+
+     131 directories, 1920 files
+     #+end_example
+
+**** snippet modes that look useful to me
+     - org mode
+     - python mode
+     - sh mode
+
+**** DOING yasnippet doc
+     - State "DOING"      from              [2020-03-10 Tue 21:59]
+     Prefer [[https://github.com/joaotavora/yasnippet#use-yas-minor-mode-on-a-per-buffer-basis][per-mode configuration]] over global mode.
+
+     It looks like I also [[https://github.com/joaotavora/yasnippet#where-are-the-snippets][want yasnippets-snippets]]
+
+***** DONE [[http://joaotavora.github.io/yasnippet/snippet-organization.html][organizing snippets]]
+     - State "DONE"       from              [2020-03-10 Tue 21:58]
+
+      according to the docs [[http://joaotavora.github.io/yasnippet/snippet-organization.html#org10ee311][yas-snippet-dirs default]] takes into account both a personal snippet dir, and the bundled snippets.
+      so no need for me to over ride that one
+
+***** DONE [[http://joaotavora.github.io/yasnippet/snippet-expansion.html][expanding snippets]]
+      - State "DONE"       from              [2020-03-10 Tue 21:59]
+      I can expand a mode specific snippet via =C-c & C-s=
+
+***** [[http://joaotavora.github.io/yasnippet/snippet-development.html][writing snippets]]
+
+***** [[http://joaotavora.github.io/yasnippet/snippet-menu.html][yasnippet menu]]
+
+***** [[http://joaotavora.github.io/yasnippet/faq.html][FAQ]]
+
+***** [[http://joaotavora.github.io/yasnippet/snippet-reference.html][Reference]]
+
+
+
+
+**** DONE what yasnippets config did I used to have?
+
+     - State "DONE"       from              [2020-03-10 Tue 21:59]
+     [[file:jeff-classic-init.el::(use-package%20yasnippet][here it is]]
+
+     it looks pretty vanilla; just with =yas-global-mode= seems a bit questionable to me.
+
+*** consider re-adding try to emacs
 *** DOING explore dired mode
     - State "DOING"      from "TODO"       [2019-09-09 Mon 08:11]
 

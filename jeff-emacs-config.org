@@ -974,6 +974,17 @@
     #+END_SRC
 
 * Programming Support
+** yasnippets
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package yasnippet
+       :config
+       (use-package yasnippet-snippets)
+       (yas-reload-all)
+       (add-hook 'prog-mode-hook #'yas-minor-mode)
+       (add-hook 'org-mode-hook #'yas-minor-mode))
+   #+END_SRC
+
 ** C Style
 
    According to cc-styles.el, the function =c-add-style= is the preferred way to define C style.

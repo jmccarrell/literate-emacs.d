@@ -389,6 +389,12 @@
 
 (setq org-babel-python-command "python3")
 
+(use-package yasnippet
+  :config
+  (use-package yasnippet-snippets)
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook #'yas-minor-mode))
+
 (use-package crux
   :bind
   (
