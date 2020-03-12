@@ -396,6 +396,11 @@
   (add-hook 'prog-mode-hook #'yas-minor-mode)
   (add-hook 'org-mode-hook #'yas-minor-mode))
 
+(use-package auto-yasnippet
+  :after yasnippet
+  :bind (("s-w" . aya-create)
+         ("s-y" . aya-expand)))
+
 (use-package crux
   :bind
   (
