@@ -393,7 +393,8 @@
   :config
   (use-package yasnippet-snippets)
   (yas-reload-all)
-  (add-hook 'prog-mode-hook #'yas-minor-mode))
+  (add-hook 'prog-mode-hook #'yas-minor-mode)
+  (add-hook 'org-mode-hook #'yas-minor-mode))
 
 (use-package crux
   :bind

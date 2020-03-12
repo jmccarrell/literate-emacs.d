@@ -296,7 +296,7 @@
      (setq tab-width 2)
    #+END_SRC
 
-   Tab for competion is wired deeply into my emacs-fingers.
+   Tab for completion is wired deeply into my emacs-fingers.
 
    #+BEGIN_SRC emacs-lisp
      (setq-default tab-always-indent 'complete)
@@ -984,6 +984,13 @@
        (add-hook 'prog-mode-hook #'yas-minor-mode)
        (add-hook 'org-mode-hook #'yas-minor-mode))
    #+END_SRC
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package auto-yasnippet
+       :after yasnippet
+       :bind (("s-w" . aya-create)
+              ("s-y" . aya-expand)))
+   #+end_src
 
 ** C Style
 
