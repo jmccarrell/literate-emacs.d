@@ -121,7 +121,8 @@ So the answer is that:
     - both on the web and to my local copies
 
 *** setup occur and how it works with swiper
-*** DOING configure yasnippet and auto yasnippet
+*** DONE configure yasnippet and auto yasnippet
+    - State "DONE"       from "DOING"      [2020-03-11 Wed 19:16]
     - State "DOING"      from              [2020-03-10 Tue 20:49]
 
     Mike Z has a couple of nice videos here

@@ -1045,6 +1045,16 @@
      (use-package json-mode)
    #+END_SRC
 
+* Integration with the Outside World
+** atomic chrome
+
+   #+begin_src emacs-lisp :tangle yes
+     (use-package atomic-chrome
+       :init
+       (ignore-errors
+         (atomic-chrome-server-start)))
+   #+end_src
+
 * Report Startup Timing
 
   I'm pretty sure I got this from John Weigley.
