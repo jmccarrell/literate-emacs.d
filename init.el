@@ -396,6 +396,11 @@
   (add-hook 'prog-mode-hook #'yas-minor-mode)
   (add-hook 'org-mode-hook #'yas-minor-mode))
 
+(use-package auto-yasnippet
+  :after yasnippet
+  :bind (("s-w" . aya-create)
+         ("s-y" . aya-expand)))
+
 (use-package crux
   :bind
   (
@@ -420,6 +425,11 @@
   (add-to-list 'auto-mode-alist '("\\.es6$" . js2-mode)))
 
 (use-package json-mode)
+
+(use-package atomic-chrome
+  :init
+  (ignore-errors
+    (atomic-chrome-server-start)))
 
 ;;; Post initialization
 
