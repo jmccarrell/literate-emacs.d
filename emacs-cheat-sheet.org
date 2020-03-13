@@ -1,3 +1,63 @@
+* Jeffs Frequently Used Bindings
+** Recent bindings to get used to
+
+   | key         | description                |
+   |-------------+----------------------------|
+   | =C-c & C-s= | choose a snippet to insert |
+   | =s-x=       | create an auto-snippet     |
+   | =s-y=       | expand auto-snippet        |
+
+** Global bindings
+
+   | key         | description                                              |
+   |-------------+----------------------------------------------------------|
+   | C-c C-s     | schedule a task on a date                                |
+   | C-c l       | store a link, like in a file; region becomes search text |
+   | C-c C-l     | create or edit an org mode link                          |
+   | C-c C-x C-s | archive a subtree                                        |
+
+** Projectile bindings
+
+   bbatsov's [[https://github.com/bbatsov/projectile/blob/master/doc/usage.md#interactive-commands][key bindings table]]
+
+   | key       | description             |
+   |-----------+-------------------------|
+   | C-c p f   | list files in project   |
+   | C-c p s s | grep project for string |
+   | C-c p k   | kill project buffers    |
+
+** Org mode bindings
+
+   | key         | description                                  |
+   |-------------+----------------------------------------------|
+   | C-c %       | Push the current position onto the mark ring |
+   | C-c C-v d   | demarcate a block (select region first)      |
+   | C-c C-x C-s | move subtree to archive file                 |
+
+** Register, Bookmark & Mark bindings
+
+   | key binding | description                                  |
+   |-------------+----------------------------------------------|
+   | C-x r l     | list available bookmarks                     |
+   | C-x r m     | set a bookmark                               |
+   | C-x r b     | jump to a bookmark                           |
+   |-------------+----------------------------------------------|
+   | C-x r s     | store region in register                     |
+   | C-x r i     | insert contents of register                  |
+   | C-x r SPC   | store point in register                      |
+   | C-x r j     | jump to register                             |
+   |-------------+----------------------------------------------|
+   | C-SPC       | set the mark                                 |
+   | C-u C-SPC   | jump to mark; repeat to go back in mark ring |
+
+** Agenda view bindings
+
+   | key    | description                    |
+   |--------+--------------------------------|
+   | t      | move a task through its states |
+   | z      | add a note to a task           |
+   | a or $ | archive done tasks             |
+
 * Dired
 ** Key bindings
 
@@ -38,30 +98,6 @@
 ** Rectangle Registers
 
    - fill this out from [Rectangle Registers](https://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangle-Registers.html#Rectangle-Registers)
-
-* Outline key bindings
-
-  - outline minor mode (not used in org mode) uses prefix `C-c @`
-
-** Outline Motion
-
-   | key     | used for                                                                  |
-   |---------+---------------------------------------------------------------------------|
-   | C-c C-n | move point to next visible heading line                                   |
-   | C-c C-p | ... previous ...                                                          |
-   | C-c C-f | move point to next visibile heading line at the same level                |
-   | C-c C-b | ... previous ...                                                          |
-   | C-c C-u | move point to a lower-level (bigger, more inclusive) visible heading line |
-
-** Outline Visibility
-
-   - the outline visibility commands are superceded in org mode by TAB cycling.
-
-   | key     | used for                                                         |
-   |---------+------------------------------------------------------------------|
-   | C-c C-c | make current heading line invisibile  (not in org mode; use TAB) |
-   | C-c C-e | ... visible (not in org mode; use TAB)                           |
-   | ...     | many others that are not terribly releveant in org mode          |
 
 * Org key bindings
 ** References
@@ -413,75 +449,22 @@
   | C-x r m     | set a bookmark           |
   | C-x r b     | jump to a bookmark       |
 
-* Jeffs Frequently Used Bindings
-** Global bindings
+* Company bindings
 
-   | key         | description                                              |
-   |-------------+----------------------------------------------------------|
-   | C-c C-u     | outline: move "out"; up to a higher, broader level       |
-   | C-c C-s     | schedule a task on a date                                |
-   | C-C l       | store a link, like in a file; region becomes search text |
-   | C-c C-l     | create or edit an org mode link                          |
-   | C-c C-x C-s | archive a subtree                                        |
+** While completing
 
-** Org mode bindings
+   | key         | description                  |
+   |-------------+------------------------------|
+   | M-n/p       | next/prev in completion list |
+   | C-s C-r C-o | search in completions        |
+   | M-(digit)   | pick the nth item in list    |
 
-   | key         | description                                  |
-   |-------------+----------------------------------------------|
-   | C-c %       | Push the current position onto the mark ring |
-   | C-c C-v d   | demarcate a block (select region first)      |
-   | C-c C-x C-s | move subtree to archive file                 |
+** When a completion is selected
 
-** Register, Bookmark & Mark bindings
-
-   | key binding | description                                  |
-   |-------------+----------------------------------------------|
-   | C-x r l     | list available bookmarks                     |
-   | C-x r m     | set a bookmark                               |
-   | C-x r b     | jump to a bookmark                           |
-   |-------------+----------------------------------------------|
-   | C-x r s     | store region in register                     |
-   | C-x r i     | insert contents of register                  |
-   | C-x r SPC   | store point in register                      |
-   | C-x r j     | jump to register                             |
-   |-------------+----------------------------------------------|
-   | C-SPC       | set the mark                                 |
-   | C-u C-SPC   | jump to mark; repeat to go back in mark ring |
-
-** Agenda view bindings
-
-   | key    | description                    |
-   |--------+--------------------------------|
-   | t      | move a task through its states |
-   | z      | add a note to a task           |
-   | a or $ | archive done tasks             |
-
-** Company bindings
-
-*** While completing
-
-    | key         | description                  |
-    |-------------+------------------------------|
-    | M-n/p       | next/prev in completion list |
-    | C-s C-r C-o | search in completions        |
-    | M-(digit)   | pick the nth item in list    |
-
-*** When a completion is selected
-
-    | key  | description                  |
-    |------+------------------------------|
-    | <f1> | display docs                 |
-    | C-w  | see source of completed item |
-
-** projectile bindings
-
-   bbatsov's [[https://github.com/bbatsov/projectile/blob/master/doc/usage.md#interactive-commands][key bindings table]]
-
-   | key       | description             |
-   |-----------+-------------------------|
-   | C-c p f   | list files in project   |
-   | C-c p s s | grep project for string |
-   | C-c p k   | kill project buffers    |
+   | key  | description                  |
+   |------+------------------------------|
+   | <f1> | display docs                 |
+   | C-w  | see source of completed item |
 
 * Clojure / CIDER key bindings
 
@@ -502,3 +485,26 @@
    |-------------+----------------------------|
    | M-n, M-p    | cycle through repl history |
    | C-<ret>     | close parentheses and eval |
+* Outline key bindings
+
+  - outline minor mode (not used in org mode) uses prefix `C-c @`
+
+** Outline Motion
+
+   | key     | used for                                                                  |
+   |---------+---------------------------------------------------------------------------|
+   | C-c C-n | move point to next visible heading line                                   |
+   | C-c C-p | ... previous ...                                                          |
+   | C-c C-f | move point to next visibile heading line at the same level                |
+   | C-c C-b | ... previous ...                                                          |
+   | C-c C-u | move point to a lower-level (bigger, more inclusive) visible heading line |
+
+** Outline Visibility
+
+   - the outline visibility commands are superceded in org mode by TAB cycling.
+
+   | key     | used for                                                         |
+   |---------+------------------------------------------------------------------|
+   | C-c C-c | make current heading line invisibile  (not in org mode; use TAB) |
+   | C-c C-e | ... visible (not in org mode; use TAB)                           |
+   | ...     | many others that are not terribly releveant in org mode          |

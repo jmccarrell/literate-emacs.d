@@ -121,6 +121,31 @@ So the answer is that:
     - both on the web and to my local copies
 
 *** setup occur and how it works with swiper
+*** DOING add a recent keybinding section to visible docs
+    - State "DOING"      from              [2020-03-13 Fri 08:11]
+    the observation is that I often need a way to establish key combinations for recently acquired
+    functionality.
+
+    Examples:
+
+    tangle babel
+      : C-c C-v t
+
+    yasnippet / auto-yasnippet
+      : C-c & C-s   yas-insert-snippet
+      : s-w         aya-create
+      : s-y         aya-expand
+
+**** use =emacs-cheat-sheet= for this task
+     - [ ] refactor to put my most recently used bindings at the top
+     - [ ] add a new section "new bindings to get used to"
+
+*** figure out how to search at point with swiper
+    I often want to search for the text at point with swiper
+    Like I used to do with i-search
+
+    I'm sure this is possible; I just don't know how to do it.
+
 *** DONE configure yasnippet and auto yasnippet
     - State "DONE"       from "DOING"      [2020-03-11 Wed 19:16]
     - State "DOING"      from              [2020-03-10 Tue 20:49]
@@ -132,11 +157,6 @@ So the answer is that:
 
     In particular, the auto snippet functionality looks useful to my normal flow.
     and auto yasnippets is from aboabo
-
-     Read the docs for:
-     - yasnippet
-     - auto-yasnippet
-
 
 **** DONE what snippets do I have loaded?
      - State "DONE"       from              [2020-03-10 Tue 21:42]
@@ -2210,12 +2230,13 @@ So the answer is that:
      131 directories, 1920 files
      #+end_example
 
-**** snippet modes that look useful to me
+**** DONE snippet modes that look useful to me
+     - State "DONE"       from              [2020-03-12 Thu 21:08]
      - org mode
      - python mode
      - sh mode
 
-**** DOING yasnippet doc
+**** DOING read yasnippet docs
      - State "DOING"      from              [2020-03-10 Tue 21:59]
      Prefer [[https://github.com/joaotavora/yasnippet#use-yas-minor-mode-on-a-per-buffer-basis][per-mode configuration]] over global mode.
 
@@ -2238,9 +2259,6 @@ So the answer is that:
 ***** [[http://joaotavora.github.io/yasnippet/faq.html][FAQ]]
 
 ***** [[http://joaotavora.github.io/yasnippet/snippet-reference.html][Reference]]
-
-
-
 
 **** DONE what yasnippets config did I used to have?
 
