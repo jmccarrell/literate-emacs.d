@@ -3,9 +3,9 @@
 
    | key         | description                |
    |-------------+----------------------------|
-   | =C-c & C-s= | choose a snippet to insert |
-   | =s-x=       | create an auto-snippet     |
-   | =s-y=       | expand auto-snippet        |
+   | C-c & C-s   | choose a snippet to insert |
+   | s-x         | create an auto-snippet     |
+   | s-y         | expand auto-snippet        |
 
 ** Global bindings
 
