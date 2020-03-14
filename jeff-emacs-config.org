@@ -1045,6 +1045,26 @@
      (use-package json-mode)
    #+END_SRC
 
+** python
+
+   Prefer python3 in all cases.
+   This work presumes apriori that brew has installed python3 as the mac os python3 does not support readline.
+
+   #+begin_quote
+   > brew install python3
+   #+end_quote
+
+   #+begin_src emacs-lisp
+     (setq  python-shell-interpreter "python3")
+   #+end_src
+
+   Lets try elpy stock and see what happens
+   #+begin_src emacs-lisp
+     (use-package elpy
+       :init
+       (elpy-enable))
+   #+end_src
+
 * Integration with the Outside World
 ** atomic chrome
 

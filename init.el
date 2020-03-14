@@ -426,6 +426,12 @@
 
 (use-package json-mode)
 
+(setq  python-shell-interpreter "python3")
+
+(use-package elpy
+  :init
+  (elpy-enable))
+
 (use-package atomic-chrome
   :init
   (ignore-errors

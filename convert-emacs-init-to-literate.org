@@ -14,6 +14,139 @@
      - what does this mean?  I am not really sure.
 
 ** Next Up
+*** TODO build a better emacs / python working env
+   <2020-03-14 Sat>
+
+ Mike Z uses the inferior python process =C-c C-p= to test his python code
+ the binding in elpy is =C-c C-z=
+ Much like my use of the terminal
+
+ The interaction with virtualenv/pipenv makes thats style hard for me?
+ A: elpy has explicit support for virtual envs via =pyvenv=
+
+**** inferior python usage
+
+ answer: re-installing brew python3, and configuring emacs to prefer python3 works here.
+
+***** DONE working notes
+      - State "DONE"       from              [2020-03-14 Sat 13:33]
+ start in ~/tmp/foo.py
+
+ here is what i get:
+ #+begin_quote
+ Warning (python): Your ‘python-shell-interpreter’ doesn’t seem to support readline, yet ‘python-shell-completion-native-enable’ was t and "python" is not part of the ‘python-shell-completion-native-disabled-interpreters’ list.  Native completions have been disabled locally.
+ #+end_quote
+
+ what is my current python setup? nil
+
+ - [X] So try out the generic elpy install
+ and try inferior python again:
+
+ same result
+
+ #+begin_quote
+ Warning (python): Your ‘python-shell-interpreter’ doesn’t seem to support readline, yet ‘python-shell-completion-native-enable’ was t and "python" is not part of the ‘python-shell-completion-native-disabled-interpreters’ list.  Native completions have been disabled locally.
+ #+end_quote
+
+ So try generic elpy configuration,
+ ie, emacs menu -> elpy -> config
+ then I see:
+
+ #+begin_quote
+ Elpy Configuration
+
+ Emacs.............: 26.2
+ Elpy..............: 1.32.0
+ Virtualenv........: None
+ Interactive Python: python 2.7.16 (/usr/bin/python)
+ RPC virtualenv....: rpc-venv (/Users/jeff/.emacs.d/elpy/rpc-venv)
+  Python...........: python 3.7.7 (/Users/jeff/.emacs.d/elpy/rpc-venv/bin/python)
+  Jedi.............: 0.16.0
+  Rope.............: 0.16.0
+  Autopep8.........: 1.5
+  Yapf.............: 0.29.0
+  Black............: 19.10b0
+ Syntax checker....: Not found (flake8)
+
+ Warnings
+
+ You have not activated a virtual env. While Elpy supports this, it is often a good idea to work inside a
+ virtual env. You can use M-x pyvenv-activate or M-x pyvenv-workon to activate a virtual env.
+
+ The directory ~/.local/bin/ is not in your PATH. As there is no active virtualenv, installing Python
+ packages locally will place executables in that directory, so Emacs won't find them. If you are missing some
+ commands, do add this directory to your PATH -- and then do `elpy-rpc-restart'.
+
+ The configured syntax checker could not be found. Elpy uses this program to provide syntax checks of your
+ programs, so you might want to install one. Elpy by default uses flake8.
+
+ [Install flake8]
+
+ Options
+ #+end_quote
+
+ so elpy has explicit [[https://elpy.readthedocs.io/en/latest/concepts.html#virtual-envs][support for virtualenv]]
+ but at present, does not seem to ahve any support for pipenv? Correct.
+
+ however, a [[https://www.google.com/search?q=elpy+pipenv&oq=elpy+pipenv&aqs=chrome..69i57j69i60.2416j0j7&sourceid=chrome&ie=UTF-8][google search]] reveals many sources:
+ - the open since 2017 elpy issue: [[https://github.com/jorgenschaefer/elpy/issues/1217][Support for pipenv]]
+   - refers to pipenv.el
+
+ trying setting WORKON_HOME for emacs at invocation time:
+ #+begin_quote
+ ❯ WORKON_HOME=$HOME/.local/share/virtualenvs emacs foo.py
+ #+end_quote
+
+ this initial experiment did not work:
+
+ #+begin_quote
+ Elpy Configuration
+
+ Emacs.............: 26.2
+ Elpy..............: 1.32.0
+ Virtualenv........: None
+ Interactive Python: python 2.7.16 (/usr/bin/python)
+ RPC virtualenv....: rpc-venv (/Users/jeff/.emacs.d/elpy/rpc-venv)
+  Python...........: python 3.7.7 (/Users/jeff/.emacs.d/elpy/rpc-venv/bin/python)
+  Jedi.............: 0.16.0
+  Rope.............: 0.16.0
+  Autopep8.........: 1.5
+  Yapf.............: 0.29.0
+  Black............: 19.10b0
+ Syntax checker....: Not found (flake8)
+
+ Warnings
+
+ You have not activated a virtual env. While Elpy supports this, it is often a good idea to work inside a
+ virtual env. You can use M-x pyvenv-activate or M-x pyvenv-workon to activate a virtual env.
+
+ #+end_quote
+
+ NB: I don't seem to have the =pyenv-= group of funcions inside emacs either.
+ A: user-error. they are =pyvenv=, not =pyenv=.
+
+***** DONE make interactive python == python3
+      - State "DONE"       from              [2020-03-14 Sat 13:32]
+ so I set python3 as the python shell interpreter in the elpy settings
+ and that seems to work.
+ So try setting that in my generic configuration.  that works.
+ - [X] Commit that code.
+ - [X] And take it out of =settings.el=
+
+***** prefer pipenv location for virtualenv over virtualenv
+****** where do I store environment vars?
+
+****** DONE what is $HOME/.local about?
+       - State "DONE"       from              [2020-03-14 Sat 13:47]
+       An [[https://stackoverflow.com/questions/30274743/what-is-the-purpose-of-home-local][answer from stackoverflow]]
+
+       #+begin_quote
+       The /usr/local directory mirrors the structure of the /usr directory, but can be used by system
+       administrators to install local or third party packages for all users.
+
+       The ~/.local directory now has the same purpose just for a single user.
+       #+end_quote
+
 *** DOING add a key-binding C-c ~ to insert ~~ pairs           :emacs:@train:
     - State "DOING"      from "TODO"       [2019-05-06 Mon 08:39]
    <2018-09-13 Thu>
