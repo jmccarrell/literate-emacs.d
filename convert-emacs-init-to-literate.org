@@ -14,7 +14,8 @@
      - what does this mean?  I am not really sure.
 
 ** Next Up
-*** TODO build a better emacs / python working env
+*** DONE build a better emacs / python working env
+    - State "DONE"       from "TODO"       [2020-03-14 Sat 14:42]
    <2020-03-14 Sat>
 
  Mike Z uses the inferior python process =C-c C-p= to test his python code
@@ -24,8 +25,9 @@
  The interaction with virtualenv/pipenv makes thats style hard for me?
  A: elpy has explicit support for virtual envs via =pyvenv=
 
-**** inferior python usage
+**** DONE inferior python usage
 
+     - State "DONE"       from              [2020-03-14 Sat 14:42]
  answer: re-installing brew python3, and configuring emacs to prefer python3 works here.
 
 ***** DONE working notes
@@ -133,8 +135,11 @@
  - [X] Commit that code.
  - [X] And take it out of =settings.el=
 
-***** prefer pipenv location for virtualenv over virtualenv
-****** where do I store environment vars?
+***** DONE prefer pipenv location for virtualenv over virtualenv
+      - State "DONE"       from              [2020-03-14 Sat 13:58]
+****** DONE where do I store environment vars?  A: $HOME/.exports
+       - State "DONE"       from              [2020-03-14 Sat 14:06]
+       where is ~/.exports defined?  which project?  A: jwm-dotfiles
 
 ****** DONE what is $HOME/.local about?
        - State "DONE"       from              [2020-03-14 Sat 13:47]
@@ -146,6 +151,63 @@
 
        The ~/.local directory now has the same purpose just for a single user.
        #+end_quote
+
+***** DONE show that it works
+      - State "DONE"       from              [2020-03-14 Sat 14:11]
+      So after these changes, and
+      #+begin_quote
+      M-x pyvenv-workon
+      treasury-scraper-xxxx
+      #+end_quote
+
+      now elpy reports:
+
+      #+begin_quote
+      Elpy Configuration
+
+      Emacs.............: 26.2
+      Elpy..............: 1.32.0
+      Virtualenv........:  (/Users/jeff/.local/share/virtualenvs/treasury-scraper-1HRn0RJi/)
+      Interactive Python: python3 3.7.7 (/Users/jeff/.local/share/virtualenvs/treasury-scraper-1HRn0RJi/bin/python3)
+      #+end_quote
+
+**** DONE make flake8 work
+     - State "DONE"       from              [2020-03-14 Sat 14:42]
+     get it installed
+     figure out how to invoke it
+
+***** DONE installed
+
+      - State "DONE"       from              [2020-03-14 Sat 14:16]
+     #+begin_quote
+     (treasury-scraper) ❯ pipenv install --dev flake8
+       ...
+     #+end_quote
+
+     #+begin_quote
+     Elpy Configuration
+
+     Emacs.............: 26.2
+     Elpy..............: 1.32.0
+     Virtualenv........:  (/Users/jeff/.local/share/virtualenvs/treasury-scraper-1HRn0RJi/)
+     Interactive Python: python3 3.7.7 (/Users/jeff/.local/share/virtualenvs/treasury-scraper-1HRn0RJi/bin/python3)
+     RPC virtualenv....: rpc-venv (/Users/jeff/.emacs.d/elpy/rpc-venv)
+      Python...........: python 3.7.7 (/Users/jeff/.emacs.d/elpy/rpc-venv/bin/python)
+      Jedi.............: 0.16.0
+      Rope.............: 0.16.0
+      Autopep8.........: 1.5
+      Yapf.............: 0.29.0
+      Black............: 19.10b0
+     Syntax checker....: flake8 (/Users/jeff/.local/share/virtualenvs/treasury-scraper-1HRn0RJi/bin/flake8)
+     #+end_quote
+
+***** DONE usage
+      - State "DONE"       from              [2020-03-14 Sat 14:41]
+      keybinding appears to be =C-c C-v=
+***** DONE configure a long line for flake8 default: 79 -> 108
+
+      - State "DONE"       from              [2020-03-14 Sat 14:41]
+      [[https://flake8.pycqa.org/en/2.5.5/config.html#user-global][looks like]] the value can be defined several places, including in =~/.config/flake8=
 
 *** DOING add a key-binding C-c ~ to insert ~~ pairs           :emacs:@train:
     - State "DOING"      from "TODO"       [2019-05-06 Mon 08:39]
