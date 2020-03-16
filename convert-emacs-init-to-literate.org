@@ -14,6 +14,341 @@
      - what does this mean?  I am not really sure.
 
 ** Next Up
+*** DOING add a key-binding C-c ~ to insert ~~ pairs           :emacs:@train:
+    - State "DOING"      from "TODO"       [2019-05-06 Mon 08:39]
+   <2018-09-13 Thu>
+
+   or find the idiom from one my emacs dot file authors and replicate it.
+   Looks like this is the idiom from howard:
+
+   #+BEGIN_SRC bash
+   howardabrams-dot-files/emacs-org.org
+   108:       (bind-key "A-`" (surround-text-with "~") org-mode-map)
+   109:       (bind-key "s-`" (surround-text-with "~") org-mode-map))
+   #+END_SRC
+
+   the problem with this is that I can't figure out how to generate a "A-" or a "s-" prefix from my mac keyboard the way I have it set up.
+   Maybe send a message to the emacs reddit?
+   Or go look at the code that implements mac key bindings for a hint.
+   So Left-option is already bound to "s-".   So I am good to go there.
+   It looks like Howard has set up an org-mode-map.  I should do that as well.
+
+**** DOING bind-key vs define-key
+     - State "DOING"      from "DONE"       [2020-02-03 Mon 13:38]
+     - State "DONE"       from "NEXT"       [2020-02-03 Mon 13:24]
+     - State "NEXT"       from              [2020-02-03 Mon 13:18]
+
+     Howard uses ~bind-key~ in his definitions
+     however, the emacs manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Key-Bindings.html#Changing-Key-Bindings][changing key bindings]] does not mention bind-key, instead uses define-key.  Why?
+
+     well, it looks like `bind-key` is a use-package level macro with different evaluation implications.
+
+     Here is the full snippet that Howard uses to [[file:~/thirdparty/emacs-configs/howardabrams-dot-files/emacs-org.org::*Local%20Key%20Bindings][define some of his org mode keys]]:
+
+       #+BEGIN_SRC elisp
+         (use-package org
+           :config
+            (bind-keys :map org-mode-map
+            ("A-b" . (surround-text-with "+"))
+            ("s-b" . (surround-text-with "*"))
+            ("A-i" . (surround-text-with "/"))
+            ("s-i" . (surround-text-with "/"))
+            ("A-=" . (surround-text-with "="))
+            ("s-=" . (surround-text-with "="))
+            ("A-`" . (surround-text-with "~"))
+            ("s-`" . (surround-text-with "~"))
+
+            ("C-s-f" . forward-sentence)
+            ("C-s-b" . backward-sentence)))
+       #+END_SRC
+
+       however, Howard [[file:~/thirdparty/emacs-configs/howardabrams-dot-files/emacs-org.org::*Initial%20Settings][used define-key at the top of his org file as well]]:
+
+         #+BEGIN_SRC emacs-lisp
+                 (define-key org-mode-map (kbd "M-C-n") 'org-end-of-item-list)
+                 (define-key org-mode-map (kbd "M-C-p") 'org-beginning-of-item-list)
+                 (define-key org-mode-map (kbd "M-C-u") 'outline-up-heading)
+                 (define-key org-mode-map (kbd "M-C-w") 'org-table-copy-region)
+                 (define-key org-mode-map (kbd "M-C-y") 'org-table-paste-rectangle)
+
+                 (define-key org-mode-map [remap org-return] (lambda () (interactive)
+                                                               (if (org-in-src-block-p)
+                                                                   (org-return)
+                                                                 (org-return-indent)))))
+         #+END_SRC
+
+       so there seems to be some clear evaluation time discrimination going on here.
+
+       hypothesis:
+       - ~surround-text-with~ is not defined until initialization time
+       - bind-keys defers the actual call (it is a special form) until it is evaluated at init time
+         - reducing the ordering problem on which set of Howard's many init files get evaluated first
+       - bind-keys calls define-key under the covers
+
+***** does bind-key call define-key?
+
+      - [ ] read the comments / usage guide for [[https://github.com/jwiegley/use-package/blob/master/bind-key.el#L28-L33][~bind-keys~]]
+
+**** DONE what is the difference in org mode between equals, tilde and back quote?
+
+     - State "DONE"       from              [2020-02-03 Mon 13:30]
+According to the [[https://orgmode.org/guide/Markup.html][org mode markup guide]], specifically [[https://orgmode.org/guide/Emphasis-and-Monospace.html#Emphasis-and-Monospace][emphasis and monospace]],
+
+#+BEGIN_QUOTE
+You can make words ‘*bold*’, ‘/italic/’, ‘_underlined_’, ‘=verbatim=’ and ‘~code~’, and, if you must, ‘+strike-through+’. Text in the code and verbatim string is not processed for Org specific syntax; it is exported verbatim.
+#+END_QUOTE
+
+So the answer is that:
+- backquote does not have any special meaning
+- tilde is for code
+- equals is for verbatim
+
+**** NEXT does org-mode define the symbol org-mode-map?
+     - State "NEXT"       from              [2020-02-03 Mon 13:30]
+
+     It certainly appears to.
+**** NEXT create a org-mode-map keymap?
+
+     and/or investigate if I can generate an Alt or Super keyboard prefix from my mac os x keyboard.
+     As described by `C-h c`:
+
+     Cmd maps to Meta
+     Option maps to Super
+
+     So I should be able to use Howards bindings above, once I figure out how to create an org-mode-map.
+*** DOING add a recent keybinding section to visible docs
+    - State "DOING"      from              [2020-03-13 Fri 08:11]
+    the observation is that I often need a way to establish key combinations for recently acquired
+    functionality.
+
+    Examples:
+
+    tangle babel
+      : C-c C-v t
+
+    yasnippet / auto-yasnippet
+      : C-c & C-s   yas-insert-snippet
+      : s-w         aya-create
+      : s-y         aya-expand
+
+**** use =emacs-cheat-sheet= for this task
+     - [ ] refactor to put my most recently used bindings at the top
+     - [ ] add a new section "new bindings to get used to"
+*** DOING explore dired mode
+    - State "DOING"      from "TODO"       [2019-09-09 Mon 08:11]
+
+    - [X] read the *Help* for dired
+    - [X] Zamansky videos
+      - [X] Using emacs 38 - dired
+        - [[/Users/jeff/Downloads/emacs-videos/Using%20Emacs%2038%20-%20Dired.mp4][local copy]]
+        - and the [[https://cestlaz.github.io/posts/using-emacs-38-dired/][blog entry]] which has interesting links by abo-abo and jcs
+      - [X] Using emacs 57 - dired narrow
+        - [[/Users/jeff/Downloads/emacs-videos/Using%20Emacs%20Episode%2057%20-%20dired-narrow.mp4][local copy]]
+    - [X] what does dired+ add to the picture?
+      - [X] read the dired+ docs
+      - A: IDK; I couldn't find a package =dired+=
+
+**** DONE investigate dired-x
+     - State "DONE"       from "DOING"      [2019-09-11 Wed 21:27]
+     - State "DOING"      from              [2019-09-11 Wed 08:07]
+    - [ ] read the manual [[info:dired-x#Top][Dired Extra]]
+      - [ ] do any of the emacs folks I follow use dired-x?  A: yes they do.
+
+      #+BEGIN_SRC shell :results output
+      find /t/emacs-configs -type f -name \*.el -maxdepth 4 | xargs fgrep -l dired-x
+      #+END_SRC
+
+      #+RESULTS:
+      : /t/emacs-configs/bbatsov-dotemacs/init.el
+      : /t/emacs-configs/jwiegley-dotemacs/init.el
+      : /t/emacs-configs/prelude/core/prelude-editor.el
+      : /t/emacs-configs/prelude/elpa/async-20170610.2241/dired-async.el
+      : /t/emacs-configs/prelude/elpa/magit-20170709.1106/magit.el
+      : /t/emacs-configs/prelude/elpa/magit-20170709.1106/magit-diff.el
+      : /t/emacs-configs/prelude/elpa/helm-20170709.1054/helm-files.el
+      : /t/emacs-configs/abo-abo-dotemacs/modes/ora-dired.el
+      : /t/emacs-configs/abo-abo-dotemacs/init.el
+
+      - bbatsov has a nice config
+
+        #+BEGIN_SRC emacs-lisp :tangle no
+          (use-package dired
+            :config
+            ;; dired - reuse current buffer by pressing 'a'
+            (put 'dired-find-alternate-file 'disabled nil)
+
+            ;; always delete and copy recursively
+            (setq dired-recursive-deletes 'always)
+            (setq dired-recursive-copies 'always)
+
+            ;; if there is a dired buffer displayed in the next window, use its
+            ;; current subdir, instead of the current subdir of this dired buffer
+            (setq dired-dwim-target t)
+
+            ;; enable some really cool extensions like C-x C-j(dired-jump)
+            (require 'dired-x))
+        #+END_SRC
+      - abo-abo has an involved config
+      - and a simple one
+        #+BEGIN_SRC emacs-lisp :tangle no
+          (use-package dired
+            :commands dired
+            :init
+            (setq dired-listing-switches
+                  (if (memq system-type '(windows-nt darwin))
+                      "-alh"
+                      "-laGh1v --group-directories-first")))
+          (use-package dired-x
+            :commands dired-jump)
+        #+END_SRC
+
+    - I definitely want [[info:dired-x#Miscellaneous%20Commands][=dired-jump= and =dired-dump-other-window=]]
+    - here is [[info:dired-x#Special%20Marking%20Function][how to write elisp to mark files]] in dired buffer
+    - I think I do not want the [[info:dired-x#Find%20File%20At%20Point][=dired-x-find-file=]] stuff
+
+**** DONE read about how abo-abo uses dired
+
+     - State "DONE"       from "DOING"      [2019-09-11 Wed 21:27]
+     - State "DOING"      from              [2019-09-11 Wed 08:07]
+     - [X] read [[https://oremacs.com/2017/11/18/dired-occur/][abo-abo dired article]]
+     - [X] a [[https://oremacs.com/2015/01/10/dired-ansi-term/][2015 article about how he uses ansi-term and dired]]
+       - some good stuff about =C-x C-j= and invoking a shell at point, including using tramp to ssh to remote files
+     - [X] [[https://oremacs.com/2015/01/12/dired-file-size/][file sizes in dired]]
+     - [X] more discussion of [[https://oremacs.com/2015/01/13/dired-options/][his dired switches]]
+
+**** TODO other dired investigations
+     - State "NEXT"       from "DOING"      [2020-02-01 Sat 19:00]
+     - State "DOING"      from              [2019-09-30 Mon 11:56]
+     - [X] read [[http://irreal.org/blog/?p=6760][jcs dired article]]
+       - but apparently I need ivy-occur to make this all work?
+     - [ ] read about dired-narrow
+       - [ ] the full docs are in [[https://github.com/Fuco1/dired-hacks][dired-hacks]]
+     - [ ] learn to make new directories?
+     - [ ] move files around within those directories
+
+**** notes
+
+     - One can mark based on regex
+     - and invert the selection
+       - ie mark all .jpeg files
+       - then mark all files in the directory that are not .jpeg files
+
+*** DOING explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
+    - State "DOING"      from              [2019-09-11 Wed 22:49]
+
+    In particular, I would like to be able to find file at point in a given window using =ace-window=
+
+    There is find-file-in-project, which is closely related to ivy.
+
+*** DOING switch to counsel, counsel-projectile [25%]
+    - State "DOING"      from              [2019-09-02 Mon 21:50]
+
+    - [X] enable the config
+    - [ ] make a table of common keybindings that I would want to use.
+      - publish it in the [[file:jeff-emacs-config.org::*Projectile%20Config][counsel section]] so I can link to it on the web
+    - [ ] Read [[https://github.com/ericdanan/counsel-projectile][the docs]] to get the basic key bindings down.
+    - [ ] set up counsel-rg to use ripgrep on vega and sift mac
+      - [ ] on vega
+      - [ ] on sift mac
+
+**** DOING investigate ivy-push-view
+     - State "DOING"      from              [2019-09-02 Mon 20:52]
+
+     [[file:~/.emacs.d/elpa/ivy-20190803.1121/ivy.el::(defun%20ivy-push-view%20(&optional%20arg)][ivy-push-view]] appears to have some basic window layout capture functionality.  And since I am wanting
+     to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
+     as part of that refactoring.
+
+*** DOING figure out how to search at point with swiper
+    - State "DOING"      from              [2020-03-15 Sun 20:49]
+    I often want to search for the text at point with swiper
+    Like I used to do with i-search
+
+    I'm sure this is possible; I just don't know how to do it.
+
+    the method is: =swiper-thing-at-point=
+
+    is there a binding for it?  A: no.
+
+    I can also yank text into the ivy completion buffer.
+
+    Looks like the magic is =M-j= bound to =ivy-yank-word=
+
+    the key bindings are displayed by
+    #+begin_quote
+    M-x describe-function ivy-mode
+    #+end_quote
+
+    reddit thread about [[https://www.reddit.com/r/emacs/comments/6yi6dl/most_useful_parts_of_ivycounselswiper_manual_too/][most useful parts of ivy]]
+
+*** make a links section to my favorite authors' config files
+    - both on the web and to my local copies
+
+*** setup occur and how it works with swiper
+
+*** consider re-adding try to emacs
+
+*** edit filenames inline
+
+    - edit dired inline
+    - use =C-x C-q= to edit a filename inline
+    - it looks like this is a function provided by dired+, not in stock dired.
+    - and with =mc= mark all, one can edit multiple filenames at once.
+
+*** explore tramp
+
+    - my tramp notes
+
+*** General
+
+    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+    - Find a mechanism to apply configurations to a set of file identified by a predicate
+      - eg a way to specify a specific code formatting policy to work vs personal files
+      - ask in reddit?
+
+*** From Howard
+
+    - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
+    - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
+    - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
+    - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
+    - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
+
+**** maybe explore these
+
+     Howard has a bunch of _Technical Artifacts_ sections
+
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
+
+     Consider reading these for the insights they may contain
+
+     Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
+     Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
+     Hack.
+
+     Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
+
+*** From Daniel Mai
+
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
+   - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+   - Daniel has some interesting [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Open%20other%20apps%20from%20Emacs][open in other apps functions]] I would like to investigate as well
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*List%20buffers][ibuffer?]]
+   - investigate package recentf
+   - Daniel has a nice example [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installation][passing an emacs-lisp variable into a shell]] buffer to execute
+     - and a [[file:/t/emacs-configs/danielmai-dotemacs/config.org::#+begin_src%20emacs-lisp%20(use-package%20exec-path-from-shell%20:ensure%20t%20:init%20(exec-path-from-shell-initialize))%20#+end_src][link to an info buffer in emacs]]
+   - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
+   - Daniel uses
+     - helm
+     - and ivy, swiper, counsel
+     - and avy
+   - Daniels config for [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Multiple%20cursors][multiple cursors]]
+   - Figure out why [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Yasnippet][Daniel likes yasnippets]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*terminal-here][terminal here?]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
+   - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
+   - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
 *** DONE build a better emacs / python working env
     - State "DONE"       from "TODO"       [2020-03-14 Sat 14:42]
    <2020-03-14 Sat>
@@ -208,138 +543,6 @@
 
       - State "DONE"       from              [2020-03-14 Sat 14:41]
       [[https://flake8.pycqa.org/en/2.5.5/config.html#user-global][looks like]] the value can be defined several places, including in =~/.config/flake8=
-
-*** DOING add a key-binding C-c ~ to insert ~~ pairs           :emacs:@train:
-    - State "DOING"      from "TODO"       [2019-05-06 Mon 08:39]
-   <2018-09-13 Thu>
-
-   or find the idiom from one my emacs dot file authors and replicate it.
-   Looks like this is the idiom from howard:
-
-   #+BEGIN_SRC bash
-   howardabrams-dot-files/emacs-org.org
-   108:       (bind-key "A-`" (surround-text-with "~") org-mode-map)
-   109:       (bind-key "s-`" (surround-text-with "~") org-mode-map))
-   #+END_SRC
-
-   the problem with this is that I can't figure out how to generate a "A-" or a "s-" prefix from my mac keyboard the way I have it set up.
-   Maybe send a message to the emacs reddit?
-   Or go look at the code that implements mac key bindings for a hint.
-   So Left-option is already bound to "s-".   So I am good to go there.
-   It looks like Howard has set up an org-mode-map.  I should do that as well.
-
-**** DOING bind-key vs define-key
-     - State "DOING"      from "DONE"       [2020-02-03 Mon 13:38]
-     - State "DONE"       from "NEXT"       [2020-02-03 Mon 13:24]
-     - State "NEXT"       from              [2020-02-03 Mon 13:18]
-
-     Howard uses ~bind-key~ in his definitions
-     however, the emacs manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Key-Bindings.html#Changing-Key-Bindings][changing key bindings]] does not mention bind-key, instead uses define-key.  Why?
-
-     well, it looks like `bind-key` is a use-package level macro with different evaluation implications.
-
-     Here is the full snippet that Howard uses to [[file:~/thirdparty/emacs-configs/howardabrams-dot-files/emacs-org.org::*Local%20Key%20Bindings][define some of his org mode keys]]:
-
-       #+BEGIN_SRC elisp
-         (use-package org
-           :config
-            (bind-keys :map org-mode-map
-            ("A-b" . (surround-text-with "+"))
-            ("s-b" . (surround-text-with "*"))
-            ("A-i" . (surround-text-with "/"))
-            ("s-i" . (surround-text-with "/"))
-            ("A-=" . (surround-text-with "="))
-            ("s-=" . (surround-text-with "="))
-            ("A-`" . (surround-text-with "~"))
-            ("s-`" . (surround-text-with "~"))
-
-            ("C-s-f" . forward-sentence)
-            ("C-s-b" . backward-sentence)))
-       #+END_SRC
-
-       however, Howard [[file:~/thirdparty/emacs-configs/howardabrams-dot-files/emacs-org.org::*Initial%20Settings][used define-key at the top of his org file as well]]:
-
-         #+BEGIN_SRC emacs-lisp
-                 (define-key org-mode-map (kbd "M-C-n") 'org-end-of-item-list)
-                 (define-key org-mode-map (kbd "M-C-p") 'org-beginning-of-item-list)
-                 (define-key org-mode-map (kbd "M-C-u") 'outline-up-heading)
-                 (define-key org-mode-map (kbd "M-C-w") 'org-table-copy-region)
-                 (define-key org-mode-map (kbd "M-C-y") 'org-table-paste-rectangle)
-
-                 (define-key org-mode-map [remap org-return] (lambda () (interactive)
-                                                               (if (org-in-src-block-p)
-                                                                   (org-return)
-                                                                 (org-return-indent)))))
-         #+END_SRC
-
-       so there seems to be some clear evaluation time discrimination going on here.
-
-       hypothesis:
-       - ~surround-text-with~ is not defined until initialization time
-       - bind-keys defers the actual call (it is a special form) until it is evaluated at init time
-         - reducing the ordering problem on which set of Howard's many init files get evaluated first
-       - bind-keys calls define-key under the covers
-
-***** does bind-key call define-key?
-
-      - [ ] read the comments / usage guide for [[https://github.com/jwiegley/use-package/blob/master/bind-key.el#L28-L33][~bind-keys~]]
-
-**** DONE what is the difference in org mode between equals, tilde and back quote?
-
-     - State "DONE"       from              [2020-02-03 Mon 13:30]
-According to the [[https://orgmode.org/guide/Markup.html][org mode markup guide]], specifically [[https://orgmode.org/guide/Emphasis-and-Monospace.html#Emphasis-and-Monospace][emphasis and monospace]],
-
-#+BEGIN_QUOTE
-You can make words ‘*bold*’, ‘/italic/’, ‘_underlined_’, ‘=verbatim=’ and ‘~code~’, and, if you must, ‘+strike-through+’. Text in the code and verbatim string is not processed for Org specific syntax; it is exported verbatim.
-#+END_QUOTE
-
-So the answer is that:
-- backquote does not have any special meaning
-- tilde is for code
-- equals is for verbatim
-
-**** NEXT does org-mode define the symbol org-mode-map?
-     - State "NEXT"       from              [2020-02-03 Mon 13:30]
-
-     It certainly appears to.
-**** NEXT create a org-mode-map keymap?
-
-     and/or investigate if I can generate an Alt or Super keyboard prefix from my mac os x keyboard.
-     As described by `C-h c`:
-
-     Cmd maps to Meta
-     Option maps to Super
-
-     So I should be able to use Howards bindings above, once I figure out how to create an org-mode-map.
-
-*** make a links section to my favorite authors' config files
-    - both on the web and to my local copies
-
-*** setup occur and how it works with swiper
-*** DOING add a recent keybinding section to visible docs
-    - State "DOING"      from              [2020-03-13 Fri 08:11]
-    the observation is that I often need a way to establish key combinations for recently acquired
-    functionality.
-
-    Examples:
-
-    tangle babel
-      : C-c C-v t
-
-    yasnippet / auto-yasnippet
-      : C-c & C-s   yas-insert-snippet
-      : s-w         aya-create
-      : s-y         aya-expand
-
-**** use =emacs-cheat-sheet= for this task
-     - [ ] refactor to put my most recently used bindings at the top
-     - [ ] add a new section "new bindings to get used to"
-
-*** figure out how to search at point with swiper
-    I often want to search for the text at point with swiper
-    Like I used to do with i-search
-
-    I'm sure this is possible; I just don't know how to do it.
 
 *** DONE configure yasnippet and auto yasnippet
     - State "DONE"       from "DOING"      [2020-03-11 Wed 19:16]
@@ -2462,138 +2665,6 @@ So the answer is that:
 
      it looks pretty vanilla; just with =yas-global-mode= seems a bit questionable to me.
 
-*** consider re-adding try to emacs
-*** DOING explore dired mode
-    - State "DOING"      from "TODO"       [2019-09-09 Mon 08:11]
-
-    - [X] read the *Help* for dired
-    - [X] Zamansky videos
-      - [X] Using emacs 38 - dired
-        - [[/Users/jeff/Downloads/emacs-videos/Using%20Emacs%2038%20-%20Dired.mp4][local copy]]
-        - and the [[https://cestlaz.github.io/posts/using-emacs-38-dired/][blog entry]] which has interesting links by abo-abo and jcs
-      - [X] Using emacs 57 - dired narrow
-        - [[/Users/jeff/Downloads/emacs-videos/Using%20Emacs%20Episode%2057%20-%20dired-narrow.mp4][local copy]]
-    - [X] what does dired+ add to the picture?
-      - [X] read the dired+ docs
-      - A: IDK; I couldn't find a package =dired+=
-
-**** DONE investigate dired-x
-     - State "DONE"       from "DOING"      [2019-09-11 Wed 21:27]
-     - State "DOING"      from              [2019-09-11 Wed 08:07]
-    - [ ] read the manual [[info:dired-x#Top][Dired Extra]]
-      - [ ] do any of the emacs folks I follow use dired-x?  A: yes they do.
-
-      #+BEGIN_SRC shell :results output
-      find /t/emacs-configs -type f -name \*.el -maxdepth 4 | xargs fgrep -l dired-x
-      #+END_SRC
-
-      #+RESULTS:
-      : /t/emacs-configs/bbatsov-dotemacs/init.el
-      : /t/emacs-configs/jwiegley-dotemacs/init.el
-      : /t/emacs-configs/prelude/core/prelude-editor.el
-      : /t/emacs-configs/prelude/elpa/async-20170610.2241/dired-async.el
-      : /t/emacs-configs/prelude/elpa/magit-20170709.1106/magit.el
-      : /t/emacs-configs/prelude/elpa/magit-20170709.1106/magit-diff.el
-      : /t/emacs-configs/prelude/elpa/helm-20170709.1054/helm-files.el
-      : /t/emacs-configs/abo-abo-dotemacs/modes/ora-dired.el
-      : /t/emacs-configs/abo-abo-dotemacs/init.el
-
-      - bbatsov has a nice config
-
-        #+BEGIN_SRC emacs-lisp :tangle no
-          (use-package dired
-            :config
-            ;; dired - reuse current buffer by pressing 'a'
-            (put 'dired-find-alternate-file 'disabled nil)
-
-            ;; always delete and copy recursively
-            (setq dired-recursive-deletes 'always)
-            (setq dired-recursive-copies 'always)
-
-            ;; if there is a dired buffer displayed in the next window, use its
-            ;; current subdir, instead of the current subdir of this dired buffer
-            (setq dired-dwim-target t)
-
-            ;; enable some really cool extensions like C-x C-j(dired-jump)
-            (require 'dired-x))
-        #+END_SRC
-      - abo-abo has an involved config
-      - and a simple one
-        #+BEGIN_SRC emacs-lisp :tangle no
-          (use-package dired
-            :commands dired
-            :init
-            (setq dired-listing-switches
-                  (if (memq system-type '(windows-nt darwin))
-                      "-alh"
-                      "-laGh1v --group-directories-first")))
-          (use-package dired-x
-            :commands dired-jump)
-        #+END_SRC
-
-    - I definitely want [[info:dired-x#Miscellaneous%20Commands][=dired-jump= and =dired-dump-other-window=]]
-    - here is [[info:dired-x#Special%20Marking%20Function][how to write elisp to mark files]] in dired buffer
-    - I think I do not want the [[info:dired-x#Find%20File%20At%20Point][=dired-x-find-file=]] stuff
-
-**** DONE read about how abo-abo uses dired
-
-     - State "DONE"       from "DOING"      [2019-09-11 Wed 21:27]
-     - State "DOING"      from              [2019-09-11 Wed 08:07]
-     - [X] read [[https://oremacs.com/2017/11/18/dired-occur/][abo-abo dired article]]
-     - [X] a [[https://oremacs.com/2015/01/10/dired-ansi-term/][2015 article about how he uses ansi-term and dired]]
-       - some good stuff about =C-x C-j= and invoking a shell at point, including using tramp to ssh to remote files
-     - [X] [[https://oremacs.com/2015/01/12/dired-file-size/][file sizes in dired]]
-     - [X] more discussion of [[https://oremacs.com/2015/01/13/dired-options/][his dired switches]]
-
-**** TODO other dired investigations
-     - State "NEXT"       from "DOING"      [2020-02-01 Sat 19:00]
-     - State "DOING"      from              [2019-09-30 Mon 11:56]
-     - [X] read [[http://irreal.org/blog/?p=6760][jcs dired article]]
-       - but apparently I need ivy-occur to make this all work?
-     - [ ] read about dired-narrow
-       - [ ] the full docs are in [[https://github.com/Fuco1/dired-hacks][dired-hacks]]
-     - [ ] learn to make new directories?
-     - [ ] move files around within those directories
-
-**** notes
-
-     - One can mark based on regex
-     - and invert the selection
-       - ie mark all .jpeg files
-       - then mark all files in the directory that are not .jpeg files
-
-*** DOING explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
-    - State "DOING"      from              [2019-09-11 Wed 22:49]
-
-    In particular, I would like to be able to find file at point in a given window using =ace-window=
-
-    There is find-file-in-project, which is closely related to ivy.
-
-*** edit filenames inline
-
-    - edit dired inline
-    - use =C-x C-q= to edit a filename inline
-    - it looks like this is a function provided by dired+, not in stock dired.
-    - and with =mc= mark all, one can edit multiple filenames at once.
-
-*** DOING switch to counsel, counsel-projectile [25%]
-    - State "DOING"      from              [2019-09-02 Mon 21:50]
-
-    - [X] enable the config
-    - [ ] make a table of common keybindings that I would want to use.
-      - publish it in the [[file:jeff-emacs-config.org::*Projectile%20Config][counsel section]] so I can link to it on the web
-    - [ ] Read [[https://github.com/ericdanan/counsel-projectile][the docs]] to get the basic key bindings down.
-    - [ ] set up counsel-rg to use ripgrep on vega and sift mac
-      - on vega
-      - on sift mac
-
-**** DOING investigate ivy-push-view
-     - State "DOING"      from              [2019-09-02 Mon 20:52]
-
-     [[file:~/.emacs.d/elpa/ivy-20190803.1121/ivy.el::(defun%20ivy-push-view%20(&optional%20arg)][ivy-push-view]] appears to have some basic window layout capture functionality.  And since I am wanting
-     to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
-     as part of that refactoring.
-
 *** DONE Get a working eshell
     - State "DONE"       from "DOING"      [2020-02-03 Mon 19:13]
     - State "DOING"      from              [2019-09-02 Mon 22:09]
@@ -2611,62 +2682,6 @@ So the answer is that:
 **** evaluate better shell
 
      - [[https://github.com/zamansky/using-emacs/blob/master/myinit.org#better-shell][Zamansky uses it?]]
-
-*** explore tramp
-
-    - my tramp notes
-
-*** General
-
-    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
-    - Find a mechanism to apply configurations to a set of file identified by a predicate
-      - eg a way to specify a specific code formatting policy to work vs personal files
-      - ask in reddit?
-
-*** From Howard
-
-    - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
-    - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
-    - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
-    - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
-    - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
-
-**** maybe explore these
-
-     Howard has a bunch of _Technical Artifacts_ sections
-
-     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
-     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
-     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
-
-     Consider reading these for the insights they may contain
-
-     Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
-     Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
-     Hack.
-
-     Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
-
-*** From Daniel Mai
-
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
-   - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
-   - Daniel has some interesting [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Open%20other%20apps%20from%20Emacs][open in other apps functions]] I would like to investigate as well
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*List%20buffers][ibuffer?]]
-   - investigate package recentf
-   - Daniel has a nice example [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installation][passing an emacs-lisp variable into a shell]] buffer to execute
-     - and a [[file:/t/emacs-configs/danielmai-dotemacs/config.org::#+begin_src%20emacs-lisp%20(use-package%20exec-path-from-shell%20:ensure%20t%20:init%20(exec-path-from-shell-initialize))%20#+end_src][link to an info buffer in emacs]]
-   - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
-   - Daniel uses
-     - helm
-     - and ivy, swiper, counsel
-     - and avy
-   - Daniels config for [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Multiple%20cursors][multiple cursors]]
-   - Figure out why [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Yasnippet][Daniel likes yasnippets]]
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*terminal-here][terminal here?]]
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
-   - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
-   - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
 
 ** DEFERRED Install Essential Packages
    - State "DEFERRED"   from              [2020-02-01 Sat 18:46] \\
