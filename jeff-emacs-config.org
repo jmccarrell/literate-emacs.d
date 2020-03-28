@@ -19,6 +19,7 @@
    - [[https://github.com/purcell/emacs.d][Steve Purcell]]
    - [[https://github.com/abo-abo/oremacs][abo-abo]]
    - [[https://github.com/NicolasPetton/emacs.d][Nicolas Petton]]
+   - [[https://gitlab.com/protesilaos/dotfiles][Protesilaos Stavrou]]
    - and many others
 
    To all of these contributors, I doff my cap in salute. Your published work has inspired and -- to be honest
