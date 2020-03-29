@@ -790,7 +790,7 @@
        (projectile-mode +1))
    #+END_SRC
 
-** Ivy and Swiper Config
+** Ivy, Avy and Swiper Config
 
    #+BEGIN_SRC emacs-lisp
      (use-package ivy
@@ -805,6 +805,14 @@
      (use-package swiper
        :config
        (global-set-key "\C-s" 'swiper))
+   #+END_SRC
+
+   this is stolen from [[https://github.com/jwiegley/dot-emacs/blob/master/init.el#L420][jwiegley's config]]
+   #+BEGIN_SRC emacs-lisp
+     (use-package avy
+       :bind* ("C-." . avy-goto-char-timer)
+       :config
+       (avy-setup-default))
    #+END_SRC
 
 * Git

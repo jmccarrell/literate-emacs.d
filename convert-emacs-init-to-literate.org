@@ -349,6 +349,237 @@ So the answer is that:
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
    - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
    - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
+
+*** DONE add support for avy
+    - State "DONE"       from              [2020-03-28 Sat 21:38]
+**** what do others do with avy?
+     it looks like the main avy function in use is =avy-goto-char-timer=
+
+     #+begin_example
+       ❯ for d in $PWD/*(/); do (cd $d && print ${d}/ && git grep -w avy-goto-char-timer); done | pbcopy
+
+       /Users/jeff/thirdparty/emacs-configs/abo-abo-dotemacs/
+       keys.el:(global-set-key (kbd "C-'") 'avy-goto-char-timer)
+       modes/ora-avy.el:  ("s" avy-goto-char-timer)
+
+       /Users/jeff/thirdparty/emacs-configs/howardabrams-dot-files/
+       emacs-evil.org:                  ("t" . avy-goto-char-timer)
+       emacs-evil.org:        "j" 'avy-goto-char-timer
+       emacs.org:     (global-set-key (kbd "s-h") 'avy-goto-char-timer)
+       emacs.org:     (global-set-key (kbd "s-j") 'avy-goto-char-timer)
+       emacs.org:     (global-set-key (kbd "A-h") 'avy-goto-char-timer)
+       emacs.org:     (global-set-key (kbd "A-j") 'avy-goto-char-timer)
+
+       /Users/jeff/thirdparty/emacs-configs/jwiegley-dotemacs/
+       init.el:  :bind* ("C-." . avy-goto-char-timer)
+
+       /Users/jeff/thirdparty/emacs-configs/steve-purcell-dotemacs/
+       lisp/init-editing-utils.el:  (global-set-key (kbd "C-;") 'avy-goto-char-timer))
+     #+end_example
+
+     looks like we have 3 variants of binding it to =C-something=:
+     - =C-.=
+     - =C-;=
+     - =C-'=
+
+     I guess I will choose =C-.=, following jwiegley here.
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package avy
+         :bind* ("C-." . avy-goto-char-timer)
+         :config
+         (avy-setup-default))
+     #+END_SRC
+
+***** grep avy
+      #+begin_example
+        ❯ for d in $PWD/*(/); do (cd $d && print $(pwd) && git grep -w avy); done | pbcopy
+
+        /Users/jeff/thirdparty/emacs-configs/abo-abo-dotemacs
+        init.el:(require 'ora-avy)
+        keys.el:(global-set-key (kbd "C-'") 'avy-goto-char-timer)
+        keys.el:(global-set-key (kbd "π") 'avy-goto-char)                    ; [p]
+        keys.el:(global-set-key (kbd "M-t") 'avy-goto-word-or-subword-1)
+        keys.el:(global-set-key (kbd "M-p") 'avy-pop-mark)
+        keys.el:(global-set-key (kbd "C-c C-j") 'avy-resume)
+        keys.el:(global-set-key (kbd "C-π") 'avy-resume)
+        keys.el:(global-set-key (kbd "M-g g") 'avy-goto-line)
+        keys.el:(global-set-key (kbd "C-M-g") 'avy-goto-line)
+        keys.el:(global-set-key (kbd "M-g e") 'avy-goto-word-0)
+        keys.el:(global-set-key (kbd "M-g w") 'avy-goto-word-1)
+        keys.el:(global-set-key (kbd "M-g s") 'avy-goto-subword-0)
+        keys.el:  ("a" vimish-fold-avy "avy")
+        loaddefs.el:;;;### (autoloads nil "modes/ora-avy" "modes/ora-avy.el" (0 0 0 0))
+        loaddefs.el:;;; Generated autoloads from modes/ora-avy.el
+        loaddefs.el:(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "modes/ora-avy" '("hydra-avy")))
+        modes/ora-avy.el:(avy-setup-default)
+        modes/ora-avy.el:(csetq avy-all-windows t)
+        modes/ora-avy.el:(csetq avy-all-windows-alt nil)
+        modes/ora-avy.el:(csetq avy-styles-alist '((avy-goto-char-2 . post)
+        modes/ora-avy.el:                          (ivy-avy . pre)
+        modes/ora-avy.el:                          (avy-goto-line . pre)))
+        modes/ora-avy.el:;; (advice-add 'swiper :before 'avy-push-mark)
+        modes/ora-avy.el:;; (advice-remove 'swiper 'avy-push-mark)
+        modes/ora-avy.el:(csetq avy-keys-alist
+        modes/ora-avy.el:(defhydra hydra-avy (:color teal)
+        modes/ora-avy.el:  ("j" avy-goto-char)
+        modes/ora-avy.el:  ("k" avy-goto-word-1)
+        modes/ora-avy.el:  ("l" avy-goto-line)
+        modes/ora-avy.el:  ("s" avy-goto-char-timer)
+        modes/ora-avy.el:(defhydra hydra-avy-cycle ()
+        modes/ora-avy.el:  ("j" avy-next "next")
+        modes/ora-avy.el:  ("k" avy-prev "prev")
+        modes/ora-avy.el:(global-set-key (kbd "C-M-'") 'hydra-avy-cycle/body)
+        modes/ora-avy.el:(provide 'ora-avy)
+        modes/ora-elisp.el:    (setq lispy-avy-style-symbol 'at-full)))
+        modes/ora-eww.el:(require 'avy)
+        modes/ora-eww.el:  (call-interactively #'avy-goto-char)
+        modes/ora-javascript.el:  (setq-local avy-subword-extra-word-chars nil)
+
+        /Users/jeff/thirdparty/emacs-configs/andreyorst-dotfiles
+        /Users/jeff/thirdparty/emacs-configs/bbatsov-dotemacs
+        init.el:(use-package avy
+        init.el:  :bind (("s-." . avy-goto-word-or-subword-1)
+        init.el:         ("s-," . avy-goto-char))
+        init.el:  (setq avy-background t))
+
+        /Users/jeff/thirdparty/emacs-configs/danielmai-dotemacs
+        config.org:   ("C-'" . ivy-avy))
+        config.org:(use-package avy
+        config.org:  :bind ("C-S-s" . avy-goto-char))
+
+        /Users/jeff/thirdparty/emacs-configs/ebzzry-dotfiles
+        /Users/jeff/thirdparty/emacs-configs/editorconfig-emacs
+        /Users/jeff/thirdparty/emacs-configs/greendog-gtd
+        /Users/jeff/thirdparty/emacs-configs/helm-ag
+
+        /Users/jeff/thirdparty/emacs-configs/howardabrams-dot-files
+        emacs-evil.org:                  ;; Wanna rebind f to avy?
+        emacs-evil.org:                  ;; How about avy to 't'?
+        emacs-evil.org:                  ("t" . avy-goto-char-timer)
+        emacs-evil.org:                  ("T" . avy-goto-word-timer)
+        emacs-evil.org:        "j" 'avy-goto-char-timer
+        emacs-fixes.org:   I find it better than =avy= when in a macro.t
+        emacs.org:   Mostly using the [[https://github.com/abo-abo/avy][avy]] project's [[help:avy-goto-word-timer][avy-goto-word-1]] function, so I bind
+        emacs.org:     (use-package avy
+        emacs.org:       :init (setq avy-background t))
+        emacs.org:     (global-set-key (kbd "s-h") 'avy-goto-char-timer)
+        emacs.org:     (global-set-key (kbd "s-j") 'avy-goto-char-timer)
+        emacs.org:     (global-set-key (kbd "s-H") 'avy-pop-mark)
+        emacs.org:     (global-set-key (kbd "s-J") 'avy-pop-mark)
+        emacs.org:     (global-set-key (kbd "A-h") 'avy-goto-char-timer)
+        emacs.org:     (global-set-key (kbd "A-j") 'avy-goto-char-timer)
+        emacs.org:     (global-set-key (kbd "A-H") 'avy-pop-mark)
+        emacs.org:     (global-set-key (kbd "A-J") 'avy-pop-mark)
+
+        /Users/jeff/thirdparty/emacs-configs/jwiegley-dotemacs
+        init.el:(use-package avy
+        init.el:  :bind* ("C-." . avy-goto-char-timer)
+        init.el:  (avy-setup-default))
+        init.el:(use-package avy-zap
+        init.el:  :bind (("M-z" . avy-zap-to-char-dwim)
+        init.el:         ("M-Z" . avy-zap-up-to-char-dwim)))
+        init.el:              ("C-." . swiper-avy)
+        settings.el: '(avy-case-fold-search t)
+        settings.el: '(avy-keys (quote (97 111 101 117 105 100 104 116 110 115)))
+        settings.el: '(avy-timeout-seconds 0.3)
+
+        /Users/jeff/thirdparty/emacs-configs/munen-emacs.d
+        /Users/jeff/thirdparty/emacs-configs/prelude
+        README.md:<kbd>jj</kbd>      | Jump to the beginning of a word(`avy-goto-word-1`)
+        README.md:<kbd>jk</kbd>      | Jump to a character(`avy-goto-char`)
+        README.md:<kbd>jl</kbd>      | Jump to the beginning of a line(`avy-goto-line`)
+        core/prelude-editor.el:;; avy allows us to effectively navigate to visible things
+        core/prelude-editor.el:(require 'avy)
+        core/prelude-editor.el:(setq avy-background t)
+        core/prelude-editor.el:(setq avy-style 'at-full)
+        core/prelude-global-keybindings.el:(global-set-key (kbd "C-c j") 'avy-goto-word-or-subword-1)
+        core/prelude-global-keybindings.el:(global-set-key (kbd "s-.") 'avy-goto-word-or-subword-1)
+        core/prelude-packages.el:    avy
+        modules/prelude-evil.el:;;; enable avy with evil-mode
+        modules/prelude-evil.el:(define-key evil-normal-state-map (kbd "SPC") 'avy-goto-word-1)
+        modules/prelude-key-chord.el:(key-chord-define-global "jj" 'avy-goto-word-1)
+        modules/prelude-key-chord.el:(key-chord-define-global "jl" 'avy-goto-line)
+        modules/prelude-key-chord.el:(key-chord-define-global "jk" 'avy-goto-char)
+        sample/prelude-pinned-packages.el:        (avy . "melpa-stable")
+
+        /Users/jeff/thirdparty/emacs-configs/sacha-chua-dotemacs
+        Sacha.org:      (key-chord-define-global "jj"     'avy-goto-word-1)
+        Sacha.org:      (key-chord-define-global "jl"     'avy-goto-line)
+        Sacha.org:      ;(key-chord-define-global "jZ"     'avy-zap-to-char)
+        Sacha.org:  (use-package avy)
+        Sacha.org:(use-package avy-zap
+        Sacha.org:  (("M-z" . avy-zap-up-to-char-dwim)
+        Sacha.org:   ("M-Z" . avy-zap-to-char-dwim)))
+
+        /Users/jeff/thirdparty/emacs-configs/sirpscl-emacs.d
+        /Users/jeff/thirdparty/emacs-configs/smartparens
+
+        /Users/jeff/thirdparty/emacs-configs/steve-purcell-dotemacs
+        lisp/init-editing-utils.el:(when (maybe-require-package 'avy)
+        lisp/init-editing-utils.el:  (global-set-key (kbd "C-;") 'avy-goto-char-timer))
+      #+end_example
+
+***** expand in org mode
+      #+name: find-other-emac-users-use-of-avy
+      #+BEGIN_SRC text
+        for d in *(/); do
+          (cd $d && print -- $(pwd) && print $d && git grep -w avy)
+        done | sed 4q
+      #+END_SRC
+
+      #+BEGIN_SRC shell :dir ~/thirdparty/emacs-configs :results output :noweb yes
+        zsh -f <<'EOF'
+        <<find-other-emac-users-use-of-avy>>
+        EOF
+      #+END_SRC
+
+      #+RESULTS:
+      : /Users/jeff/thirdparty/emacs-configs/abo-abo-dotemacs
+      : abo-abo-dotemacs
+      : init.el:(require 'ora-avy)
+      : keys.el:(global-set-key (kbd "C-'") 'avy-goto-char-timer)
+
+      will bash work with that example as well?
+
+      #+BEGIN_SRC shell :dir ~/thirdparty/emacs-configs :results output :noweb yes
+        bash <<'EOF'
+        <<find-other-emac-users-use-of-avy>>
+        EOF
+      #+END_SRC
+
+      #+RESULTS:
+
+      A: no, the result is:
+      #+begin_example
+        bash: line 1: syntax error near unexpected token `('
+        bash: line 1: `for d in *(/); do'
+      #+end_example
+
+****** literal expansion
+      #+BEGIN_SRC shell :dir /Users/jeff/thirdparty/emacs-configs :results output
+        zsh -f <<'EOF'
+        for d in $(print *(/)); do
+          (cd $d && print -- $(pwd) && print $d && git grep -w avy)
+        done | sed 10q
+        EOF
+
+      #+END_SRC
+
+      #+RESULTS:
+      #+begin_example
+      /Users/jeff/thirdparty/emacs-configs/abo-abo-dotemacs
+      abo-abo-dotemacs
+      init.el:(require 'ora-avy)
+      keys.el:(global-set-key (kbd "C-'") 'avy-goto-char-timer)
+      keys.el:(global-set-key (kbd "π") 'avy-goto-char)                    ; [p]
+      keys.el:(global-set-key (kbd "M-t") 'avy-goto-word-or-subword-1)
+      keys.el:(global-set-key (kbd "M-p") 'avy-pop-mark)
+      keys.el:(global-set-key (kbd "C-c C-j") 'avy-resume)
+      keys.el:(global-set-key (kbd "C-π") 'avy-resume)
+      keys.el:(global-set-key (kbd "M-g g") 'avy-goto-line)
+      #+end_example
+
 *** DONE build a better emacs / python working env
     - State "DONE"       from "TODO"       [2020-03-14 Sat 14:42]
    <2020-03-14 Sat>

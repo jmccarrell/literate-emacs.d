@@ -1,11 +1,12 @@
 * Jeffs Frequently Used Bindings
 ** Recent bindings to get used to
 
-   | key         | description                |
-   |-------------+----------------------------|
-   | C-c & C-s   | choose a snippet to insert |
-   | s-x         | create an auto-snippet     |
-   | s-y         | expand auto-snippet        |
+   | key       | description                                 |
+   |-----------+---------------------------------------------|
+   | C-.       | avy character timer; jump to 3-char pattern |
+   | C-c & C-s | choose a snippet to insert                  |
+   | s-x       | create an auto-snippet                      |
+   | s-y       | expand auto-snippet                         |
 
 ** Global bindings
 

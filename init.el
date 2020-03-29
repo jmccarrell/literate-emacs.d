@@ -301,6 +301,11 @@
   :config
   (global-set-key "\C-s" 'swiper))
 
+(use-package avy
+  :bind* ("C-." . avy-goto-char-timer)
+  :config
+  (avy-setup-default))
+
 (use-package magit
   :defer t
   :bind ("C-x g" . magit-status))
