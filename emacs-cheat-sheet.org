@@ -4,6 +4,7 @@
    | key       | description                                 |
    |-----------+---------------------------------------------|
    | C-.       | avy character timer; jump to 3-char pattern |
+   | C-c C-r   | crux rename file and buffer                 |
    | C-c & C-s | choose a snippet to insert                  |
    | s-x       | create an auto-snippet                      |
    | s-y       | expand auto-snippet                         |

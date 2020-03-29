@@ -73,7 +73,7 @@
 ;; Don't beep at me
 (setq visible-bell t)
 
-;; get rid of all of the backup files
+;; get rid of all of the backup files; that is what revision control is for.
 (setq backup-before-writing nil)
 (setq make-backup-files nil)
 
@@ -106,7 +106,7 @@
   (string-suffix-p "zsh" shell-file-name))
 
 (when (jwm/shell-is-zsh-p)
-  (setq shell-command-switch "-conorcs"))
+  (setq shell-command-switch "-cf"))
 
 ;; always end a file with a newline
 (setq require-final-newline t)
@@ -314,8 +314,7 @@
  ;; org mode wants these default global bindings set up.
  ("C-c l" . org-store-link)
  ("C-c c" . org-capture)
- ("C-c a" . org-agenda)
- ("C-c b" . org-iswitchb))
+ ("C-c a" . org-agenda))
 
 (setq org-directory
       (cond ((jwm/sift-mac-p) "~/sift/todo")
