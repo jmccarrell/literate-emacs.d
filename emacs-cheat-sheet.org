@@ -9,6 +9,48 @@
    | s-x       | create an auto-snippet                      |
    | s-y       | expand auto-snippet                         |
 
+
+*** wrap-region and insert-pair
+
+    wrap-region select a region, then any of these:
+
+    #+BEGIN_SRC emacs-lisp
+      (wrap-region-add-wrappers
+       '(("(" ")")
+         ("[" "]")
+         ("{" "}")
+         ("<" ">")
+         ("'" "'")
+         ("\"" "\"")
+         ("‘" "’"   "q")
+         ("“" "”"   "Q")
+         ("*" "*"   "b"   org-mode)                 ; bolden
+         ("*" "*"   "*"   org-mode)                 ; bolden
+         ("/" "/"   "i"   org-mode)                 ; italics
+         ("/" "/"   "/"   org-mode)                 ; italics
+         ("~" "~"   "c"   org-mode)                 ; code
+         ("~" "~"   "~"   org-mode)                 ; code
+         ("=" "="   "v"   org-mode)                 ; verbatim
+         ("=" "="   "="   org-mode)                 ; verbatim
+         ("_" "_"   "u" '(org-mode markdown-mode))  ; underline
+         ("**" "**" "b"   markdown-mode)            ; bolden
+         ("*" "*"   "i"   markdown-mode)            ; italics
+         ("`" "`"   "c" '(markdown-mode ruby-mode)) ; code
+         ("`" "'"   "c"   lisp-mode)                ; code
+         ))
+    #+END_SRC
+
+    insert-pair
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "M-[") 'insert-pair)
+      (global-set-key (kbd "M-{") 'insert-pair)
+      (global-set-key (kbd "M-<") 'insert-pair)
+      (global-set-key (kbd "M-'") 'insert-pair)
+      ;; (global-set-key (kbd "M-`") 'insert-pair)
+      (global-set-key (kbd "M-\"") 'insert-pair)
+   #+END_SRC
+
 ** Global bindings
 
    | key         | description                                              |

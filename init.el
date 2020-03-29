@@ -218,6 +218,42 @@
  ;; ("A-C--" . ha/text-scale-frame-decrease)
  )
 
+(global-set-key (kbd "M-[") 'insert-pair)
+(global-set-key (kbd "M-{") 'insert-pair)
+(global-set-key (kbd "M-<") 'insert-pair)
+(global-set-key (kbd "M-'") 'insert-pair)
+;; (global-set-key (kbd "M-`") 'insert-pair)
+(global-set-key (kbd "M-\"") 'insert-pair)
+
+(use-package wrap-region
+  :ensure   t
+  :config
+  (wrap-region-global-mode t)
+  (wrap-region-add-wrappers
+   '(("(" ")")
+     ("[" "]")
+     ("{" "}")
+     ("<" ">")
+     ("'" "'")
+     ("\"" "\"")
+     ("‘" "’"   "q")
+     ("“" "”"   "Q")
+     ("*" "*"   "b"   org-mode)                 ; bolden
+     ("*" "*"   "*"   org-mode)                 ; bolden
+     ("/" "/"   "i"   org-mode)                 ; italics
+     ("/" "/"   "/"   org-mode)                 ; italics
+     ("~" "~"   "c"   org-mode)                 ; code
+     ("~" "~"   "~"   org-mode)                 ; code
+     ("=" "="   "v"   org-mode)                 ; verbatim
+     ("=" "="   "="   org-mode)                 ; verbatim
+     ("_" "_"   "u" '(org-mode markdown-mode))  ; underline
+     ("**" "**" "b"   markdown-mode)            ; bolden
+     ("*" "*"   "i"   markdown-mode)            ; italics
+     ("`" "`"   "c" '(markdown-mode ruby-mode)) ; code
+     ("`" "'"   "c"   lisp-mode)                ; code
+     ))
+  :diminish wrap-region-mode)
+
 (use-package which-key
   :config
   :diminish which-key-mode

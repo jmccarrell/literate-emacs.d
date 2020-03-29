@@ -609,6 +609,66 @@
       )
    #+END_SRC
 
+** Block wrappers
+   Again, I am cribbing this pretty much [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#block-wrappers][straight from Howards' config]]
+
+*** Insert pairs
+    #+begin_quote
+      While the =M-(= binding to =insert-pair= is great, I often need to wrap with other characters:
+    #+end_quote
+
+    But not =M-`= for me; I prefer that to switch frames, as in the os x convention.
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "M-[") 'insert-pair)
+      (global-set-key (kbd "M-{") 'insert-pair)
+      (global-set-key (kbd "M-<") 'insert-pair)
+      (global-set-key (kbd "M-'") 'insert-pair)
+      ;; (global-set-key (kbd "M-`") 'insert-pair)
+      (global-set-key (kbd "M-\"") 'insert-pair)
+   #+END_SRC
+
+*** wrap-region
+
+    Quoting Howard:
+
+    #+begin_quote
+      But [[https://github.com/rejeep/wrap-region.el][wrap-region]] is even more flexible. In most editors, selecting text and typing anything replaces
+      the selected text (see the [[info:emacs#Using%20Region][delete-selection-mode]]), but in this case, we can do something
+      different... like wrapping:
+    #+end_quote
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package wrap-region
+        :ensure   t
+        :config
+        (wrap-region-global-mode t)
+        (wrap-region-add-wrappers
+         '(("(" ")")
+           ("[" "]")
+           ("{" "}")
+           ("<" ">")
+           ("'" "'")
+           ("\"" "\"")
+           ("‘" "’"   "q")
+           ("“" "”"   "Q")
+           ("*" "*"   "b"   org-mode)                 ; bolden
+           ("*" "*"   "*"   org-mode)                 ; bolden
+           ("/" "/"   "i"   org-mode)                 ; italics
+           ("/" "/"   "/"   org-mode)                 ; italics
+           ("~" "~"   "c"   org-mode)                 ; code
+           ("~" "~"   "~"   org-mode)                 ; code
+           ("=" "="   "v"   org-mode)                 ; verbatim
+           ("=" "="   "="   org-mode)                 ; verbatim
+           ("_" "_"   "u" '(org-mode markdown-mode))  ; underline
+           ("**" "**" "b"   markdown-mode)            ; bolden
+           ("*" "*"   "i"   markdown-mode)            ; italics
+           ("`" "`"   "c" '(markdown-mode ruby-mode)) ; code
+           ("`" "'"   "c"   lisp-mode)                ; code
+           ))
+        :diminish wrap-region-mode)
+    #+END_SRC
+
 ** which-key
 
    I have come to appreciate the exploration of the key maps that [[https://github.com/justbur/emacs-which-key][which-key]] enables.
