@@ -234,7 +234,8 @@
 
 (defun jwm/save-buffer-whitespace-cleanup-hook ()
   "run whitespace-cleanup when enabled by jwm/run-whitespace-cleanup-on-save-p."
-  (whitespace-cleanup))
+  (when jwm/run-whitespace-cleanup-on-save-p
+    (whitespace-cleanup)))
 
 (add-hook 'before-save-hook 'jwm/save-buffer-whitespace-cleanup-hook)
 
