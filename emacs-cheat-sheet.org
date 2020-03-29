@@ -9,6 +9,11 @@
    | s-x       | create an auto-snippet                      |
    | s-y       | expand auto-snippet                         |
 
+*** ivy swiper
+
+   | key | description                                      |
+   |-----+--------------------------------------------------|
+   | M-j | ivy-yank-word; grab text at point for completion |
 
 *** wrap-region and insert-pair
 

@@ -1,66 +1,67 @@
 # Table of Contents
 
-1.  [Jeffs Frequently Used Bindings](#org653db20)
-    1.  [Recent bindings to get used to](#org2b13115)
-        1.  [wrap-region and insert-pair](#orgb3326de)
-    2.  [Global bindings](#org3b6a7a8)
-    3.  [Projectile bindings](#org746ddc0)
-    4.  [Org mode bindings](#orgf61b39f)
-    5.  [Register, Bookmark & Mark bindings](#orgc4ef12c)
-    6.  [Agenda view bindings](#orgaea965e)
-2.  [Dired](#org595cb6d)
-    1.  [Key bindings](#orge9886c5)
-3.  [Narrow](#org9bab369)
-    1.  [Narrow Common Key Bindings](#orge272716)
-4.  [Rectangles](#org47aa8f6)
-    1.  [Rectangle Mark Mode](#orgf9b8907)
-    2.  [Rectangle Registers](#org993fca6)
-5.  [Org key bindings](#orgc05cceb)
-    1.  [References](#org1cb321a)
-    2.  [End Notes](#org70af1d6)
-    3.  [Visibility Cycling](#orgb95762c)
-    4.  [Motion](#org5917ad3)
-    5.  [Structure Editing](#org2e894f2)
-    6.  [Capture / Refile / Archiving](#orgf808265)
-    7.  [Filtering and Sparse Trees](#org4b26e64)
-    8.  [Tables](#org7fa55cd)
-        1.  [Table Creation](#org5cb2ace)
-        2.  [Commands Inside a Table](#org6b7f684)
-        3.  [Re-aligning and Field Motion](#orgcfb34b5)
-        4.  [Row and Column Editing](#org23bdcdc)
-        5.  [Regions](#orgb17357e)
-        6.  [Miscellaneous](#orgcb31cc1)
-        7.  [Tables created with the table.el package](#org6bedae4)
-        8.  [Spreadsheet](#org95999d8)
-        9.  [Formula Editor](#org2bda347)
-    9.  [Links](#org81067d7)
-    10. [Working with Code (Babel)](#orgeeee0c2)
-    11. [Completion](#org74e3466)
-    12. [Items and Checkboxes](#org070c1e1)
-    13. [Tags](#orgaa8b98b)
-    14. [Properties and Column View](#org8afda10)
-    15. [Timestamps](#org26d6d5b)
-        1.  [Clocking Time](#org183779a)
-    16. [Agenda Views](#org0a63ab4)
-6.  [Register key bindings](#org2d06178)
-7.  [Bookmark key bindings](#org9790e1f)
-8.  [Company bindings](#org8bd77b4)
-    1.  [While completing](#org31b893f)
-    2.  [When a completion is selected](#org6276d71)
-9.  [Clojure / CIDER key bindings](#orgd24fd2f)
-    1.  [Clojure key bindings](#org70b8459)
-    2.  [CIDER key bindings](#org0dd9d52)
-10. [Outline key bindings](#orgf90f7fa)
-    1.  [Outline Motion](#orgbfc571c)
-    2.  [Outline Visibility](#orgbc1ad2c)
+1.  [Jeffs Frequently Used Bindings](#org493dcb0)
+    1.  [Recent bindings to get used to](#org358d745)
+        1.  [ivy swiper](#org71649a0)
+        2.  [wrap-region and insert-pair](#orgf9db0a7)
+    2.  [Global bindings](#orge27e06b)
+    3.  [Projectile bindings](#org126dabe)
+    4.  [Org mode bindings](#org86b6493)
+    5.  [Register, Bookmark & Mark bindings](#org790d3fb)
+    6.  [Agenda view bindings](#org65d6093)
+2.  [Dired](#org0e8cd3b)
+    1.  [Key bindings](#org9404bb5)
+3.  [Narrow](#orgeef65b1)
+    1.  [Narrow Common Key Bindings](#org967b458)
+4.  [Rectangles](#org4e41c2c)
+    1.  [Rectangle Mark Mode](#org41e9cca)
+    2.  [Rectangle Registers](#org5dae73a)
+5.  [Org key bindings](#orgdff6fbe)
+    1.  [References](#org2472a23)
+    2.  [End Notes](#org1e9c122)
+    3.  [Visibility Cycling](#orgbdf6ed3)
+    4.  [Motion](#org4a58a96)
+    5.  [Structure Editing](#org3f8d915)
+    6.  [Capture / Refile / Archiving](#orgc04b5b3)
+    7.  [Filtering and Sparse Trees](#org59b54da)
+    8.  [Tables](#org0b9a8f6)
+        1.  [Table Creation](#orgd28d310)
+        2.  [Commands Inside a Table](#orga592ad9)
+        3.  [Re-aligning and Field Motion](#orga495ac7)
+        4.  [Row and Column Editing](#org63209a3)
+        5.  [Regions](#orge2f6c2c)
+        6.  [Miscellaneous](#org1395a35)
+        7.  [Tables created with the table.el package](#org51a31fa)
+        8.  [Spreadsheet](#org84d98e4)
+        9.  [Formula Editor](#orgd81ebe3)
+    9.  [Links](#orgcb61ea3)
+    10. [Working with Code (Babel)](#orgcd64cc7)
+    11. [Completion](#org33695e0)
+    12. [Items and Checkboxes](#org587cf17)
+    13. [Tags](#orgeda6eed)
+    14. [Properties and Column View](#org530331b)
+    15. [Timestamps](#orgdc93a56)
+        1.  [Clocking Time](#org105a215)
+    16. [Agenda Views](#org0db2e92)
+6.  [Register key bindings](#orgc18022d)
+7.  [Bookmark key bindings](#org85218e7)
+8.  [Company bindings](#orgd3e2106)
+    1.  [While completing](#org0ad926e)
+    2.  [When a completion is selected](#orgb983d05)
+9.  [Clojure / CIDER key bindings](#org28ab3d6)
+    1.  [Clojure key bindings](#org8c7fc51)
+    2.  [CIDER key bindings](#org13ef137)
+10. [Outline key bindings](#org41f3672)
+    1.  [Outline Motion](#org547f66a)
+    2.  [Outline Visibility](#org7f74601)
 
 
-<a id="org653db20"></a>
+<a id="org493dcb0"></a>
 
 # Jeffs Frequently Used Bindings
 
 
-<a id="org2b13115"></a>
+<a id="org358d745"></a>
 
 ## Recent bindings to get used to
 
@@ -112,7 +113,35 @@
 </table>
 
 
-<a id="orgb3326de"></a>
+<a id="org71649a0"></a>
+
+### ivy swiper
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">key</th>
+<th scope="col" class="org-left">description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td class="org-left">M-j</td>
+<td class="org-left">ivy-yank-word; grab text at point for completion</td>
+</tr>
+</tbody>
+</table>
+
+
+<a id="orgf9db0a7"></a>
 
 ### wrap-region and insert-pair
 
@@ -152,7 +181,7 @@ insert-pair
     (global-set-key (kbd "M-\"") 'insert-pair)
 
 
-<a id="org3b6a7a8"></a>
+<a id="orge27e06b"></a>
 
 ## Global bindings
 
@@ -198,7 +227,7 @@ insert-pair
 </table>
 
 
-<a id="org746ddc0"></a>
+<a id="org126dabe"></a>
 
 ## Projectile bindings
 
@@ -240,7 +269,7 @@ bbatsov's [key bindings table](https://github.com/bbatsov/projectile/blob/master
 </table>
 
 
-<a id="orgf61b39f"></a>
+<a id="org86b6493"></a>
 
 ## Org mode bindings
 
@@ -280,7 +309,7 @@ bbatsov's [key bindings table](https://github.com/bbatsov/projectile/blob/master
 </table>
 
 
-<a id="orgc4ef12c"></a>
+<a id="org790d3fb"></a>
 
 ## Register, Bookmark & Mark bindings
 
@@ -358,7 +387,7 @@ bbatsov's [key bindings table](https://github.com/bbatsov/projectile/blob/master
 </table>
 
 
-<a id="orgaea965e"></a>
+<a id="org65d6093"></a>
 
 ## Agenda view bindings
 
@@ -398,12 +427,12 @@ bbatsov's [key bindings table](https://github.com/bbatsov/projectile/blob/master
 </table>
 
 
-<a id="org595cb6d"></a>
+<a id="org0e8cd3b"></a>
 
 # Dired
 
 
-<a id="orge9886c5"></a>
+<a id="org9404bb5"></a>
 
 ## Key bindings
 
@@ -431,12 +460,12 @@ bbatsov's [key bindings table](https://github.com/bbatsov/projectile/blob/master
 </table>
 
 
-<a id="org9bab369"></a>
+<a id="orgeef65b1"></a>
 
 # Narrow
 
 
-<a id="orge272716"></a>
+<a id="org967b458"></a>
 
 ## Narrow Common Key Bindings
 
@@ -482,7 +511,7 @@ bbatsov's [key bindings table](https://github.com/bbatsov/projectile/blob/master
 </table>
 
 
-<a id="org47aa8f6"></a>
+<a id="org4e41c2c"></a>
 
 # Rectangles
 
@@ -570,26 +599,26 @@ bbatsov's [key bindings table](https://github.com/bbatsov/projectile/blob/master
 </table>
 
 
-<a id="orgf9b8907"></a>
+<a id="org41e9cca"></a>
 
 ## Rectangle Mark Mode
 
 when active, the region-rectangle is highlighted and can be shrunk/grown.  the standard kill and yank commands operate on it.
 
 
-<a id="org993fca6"></a>
+<a id="org5dae73a"></a>
 
 ## Rectangle Registers
 
 -   fill this out from [Rectangle Registers](<https://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangle-Registers.html#Rectangle-Registers>)
 
 
-<a id="orgc05cceb"></a>
+<a id="orgdff6fbe"></a>
 
 # Org key bindings
 
 
-<a id="org1cb321a"></a>
+<a id="org2472a23"></a>
 
 ## References
 
@@ -597,7 +626,7 @@ when active, the region-rectangle is highlighted and can be shrunk/grown.  the s
 -   pdf reference card [<http://orgmode.org/orgcard.pdf>]
 
 
-<a id="org70af1d6"></a>
+<a id="org1e9c122"></a>
 
 ## End Notes
 
@@ -605,7 +634,7 @@ when active, the region-rectangle is highlighted and can be shrunk/grown.  the s
 [2] Keybinding is subject to org-support-shift-select and org-replace-disputed-keys
 
 
-<a id="orgb95762c"></a>
+<a id="orgbdf6ed3"></a>
 
 ## Visibility Cycling
 
@@ -657,7 +686,7 @@ when active, the region-rectangle is highlighted and can be shrunk/grown.  the s
 </table>
 
 
-<a id="org5917ad3"></a>
+<a id="org4a58a96"></a>
 
 ## Motion
 
@@ -709,7 +738,7 @@ when active, the region-rectangle is highlighted and can be shrunk/grown.  the s
 </table>
 
 
-<a id="org2e894f2"></a>
+<a id="org3f8d915"></a>
 
 ## Structure Editing
 
@@ -815,7 +844,7 @@ when active, the region-rectangle is highlighted and can be shrunk/grown.  the s
 </table>
 
 
-<a id="orgf808265"></a>
+<a id="orgc04b5b3"></a>
 
 ## Capture / Refile / Archiving
 
@@ -873,7 +902,7 @@ when active, the region-rectangle is highlighted and can be shrunk/grown.  the s
 </table>
 
 
-<a id="org4b26e64"></a>
+<a id="org59b54da"></a>
 
 ## Filtering and Sparse Trees
 
@@ -919,12 +948,12 @@ when active, the region-rectangle is highlighted and can be shrunk/grown.  the s
 </table>
 
 
-<a id="org7fa55cd"></a>
+<a id="org0b9a8f6"></a>
 
 ## Tables
 
 
-<a id="org5cb2ace"></a>
+<a id="orgd28d310"></a>
 
 ### Table Creation
 
@@ -959,7 +988,7 @@ just start typing, eg,   |key|good for| - TAB
 </table>
 
 
-<a id="org6b7f684"></a>
+<a id="orga592ad9"></a>
 
 ### Commands Inside a Table
 
@@ -967,7 +996,7 @@ the following commands work when the cursor is inside a table.
 Outside of tables, these bindings may have other functionality.
 
 
-<a id="orgcfb34b5"></a>
+<a id="orga495ac7"></a>
 
 ### Re-aligning and Field Motion
 
@@ -1027,7 +1056,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org23bdcdc"></a>
+<a id="org63209a3"></a>
 
 ### Row and Column Editing
 
@@ -1109,7 +1138,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="orgb17357e"></a>
+<a id="orge2f6c2c"></a>
 
 ### Regions
 
@@ -1143,7 +1172,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="orgcb31cc1"></a>
+<a id="org1395a35"></a>
 
 ### Miscellaneous
 
@@ -1201,7 +1230,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org6bedae4"></a>
+<a id="org51a31fa"></a>
 
 ### Tables created with the table.el package
 
@@ -1241,7 +1270,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org95999d8"></a>
+<a id="org84d98e4"></a>
 
 ### Spreadsheet
 
@@ -1324,14 +1353,14 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org2bda347"></a>
+<a id="orgd81ebe3"></a>
 
 ### Formula Editor
 
 -   fill this out from formula editor section
 
 
-<a id="org81067d7"></a>
+<a id="orgcb61ea3"></a>
 
 ## Links
 
@@ -1425,7 +1454,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="orgeeee0c2"></a>
+<a id="orgcd64cc7"></a>
 
 ## Working with Code (Babel)
 
@@ -1567,7 +1596,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org74e3466"></a>
+<a id="org33695e0"></a>
 
 ## Completion
 
@@ -1604,7 +1633,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org070c1e1"></a>
+<a id="org587cf17"></a>
 
 ## TODO Items and Checkboxes
 
@@ -1710,7 +1739,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="orgaa8b98b"></a>
+<a id="orgeda6eed"></a>
 
 ## Tags
 
@@ -1756,7 +1785,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org8afda10"></a>
+<a id="org530331b"></a>
 
 ## Properties and Column View
 
@@ -1868,7 +1897,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org26d6d5b"></a>
+<a id="orgdc93a56"></a>
 
 ## Timestamps
 
@@ -1974,7 +2003,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org183779a"></a>
+<a id="org105a215"></a>
 
 ### Clocking Time
 
@@ -2026,7 +2055,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org0a63ab4"></a>
+<a id="org0db2e92"></a>
 
 ## Agenda Views
 
@@ -2132,7 +2161,7 @@ Outside of tables, these bindings may have other functionality.
 </table>
 
 
-<a id="org2d06178"></a>
+<a id="orgc18022d"></a>
 
 # Register key bindings
 
@@ -2275,7 +2304,7 @@ recall registers are named: [a-z][A-Z][0-9], denoted as R in the keybindings
 </table>
 
 
-<a id="org9790e1f"></a>
+<a id="org85218e7"></a>
 
 # Bookmark key bindings
 
@@ -2315,12 +2344,12 @@ recall registers are named: [a-z][A-Z][0-9], denoted as R in the keybindings
 </table>
 
 
-<a id="org8bd77b4"></a>
+<a id="orgd3e2106"></a>
 
 # Company bindings
 
 
-<a id="org31b893f"></a>
+<a id="org0ad926e"></a>
 
 ## While completing
 
@@ -2360,7 +2389,7 @@ recall registers are named: [a-z][A-Z][0-9], denoted as R in the keybindings
 </table>
 
 
-<a id="org6276d71"></a>
+<a id="orgb983d05"></a>
 
 ## When a completion is selected
 
@@ -2394,12 +2423,12 @@ recall registers are named: [a-z][A-Z][0-9], denoted as R in the keybindings
 </table>
 
 
-<a id="orgd24fd2f"></a>
+<a id="org28ab3d6"></a>
 
 # Clojure / CIDER key bindings
 
 
-<a id="org70b8459"></a>
+<a id="org8c7fc51"></a>
 
 ## Clojure key bindings
 
@@ -2457,7 +2486,7 @@ recall registers are named: [a-z][A-Z][0-9], denoted as R in the keybindings
 </table>
 
 
-<a id="org0dd9d52"></a>
+<a id="org13ef137"></a>
 
 ## CIDER key bindings
 
@@ -2491,14 +2520,14 @@ recall registers are named: [a-z][A-Z][0-9], denoted as R in the keybindings
 </table>
 
 
-<a id="orgf90f7fa"></a>
+<a id="org41f3672"></a>
 
 # Outline key bindings
 
 -   outline minor mode (not used in org mode) uses prefix \`C-c @\`
 
 
-<a id="orgbfc571c"></a>
+<a id="org547f66a"></a>
 
 ## Outline Motion
 
@@ -2550,7 +2579,7 @@ recall registers are named: [a-z][A-Z][0-9], denoted as R in the keybindings
 </table>
 
 
-<a id="orgbc1ad2c"></a>
+<a id="org7f74601"></a>
 
 ## Outline Visibility
 

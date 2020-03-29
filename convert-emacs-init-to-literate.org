@@ -138,28 +138,6 @@
      to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
      as part of that refactoring.
 
-*** DOING figure out how to search at point with swiper
-    - State "DOING"      from              [2020-03-15 Sun 20:49]
-    I often want to search for the text at point with swiper
-    Like I used to do with i-search
-
-    I'm sure this is possible; I just don't know how to do it.
-
-    the method is: =swiper-thing-at-point=
-
-    is there a binding for it?  A: no.
-
-    I can also yank text into the ivy completion buffer.
-
-    Looks like the magic is =M-j= bound to =ivy-yank-word=
-
-    the key bindings are displayed by
-    #+begin_quote
-    M-x describe-function ivy-mode
-    #+end_quote
-
-    reddit thread about [[https://www.reddit.com/r/emacs/comments/6yi6dl/most_useful_parts_of_ivycounselswiper_manual_too/][most useful parts of ivy]]
-
 *** make a links section to my favorite authors' config files
     - both on the web and to my local copies
 
@@ -229,6 +207,32 @@
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
    - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
    - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
+
+*** DONE figure out how to search at point with swiper
+    - State "DONE"       from "DOING"      [2020-03-29 Sun 14:11]
+    - State "DOING"      from              [2020-03-15 Sun 20:49]
+
+    the answer here is ~M-j~, which is ~ivy-yank-word~.
+
+    I often want to search for the text at point with swiper
+    Like I used to do with i-search
+
+    I'm sure this is possible; I just don't know how to do it.
+
+    the method is: =swiper-thing-at-point=
+
+    is there a binding for it?  A: no.
+
+    I can also yank text into the ivy completion buffer.
+
+    Looks like the magic is =M-j= bound to =ivy-yank-word=
+
+    the key bindings are displayed by
+    #+begin_quote
+    M-x describe-function ivy-mode
+    #+end_quote
+
+    reddit thread about [[https://www.reddit.com/r/emacs/comments/6yi6dl/most_useful_parts_of_ivycounselswiper_manual_too/][most useful parts of ivy]]
 *** DONE add a key-binding C-c ~ to insert ~~ pairs
 
     - State "DONE"       from "DOING"      [2020-03-29 Sun 14:04]
