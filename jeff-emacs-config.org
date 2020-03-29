@@ -8,8 +8,7 @@
 ** About This File
 
    After many years of emacs evolution via hunting and pecking, I finally refactored my existing emacs setup
-   in the literate style. I have previously and continue to follow the lead of many fine emacs devotees,
-   among them:
+   in the literate style. I continue to follow the lead of many fine emacs devotees, among them:
 
    - [[https://github.com/howardabrams/dot-files/blob/master/emacs.org][Howard Abrams]]
    - [[https://github.com/sachac/.emacs.d][Sacha Chua]]
@@ -47,6 +46,7 @@
      - learn babel and tangle in the process
    - learn more emacs-lisp; even become competent?
    - add ivy, swiper and counsel in addition to -- or perhaps replace? -- helm
+     - it turns out I have chosen to replace helm with ivy, avy, swiper and counsel.
 
    as well as a host of smaller, clean-up type goals.
 
@@ -66,7 +66,7 @@
 ** zsh Shell Support
 
    I have been a zsh user for some time, but I also maintain a reasonable bash setup.  In this config, I
-   expect to add support for zsh idioms over time, especially as [[https://www.theverge.com/2019/6/4/18651872/apple-macos-catalina-zsh-bash-shell-replacement-features][zsh will be the default shell on MacOS
+   expect to add support for zsh idioms over time, especially as [[https://www.theverge.com/2019/6/4/18651872/apple-macos-catalina-zsh-bash-shell-replacement-features][zsh is the default shell on MacOS
    Catalina]].
 
 * Record Startup Timing
@@ -131,19 +131,25 @@
 
 ** Modernizing Emacs
 
-   Another section I lifted [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#modernizing-emacs][straight from Howard]].  This is his text.
+   Another section I lifted [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#modernizing-emacs][straight from Howard]].  The description is his text.
 
-   With a long history of working on small machines without gigabytes
-   of RAM, we might as well let Emacs be the beast it has always
-   dreamed.
+   #+begin_quote
+     With a long history of working on small machines without gigabytes
+     of RAM, we might as well let Emacs be the beast it has always
+     dreamed.
 
-   First, let’s increase the cache before starting garbage collection:
+     First, let’s increase the cache before starting garbage collection:
+   #+end_quote
+
    #+BEGIN_SRC elisp
      (setq gc-cons-threshold 50000000)
    #+END_SRC
 
-   Found [[https://github.com/wasamasa/dotemacs/blob/master/init.org#init][here]] how to remove the warnings from the GnuTLS library when
-   using HTTPS... increase the minimum prime bits size:
+   #+begin_quote
+     Found [[https://github.com/wasamasa/dotemacs/blob/master/init.org#init][here]] how to remove the warnings from the GnuTLS library when
+     using HTTPS... increase the minimum prime bits size:
+   #+end_quote
+
    #+BEGIN_SRC elisp
      (setq gnutls-min-prime-bits 4096)
    #+END_SRC
@@ -165,19 +171,8 @@
        (server-start))
    #+END_SRC
 
-   Maybe someday add support to edit text in emacs from Chrome.  As adapted from jwiegley.  However, when I
-   try this my emacs doesn't seem to read the entire =init.el=.  So defer this for now.
-
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package edit-server
-       :if (window-system)
-       :defer 5
-       :config
-       (edit-server-start))
-   #+END_SRC
-
-   I considered using =exec-path-from-shell= as [[https://github.com/danielmai/.emacs.d/blob/master/config.org#mac-customizations][Daniel Mai does]], but some experimentation shows that the
-   only added benefit I get is to set MANPATH.  At the moment, I don't consider that enough of a win.
+   I considered using =exec-path-from-shell=, but some experimentation shows that the only added benefit I
+   get is to set MANPATH.  At the moment, I don't consider that enough of a win.
 
    =exec-path= is reasonably set by my usual method of invoking emacs from iTerm, which also benefits from
    the [[https://github.com/caldwell/build-emacs/blob/master/launch.rb][emacs ruby launcher script]] from [[https://emacsformacosx.com/][GNU Emacs for Mac OS X]].
@@ -265,7 +260,7 @@
      ;; Don't beep at me
      (setq visible-bell t)
 
-     ;; get rid of all of the backup files
+     ;; get rid of all of the backup files; that is what revision control is for.
      (setq backup-before-writing nil)
      (setq make-backup-files nil)
 
@@ -290,7 +285,7 @@
 
 ** Tabs
 
-   I prefer spaces over tabs in all cases.  [[http://ergoemacs.org/emacs/emacs_tabs_space_indentation_setup.html][Source]]
+   I prefer spaces over tabs in all cases.  [[http://ergoemacs.org/emacs/emacs_tabs_space_indentation_setup.html][Source]].  I guess I don't write many Makefiles any more.
 
    #+BEGIN_SRC emacs-lisp
      (setq-default indent-tabs-mode nil)
@@ -342,6 +337,15 @@
     especially PATH -- so that we don't *need* to re-execute all of that lovely zsh initialization code
     every time emacs wants to run a process.
 
+**** =-f= is an alias for =-conorcs=
+
+     The following section on =-conorcs= is true, and valid.  In addition, [[http://zsh.sourceforge.net/Doc/Release/Options.html#Default-set][=-f= will suppress reading RC files]]:
+
+     #+begin_example
+       -f
+         NO_RCS
+     #+end_example
+
 **** What is =-conorcs=?
 
      As described in [[http://zsh.sourceforge.net/Doc/Release/Invocation.html#Invocation-2][zsh invocation]], zsh allows concatenation of single character command line options.  We
@@ -354,9 +358,16 @@
      The intuition about this setting is reinforced by measurement:
 
      #+BEGIN_EXAMPLE
-     M-x shell-command time zsh -onorcsc exit
-     zsh -onorcsc exit  0.00s user 0.00s system 69% cpu 0.004 total
+       M-x shell-command time zsh -onorcsc exit
+       zsh -onorcsc exit  0.00s user 0.00s system 69% cpu 0.004 total
      #+END_EXAMPLE
+
+     and
+
+     #+begin_example
+       M-x shell-command time zsh -cf exit
+       zsh -f -c exit  0.00s user 0.00s system 64% cpu 0.006 total
+     #+end_example
 
      Which leads to:
 
@@ -365,7 +376,7 @@
          (string-suffix-p "zsh" shell-file-name))
 
        (when (jwm/shell-is-zsh-p)
-         (setq shell-command-switch "-conorcs"))
+         (setq shell-command-switch "-cf"))
      #+END_SRC
 
 **** Effect
@@ -374,9 +385,9 @@
     of magnitude.
 
     #+BEGIN_EXAMPLE
-    M-x shell-command time date
-    Fri Aug 30 08:49:12 PDT 2019
-    date  0.00s user 0.00s system 58% cpu 0.004 total
+      M-x shell-command time date
+      Sun Mar 29 10:33:10 PDT 2020
+      date  0.00s user 0.00s system 66% cpu 0.002 total
     #+END_EXAMPLE
 
     Your mileage will vary depending on the contents of your zsh dot files.
@@ -387,8 +398,8 @@
      startup time.  This difference is no doubt entirely due to my zsh initialization scripts.
 
      #+BEGIN_EXAMPLE
-     M-x shell-command time bash -c exit
-     bash -c exit  0.00s user 0.00s system 69% cpu 0.004 total
+       M-x shell-command time bash -c exit
+       bash -c exit  0.00s user 0.00s system 69% cpu 0.004 total
      #+END_EXAMPLE
 
 ** Other Misc Settings
@@ -413,15 +424,14 @@
 
      ;; no disabled functions
      (setq disabled-command-function nil)
-
    #+END_SRC
 
 * Display Settings
 ** Color Theme
 
-   After much experimentation, I have come to prefer zenburn. Over the years, I have used my own color theme,
-   which I used to be quite proud of, and then solarized. Now I have come to prefer zenburn. It works well in
-   the terminal as well.
+   After much experimentation, I have come to prefer zenburn. Over the years, I have used my own color
+   theme, which I used to be quite proud of, and then solarized. Now I have come to prefer zenburn. It works
+   well for emacs running in the terminal as well.
 
    For reference, here is how Sacha overrides and [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::(defun%20my/setup-color-theme%20()%20(interactive)%20(when%20(display-graphic-p)%20(color-theme-solarized))%20(set-background-color%20"black")%20(set-face-foreground%20'secondary-selection%20"darkblue")%20(set-face-background%20'secondary-selection%20"lightblue")%20(set-face-background%20'font-lock-doc-face%20"black")%20(set-face-foreground%20'font-lock-doc-face%20"wheat")%20(set-face-background%20'font-lock-string-face%20"black"))%20(use-package%20color-theme-solarized%20:config%20(my/setup-color-theme))][customizes her use of solarized]].
 
@@ -429,6 +439,16 @@
     (use-package zenburn-theme
       :init (load-theme 'zenburn t))
    #+END_SRC
+
+*** Themes I have experimented with
+
+    First of all, [[https://peach-melpa.org/][peach melba]] is a convient way to preview themes to try out.
+
+    Mostly to keep myself from repeating work, here is a partial list of themes I have tried and found
+    inferior to zenburn, mostly due to their handling of =org-mode=.
+
+    - [[https://peach-melpa.org/themes/monokai-pro-theme][monokai pro]]
+    - [[https://peach-melpa.org/themes/gruvbox-theme?lang=el&variant=gruvbox-dark-medium][gruvbox dark medium]]
 
 ** Font
 
@@ -530,18 +550,13 @@
   #+END_SRC
 
   I did experiment with eyebrowse.  However, its default binding =C-c C-w= conflicts with =org-refile=, so
-  it has to go.
-
-  #+BEGIN_SRC emacs-lisp :tangle no
-    (use-package eyebrowse)
-    (eyebrowse-mode)
-  #+END_SRC
+  it had to go.
 
 * Key Bindings
 ** Option and Command Modifier Keys on a Mac
 
-   Howard maps option and command to different emacs key symbols to allow him that many more possible key
-   bindings. Like this:
+   Howard maps the option and command keys on mac hardware to different emacs key symbols to allow him that
+   many more possible key bindings, like this:
 
    #+BEGIN_SRC emacs-lisp :tangle no
      (setq mac-option-modifier 'meta)
@@ -552,7 +567,8 @@
 
    I leave right-option for the OS X combiner keys, like √ from right-option v.
 
-   And I prefer to switch between emacs frames using the standard mac gesture =Command-`=
+   And I prefer to switch between emacs frames using the standard mac gesture =Command-`=, although since
+   adding =ace-window=, I suppose I need =Command-`= less than before it.
 
    #+BEGIN_SRC emacs-lisp
      (when (jwm/mac-p)
@@ -638,6 +654,7 @@
 
   | keys      | command                 | what it does                                          |
   |-----------+-------------------------+-------------------------------------------------------|
+  | C-x d     | dired                   | start dired                                           |
   | C-x C-j   | dired-jump              | Jump to Dired buffer corresponding to current buffer. |
   | C-x 4 C-j | dired-jump-other-window |                                                       |
 
@@ -678,6 +695,11 @@
      (use-package ag
        :commands ag)
    #+END_SRC
+
+** ripgrep
+
+   I get ripgrep as a dependency of =projectile-ripgrep=.  Since I am using (apparently) the bone-stock
+   configuration, there is nothing in this section.
 
 * Former Swiper Helm Projectile
 
@@ -822,9 +844,11 @@
 
 ** Magit
 
-   Indispensible.  One of the two killer apps for emacs IMO.
+   Indispensible.  One of the two killer apps for emacs IMO, =org-mode= being the other.
 
    Howard does [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Magit][additional customization]] that I should consider someday.
+
+   My usage is considerably simpler.
 
    #+BEGIN_SRC emacs-lisp
      (use-package magit
@@ -841,9 +865,15 @@
        ;; org mode wants these default global bindings set up.
        ("C-c l" . org-store-link)
        ("C-c c" . org-capture)
-       ("C-c a" . org-agenda)
-       ("C-c b" . org-iswitchb))
+       ("C-c a" . org-agenda))
     #+END_SRC
+
+    Circa spring 2020, =C-c b= gives me:
+    #+begin_example
+      command-execute: Wrong type argument: commandp, org-iswitchb
+    #+end_example
+
+    so I have removed that key-binding.
 
 *** Where to Look for Org Info
 
@@ -873,23 +903,6 @@
 
      #+BEGIN_SRC emacs-lisp
        (setq org-agenda-files (jwm/emacs-subdirectory "org-agenda-files-list"))
-     #+END_SRC
-
-**** Former Named Individual Agenda Files
-
-     I used to name individual files to put in the agenda, however, no longer.  This section could be
-     deleted.
-
-     #+BEGIN_SRC emacs-lisp :tangle no
-       ;; my agenda files
-       ;;  code shamelessly stolen from Sacha Chua's config
-       (setq org-agenda-files
-             (delq nil
-                   (mapcar (lambda (x) (and (file-exists-p x) x))
-                           `("~/pdata/investing/investing-plan-2020.org",
-                             "~/pdata/home-purchae-2020/home-purchase-notes.org",
-                             "~/jwm/proj/literate-emacs.d/convert-emacs-init-to-literate.org",
-                             org-default-notes-file))))
      #+END_SRC
 
 *** Templates, Tasks, Refiling
@@ -930,7 +943,7 @@
 
 ** Save Org Files Periodically
 
-   Stolen from John Weigley.
+   [[https://github.com/jwiegley/dot-emacs/blob/master/dot-org.el#L242-L249][Stolen from John Weigley]].
 
    #+BEGIN_SRC emacs-lisp
      (defun save-org-mode-files ()
@@ -945,7 +958,7 @@
 
 ** Org babel
 
-   I stole much of this from Daniel Mai
+   I stole much of this from [[https://github.com/danielmai/.emacs.d/blob/master/config.org#org-babel-languages][Daniel Mai]].
 
    #+BEGIN_SRC emacs-lisp
      (use-package ob-restclient)
@@ -1002,16 +1015,18 @@
               ("s-y" . aya-expand)))
    #+end_src
 
-** C Style
+** WIP C Style
 
    According to cc-styles.el, the function =c-add-style= is the preferred way to define C style.
 
    #+BEGIN_QUOTE
-   Use the function =c-add-style= to add new styles or modify existing styles (it is not a good idea to
-   modify existing styles -- you should create a new style that inherits the existing style).
+     Use the function =c-add-style= to add new styles or modify existing styles (it is not a good idea to
+     modify existing styles -- you should create a new style that inherits the existing style).
    #+END_QUOTE
 
-   Here is the [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Adding-Styles.html][GNU manual on adding styles]]
+   Here is the [[https://www.gnu.org/software/emacs/manual/html_node/ccmode/Adding-Styles.html][GNU manual on adding styles]].
+
+   Clearly, more to do here.
 
 ** crux
 
@@ -1031,7 +1046,7 @@
 
 ** js2 and json mode
 
-   I lifted this straight from Howard's config.  Not that I write much javascript
+   I lifted this straight from Howard's config.  Not that I write much javascript.
 
    #+BEGIN_SRC emacs-lisp
      (use-package js2-mode
@@ -1049,7 +1064,7 @@
 
    #+END_SRC
 
-   I spend more time dealing with various blobs of json, so follow the lead of [[http://develop.spacemacs.org/layers/+lang/json/README.html][spacemacs]] for [[https://github.com/joshwnj/json-mode][json-mode]]
+   I spend more time dealing with various blobs of json, so follow the lead of [[http://develop.spacemacs.org/layers/+lang/json/README.html][spacemacs]] for [[https://github.com/joshwnj/json-mode][json-mode]].
 
    #+BEGIN_SRC emacs-lisp
      (use-package json-mode)
@@ -1060,15 +1075,15 @@
    Prefer python3 in all cases.
    This work presumes apriori that brew has installed python3 as the mac os python3 does not support readline.
 
-   #+begin_quote
-   > brew install python3
-   #+end_quote
+   #+begin_example
+     brew install python3
+   #+end_example
 
    #+begin_src emacs-lisp
      (setq  python-shell-interpreter "python3")
    #+end_src
 
-   Lets try elpy stock and see what happens
+   Lets try elpy stock and see what happens.  So far, so good.
    #+begin_src emacs-lisp
      (use-package elpy
        :init
@@ -1076,7 +1091,7 @@
    #+end_src
 
 * Integration with the Outside World
-** atomic chrome
+** atomic-chrome
 
    #+begin_src emacs-lisp
      (use-package atomic-chrome
@@ -1085,9 +1100,17 @@
          (atomic-chrome-server-start)))
    #+end_src
 
+   I have had mixed experience with =atomic-chrome=.  It works just fine on my personal mac, where I don't
+   particularly need it.  Nothing happens with the same configuration on my work mac, where I would use it
+   every day to interact with github if I could, presumably because of the added security gunk my employer
+   runs on the hardware they loan me to use.  So =atomic-chrome= has been a /kiss from your sister/ kind of
+   deal.
+
+   I will leave it enabled in the hope that I will find a use case for it in my personal work.
+
 * Report Startup Timing
 
-  I'm pretty sure I got this from John Weigley.
+  [[https://github.com/jwiegley/dot-emacs/blob/master/init.el#L4095-L4105][from John Weigley]].
 
   #+BEGIN_SRC emacs-lisp
     ;;; Post initialization
