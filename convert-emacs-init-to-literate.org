@@ -14,37 +14,15 @@
      - what does this mean?  I am not really sure.
 
 ** Next Up
+*** setup occur and how it works with swiper
+    - [[https://protesilaos.com/codelog/2019-08-04-emacs-occur/][Protesilaos video on occur]]
 
-*** DOING explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
+*** TODO explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
     - State "DOING"      from              [2019-09-11 Wed 22:49]
 
     In particular, I would like to be able to find file at point in a given window using =ace-window=
 
     There is find-file-in-project, which is closely related to ivy.
-
-*** DOING switch to counsel, counsel-projectile [100%]
-    - State "DOING"      from              [2019-09-02 Mon 21:50]
-
-    - [X] enable the config
-    - [ ] make a table of common keybindings that I would want to use.
-      - publish it in the [[file:jeff-emacs-config.org::*Projectile%20Config][counsel section]] so I can link to it on the web
-    - [ ] Read [[https://github.com/ericdanan/counsel-projectile][the docs]] to get the basic key bindings down.
-    - [ ] set up counsel-rg to use ripgrep on vega and sift mac
-      - [ ] on vega
-      - [ ] on sift mac
-
-**** DEFERRED investigate ivy-push-view
-     - State "DEFERRED"   from "DOING"      [2020-03-29 Sun 17:04] \\
-       interesting, but not right now.
-     - State "DOING"      from              [2019-09-02 Mon 20:52]
-
-     [[file:~/.emacs.d/elpa/ivy-20190803.1121/ivy.el::(defun%20ivy-push-view%20(&optional%20arg)][ivy-push-view]] appears to have some basic window layout capture functionality.  And since I am wanting
-     to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
-     as part of that refactoring.
-
-*** setup occur and how it works with swiper
-
-*** consider re-adding try to emacs
 
 *** edit filenames inline
 
@@ -124,6 +102,10 @@
     - [X] what does dired+ add to the picture?
       - [X] read the dired+ docs
       - A: IDK; I couldn't find a package =dired+=
+
+*** CANCELLED consider re-adding try to emacs
+    - State "CANCELLED"  from              [2020-03-29 Sun 21:25] \\
+      not going to do this.
 
 **** DONE investigate dired-x
      - State "DONE"       from "DOING"      [2019-09-11 Wed 21:27]
@@ -209,6 +191,26 @@
      - and invert the selection
        - ie mark all .jpeg files
        - then mark all files in the directory that are not .jpeg files
+*** DONE switch to counsel, counsel-projectile [100%]
+    - State "DONE"       from "DOING"      [2020-03-29 Sun 21:05]
+    - State "DOING"      from              [2019-09-02 Mon 21:50]
+
+    - [X] enable the config
+    - [X] make a table of common keybindings that I would want to use.
+      - publish it in the [[file:jeff-emacs-config.org::*Projectile%20Config][counsel section]] so I can link to it on the web
+    - [X] Read [[https://github.com/ericdanan/counsel-projectile][the docs]] to get the basic key bindings down.
+    - [X] set up counsel-rg to use ripgrep on vega and sift mac
+      - [X] on vega
+      - [X] on sift mac
+
+**** DEFERRED investigate ivy-push-view
+     - State "DEFERRED"   from "DOING"      [2020-03-29 Sun 17:04] \\
+       interesting, but not right now.
+     - State "DOING"      from              [2019-09-02 Mon 20:52]
+
+     [[file:~/.emacs.d/elpa/ivy-20190803.1121/ivy.el::(defun%20ivy-push-view%20(&optional%20arg)][ivy-push-view]] appears to have some basic window layout capture functionality.  And since I am wanting
+     to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
+     as part of that refactoring.
 
 *** DONE make a links section to my favorite authors' config files
     - State "DONE"       from              [2020-03-29 Sun 17:05]

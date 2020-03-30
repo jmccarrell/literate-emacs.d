@@ -9,6 +9,12 @@
    | s-x       | create an auto-snippet                      |
    | s-y       | expand auto-snippet                         |
 
+*** counsel projectile
+    - =C-c p SPC= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-command][counsel projectile keymap]]
+    - =C-c p p= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-switch-project-command][counsel projectile switch project keymap]]
+    - =C-c p f= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-find-file-command][counsel projectile find file keymap]]
+    - =C-c p d= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-find-dir-command][counsel projectile find dir keymap]]
+
 *** ivy swiper
 
    | key | description                                      |
