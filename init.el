@@ -304,10 +304,6 @@
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
 
-(use-package swiper
-  :config
-  (global-set-key "\C-s" 'swiper))
-
 (use-package counsel-projectile
   :config
   (counsel-projectile-mode))

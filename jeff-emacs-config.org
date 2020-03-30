@@ -761,7 +761,7 @@
    I get ripgrep as a dependency of =projectile-ripgrep=.  Since I am using (apparently) the bone-stock
    configuration, there is nothing in this section.
 
-* Former Swiper Helm Projectile
+* Projectile
 
   I choose to pattern my config for these related packages after abo-abo, the author.  Well, it turns out
   abo-abo has a pretty baroque way of loading his configuration.
@@ -776,10 +776,6 @@
       (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
       (projectile-mode +1))
-
-    (use-package swiper
-      :config
-      (global-set-key "\C-s" 'swiper))
   #+END_SRC
 
 ** Counsel Projectile
