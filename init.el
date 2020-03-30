@@ -297,29 +297,22 @@
   :commands ag)
 
 (use-package projectile
-  :init
-  (setq projectile-completion-system 'ivy)
-  :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode +1))
-
-(use-package counsel-projectile
-  :config
-  (counsel-projectile-mode))
-
-(use-package projectile
-  :ensure t
   :diminish projectile-mode
   :commands (projectile-mode projectile-switch-project)
   :bind (("C-c p p" . projectile-switch-project)
          ("C-c p s s" . projectile-ag)
          ("C-c p s r" . projectile-ripgrep))
+  :init
+  (setq projectile-completion-system 'ivy)
   :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq projectile-keymap-prefix (kbd "C-c p"))
-  (projectile-global-mode t)
-  (setq projectile-enable-caching t)
-  (setq projectile-switch-project-action 'projectile-dired))
+  (projectile-global-mode t))
+
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-mode))
 
 (use-package ivy
   :diminish (ivy-mode . "")

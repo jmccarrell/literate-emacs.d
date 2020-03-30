@@ -761,21 +761,29 @@
    I get ripgrep as a dependency of =projectile-ripgrep=.  Since I am using (apparently) the bone-stock
    configuration, there is nothing in this section.
 
-* Projectile
+* Ivy, Avy, Swiper, Projectile
+
+** Projectile Config
 
   I choose to pattern my config for these related packages after abo-abo, the author.  Well, it turns out
   abo-abo has a pretty baroque way of loading his configuration.
 
-  So model after the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]].
+  So combine the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]] with that used by [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Projectile][Daneil's projectile config]].
 
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
+      :diminish projectile-mode
+      :commands (projectile-mode projectile-switch-project)
+      :bind (("C-c p p" . projectile-switch-project)
+             ("C-c p s s" . projectile-ag)
+             ("C-c p s r" . projectile-ripgrep))
       :init
       (setq projectile-completion-system 'ivy)
       :config
       (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-      (projectile-mode +1))
+      (setq projectile-keymap-prefix (kbd "C-c p"))
+      (projectile-global-mode t))
   #+END_SRC
 
 ** Counsel Projectile
@@ -784,27 +792,6 @@
      (use-package counsel-projectile
        :config
        (counsel-projectile-mode))
-   #+END_SRC
-
-** Projectile Config
-
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Projectile][Daneil's projectile config]]
-     - looks sane
-     - investigate =projectile-switch-project-action=
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package projectile
-       :ensure t
-       :diminish projectile-mode
-       :commands (projectile-mode projectile-switch-project)
-       :bind (("C-c p p" . projectile-switch-project)
-              ("C-c p s s" . projectile-ag)
-              ("C-c p s r" . projectile-ripgrep))
-       :config
-       (setq projectile-keymap-prefix (kbd "C-c p"))
-       (projectile-global-mode t)
-       (setq projectile-enable-caching t)
-       (setq projectile-switch-project-action 'projectile-dired))
    #+END_SRC
 
 ** Ivy, Avy and Swiper Config
