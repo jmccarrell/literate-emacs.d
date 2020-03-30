@@ -790,54 +790,6 @@
        (counsel-projectile-mode))
    #+END_SRC
 
-* Helm, Ivy, Swiper and Projectile
-
-** Former Helm Config
-
-   I want to try abo-abo's counsel stuff.  So leave helm behind for now.
-
-*** Former, now-commented out helm config
-
-  Look at how Howard, Sacha and Daniel Mai configure helm
-  - [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Helm][Howard's config]]
-    - Howard is not a regular user of helm.  He does have some good hints in there though.
-  - [[file:/t/emacs-configs/sacha-chua-dotemacs/Sacha.org::*Helm%20-%20interactive%20completion][Sacha's config]]
-    - Sacha has a reasonable helm config that I could base mine off of.
-  - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Helm][Daniel's config]]
-    - Daniel configures [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Locate][helm-locate to use mdfind]], aka Spotlight
-    - Daniel has a nice reasonable config that I could benefit from
-  - [[file:jeff-classic-init.el::;;%20helm%20config%20derived%20from%20danielmai's%20config][My classic config]]
-    - Looks like I based my former config on Daniels config.
-    - So pick some blend of Daniel and Sacha's work to move forward here.
-
-  #+BEGIN_SRC emacs-lisp :tangle no
-    (use-package helm
-      :diminish helm-mode
-      :bind (("C-c h" . helm-command-prefix)
-             ("C-x b" . helm-mini)
-             ("C-`" . helm-resume)
-             ("M-x" . helm-M-x)
-             ("C-x C-f" . helm-find-files)
-             ("C-x C-r" . helm-recentf))
-      :init
-      (require 'helm-config)
-      :config
-      (setq helm-locate-command "mdfind -interpret -name %s %s"
-            helm-ff-newfile-prompt-p nil
-            helm-M-x-fuzzy-match t)
-      (helm-mode))
-    (use-package helm-projectile
-      :after helm-mode
-      :commands helm-projectile)
-    (use-package helm-ag
-      :ensure t
-      :after helm-mode)
-    (use-package helm-swoop
-      :ensure t
-      :after helm-mode
-      :bind ("s-w" . helm-swoop))
-  #+END_SRC
-
 ** Projectile Config
 
    - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Projectile][Daneil's projectile config]]
@@ -857,20 +809,6 @@
        (projectile-global-mode t)
        (setq projectile-enable-caching t)
        (setq projectile-switch-project-action 'projectile-dired))
-   #+END_SRC
-
-*** Former helm projectile config
-
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package projectile
-       :diminish projectile-mode
-       :bind-keymap ("C-c p" . projectile-command-map)
-       :init
-       (setq projectile-completion-system 'ivy)
-       :config
-       (bind-key "s p" 'helm-do-ag-project-root 'projectile-command-map)
-       (bind-key "s a" 'helm-do-ag 'projectile-command-map)
-       (projectile-mode +1))
    #+END_SRC
 
 ** Ivy, Avy and Swiper Config

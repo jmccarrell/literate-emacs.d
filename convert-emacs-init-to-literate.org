@@ -14,7 +14,104 @@
      - what does this mean?  I am not really sure.
 
 ** Next Up
-*** DOING explore dired mode
+
+*** DOING explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
+    - State "DOING"      from              [2019-09-11 Wed 22:49]
+
+    In particular, I would like to be able to find file at point in a given window using =ace-window=
+
+    There is find-file-in-project, which is closely related to ivy.
+
+*** DOING switch to counsel, counsel-projectile [100%]
+    - State "DOING"      from              [2019-09-02 Mon 21:50]
+
+    - [X] enable the config
+    - [ ] make a table of common keybindings that I would want to use.
+      - publish it in the [[file:jeff-emacs-config.org::*Projectile%20Config][counsel section]] so I can link to it on the web
+    - [ ] Read [[https://github.com/ericdanan/counsel-projectile][the docs]] to get the basic key bindings down.
+    - [ ] set up counsel-rg to use ripgrep on vega and sift mac
+      - [ ] on vega
+      - [ ] on sift mac
+
+**** DEFERRED investigate ivy-push-view
+     - State "DEFERRED"   from "DOING"      [2020-03-29 Sun 17:04] \\
+       interesting, but not right now.
+     - State "DOING"      from              [2019-09-02 Mon 20:52]
+
+     [[file:~/.emacs.d/elpa/ivy-20190803.1121/ivy.el::(defun%20ivy-push-view%20(&optional%20arg)][ivy-push-view]] appears to have some basic window layout capture functionality.  And since I am wanting
+     to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
+     as part of that refactoring.
+
+*** setup occur and how it works with swiper
+
+*** consider re-adding try to emacs
+
+*** edit filenames inline
+
+    - edit dired inline
+    - use =C-x C-q= to edit a filename inline
+    - it looks like this is a function provided by dired+, not in stock dired.
+    - and with =mc= mark all, one can edit multiple filenames at once.
+
+*** explore tramp
+
+    - my tramp notes
+    - [[info:ivy#Using%20TRAMP][ivy info on using tramp]]
+
+*** General
+
+    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+    - Find a mechanism to apply configurations to a set of file identified by a predicate
+      - eg a way to specify a specific code formatting policy to work vs personal files
+      - ask in reddit?
+
+*** From Howard
+
+    - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
+    - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
+    - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
+    - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
+    - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
+
+**** maybe explore these
+
+     Howard has a bunch of _Technical Artifacts_ sections
+
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
+     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
+
+     Consider reading these for the insights they may contain
+
+     Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
+     Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
+     Hack.
+
+     Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
+
+*** From Daniel Mai
+
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
+   - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
+   - Daniel has some interesting [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Open%20other%20apps%20from%20Emacs][open in other apps functions]] I would like to investigate as well
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*List%20buffers][ibuffer?]]
+   - investigate package recentf
+   - Daniel has a nice example [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installation][passing an emacs-lisp variable into a shell]] buffer to execute
+     - and a [[file:/t/emacs-configs/danielmai-dotemacs/config.org::#+begin_src%20emacs-lisp%20(use-package%20exec-path-from-shell%20:ensure%20t%20:init%20(exec-path-from-shell-initialize))%20#+end_src][link to an info buffer in emacs]]
+   - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
+   - Daniel uses
+     - helm
+     - and ivy, swiper, counsel
+     - and avy
+   - Daniels config for [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Multiple%20cursors][multiple cursors]]
+   - Figure out why [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Yasnippet][Daniel likes yasnippets]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*terminal-here][terminal here?]]
+   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
+   - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
+   - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
+*** DEFERRED explore dired mode
+    - State "DEFERRED"   from "DOING"      [2020-03-29 Sun 17:03] \\
+      I think my use of dired is ok now.  Moving this down in priority.
     - State "DOING"      from "TODO"       [2019-09-09 Mon 08:11]
 
     - [X] read the *Help* for dired
@@ -96,7 +193,7 @@
      - [X] [[https://oremacs.com/2015/01/12/dired-file-size/][file sizes in dired]]
      - [X] more discussion of [[https://oremacs.com/2015/01/13/dired-options/][his dired switches]]
 
-**** TODO other dired investigations
+**** other dired investigations
      - State "NEXT"       from "DOING"      [2020-02-01 Sat 19:00]
      - State "DOING"      from              [2019-09-30 Mon 11:56]
      - [X] read [[http://irreal.org/blog/?p=6760][jcs dired article]]
@@ -113,100 +210,9 @@
        - ie mark all .jpeg files
        - then mark all files in the directory that are not .jpeg files
 
-*** DOING explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
-    - State "DOING"      from              [2019-09-11 Wed 22:49]
-
-    In particular, I would like to be able to find file at point in a given window using =ace-window=
-
-    There is find-file-in-project, which is closely related to ivy.
-
-*** DOING switch to counsel, counsel-projectile [25%]
-    - State "DOING"      from              [2019-09-02 Mon 21:50]
-
-    - [X] enable the config
-    - [ ] make a table of common keybindings that I would want to use.
-      - publish it in the [[file:jeff-emacs-config.org::*Projectile%20Config][counsel section]] so I can link to it on the web
-    - [ ] Read [[https://github.com/ericdanan/counsel-projectile][the docs]] to get the basic key bindings down.
-    - [ ] set up counsel-rg to use ripgrep on vega and sift mac
-      - [ ] on vega
-      - [ ] on sift mac
-
-**** DOING investigate ivy-push-view
-     - State "DOING"      from              [2019-09-02 Mon 20:52]
-
-     [[file:~/.emacs.d/elpa/ivy-20190803.1121/ivy.el::(defun%20ivy-push-view%20(&optional%20arg)][ivy-push-view]] appears to have some basic window layout capture functionality.  And since I am wanting
-     to try the whole ivy/counsel combo in preference to helm, lets just do that and try out ivy-push-view
-     as part of that refactoring.
-
-*** make a links section to my favorite authors' config files
+*** DONE make a links section to my favorite authors' config files
+    - State "DONE"       from              [2020-03-29 Sun 17:05]
     - both on the web and to my local copies
-
-*** setup occur and how it works with swiper
-
-*** consider re-adding try to emacs
-
-*** edit filenames inline
-
-    - edit dired inline
-    - use =C-x C-q= to edit a filename inline
-    - it looks like this is a function provided by dired+, not in stock dired.
-    - and with =mc= mark all, one can edit multiple filenames at once.
-
-*** explore tramp
-
-    - my tramp notes
-
-*** General
-
-    - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
-    - Find a mechanism to apply configurations to a set of file identified by a predicate
-      - eg a way to specify a specific code formatting policy to work vs personal files
-      - ask in reddit?
-
-*** From Howard
-
-    - use [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20whitespace%20:bind%20("C-c%20T%20w"%20.%20whitespace-mode)][Howards whitespace mode]]
-    - experiment with [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::(use-package%20fill%20:bind%20(("C-c%20T%20f"%20.%20auto-fill-mode)][Howards fill-mode]]
-    - I think I want [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::Unfilling%20a%20paragraph%20joins%20all%20the%20lines%20in%20a%20paragraph%20into%20a%20single%20line.%20Taken%20from%20%5B%5Bhttp://www.emacswiki.org/UnfillParagraph%5D%5Bhere%5D%5D.][unfill paragraph]]
-    - [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::I%20rarely%20want%20to%20kill%20any%20buffer%20but%20the%20one%20I'm%20looking%20at.%20#+BEGIN_SRC%20elisp%20(global-set-key%20(kbd%20"C-x%20k")%20'kill-this-buffer)%20(global-set-key%20(kbd%20"C-x%20K")%20'kill-buffer)%20#+END_SRC][kill this buffer]]
-    - adopt Howards [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Dash][interface to dash]]
-
-**** maybe explore these
-
-     Howard has a bunch of _Technical Artifacts_ sections
-
-     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-fixes.org::*Technical%20Artifacts][emacs-fixes]]
-     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Technical%20Artifacts][emacs.org]]
-     - in [[file:/t/emacs-configs/howardabrams-dot-files/emacs-mac.org::*Technical%20Artifacts][emacs-mac.org]]
-
-     Consider reading these for the insights they may contain
-
-     Howard has a bunch of [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::*Font%20Settings][font choices]]. But I don't know how he possibly installs these fonts. So stick with
-     Monaco for the short term. Well, now I know a bit more about installing fonts. At least, installing
-     Hack.
-
-     Here is where [[file:/t/emacs-configs/howardabrams-dot-files/emacs-client.org::(if%20(eq%20system-type%20'darwin)%20(require%20'init-mac)%20(require%20'init-linux))][Howard chooses between his mac and linux configurations]]
-
-*** From Daniel Mai
-
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*C/Java][more sane C/java brace handling via Daniel]]
-   - figure out how to get bookmarks? to open file: references in org files defined by org-store-link
-   - Daniel has some interesting [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Open%20other%20apps%20from%20Emacs][open in other apps functions]] I would like to investigate as well
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*List%20buffers][ibuffer?]]
-   - investigate package recentf
-   - Daniel has a nice example [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Installation][passing an emacs-lisp variable into a shell]] buffer to execute
-     - and a [[file:/t/emacs-configs/danielmai-dotemacs/config.org::#+begin_src%20emacs-lisp%20(use-package%20exec-path-from-shell%20:ensure%20t%20:init%20(exec-path-from-shell-initialize))%20#+end_src][link to an info buffer in emacs]]
-   - consider creating an auth-source thing as [[file:/t/emacs-configs/danielmai-dotemacs/config.org::(use-package%20auth-source%20:config%20(customize-set-variable%20'auth-sources%20'((:source%20"~/.authinfo.gpg"))))][Daniel]] and IIRC jwiegley do
-   - Daniel uses
-     - helm
-     - and ivy, swiper, counsel
-     - and avy
-   - Daniels config for [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Multiple%20cursors][multiple cursors]]
-   - Figure out why [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Yasnippet][Daniel likes yasnippets]]
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*terminal-here][terminal here?]]
-   - [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*go-mode][Daniel's go-mode]]
-   - here is how Daniel distinguishes between packages he gets from elpa vs [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Non-ELPA%20packages][local site-lisp]]
-   - how Daniel starts [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Emacsclient][emacs server for emacsclient]]
 
 *** DONE figure out how to search at point with swiper
     - State "DONE"       from "DOING"      [2020-03-29 Sun 14:11]
