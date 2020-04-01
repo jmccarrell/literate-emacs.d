@@ -14,9 +14,11 @@
      - what does this mean?  I am not really sure.
 
 ** Next Up
-*** setup occur and how it works with swiper
-    - [[https://protesilaos.com/codelog/2019-08-04-emacs-occur/][Protesilaos video on occur]]
+*** setup occur and how it works with swiper [50%]
+    - [ ] watch the [[https://protesilaos.com/codelog/2019-08-04-emacs-occur/][Protesilaos video on occur]]
+    - [X] read the [[info:emacs#Other%20Repeating%20Search][occur docs]]
 
+    it doesn't seem to work well with swiper?
 *** TODO explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
     - State "DOING"      from              [2019-09-11 Wed 22:49]
 

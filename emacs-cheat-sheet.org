@@ -9,6 +9,13 @@
    | s-x       | create an auto-snippet                      |
    | s-y       | expand auto-snippet                         |
 
+*** occur
+
+    | key          | description                           |
+    |--------------+---------------------------------------|
+    | M-s o        | start occur, aka list-lines-matching  |
+    | prefix M-s o | show prefix lines of matching context |
+
 *** counsel projectile
     - =C-c p SPC= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-command][counsel projectile keymap]]
     - =C-c p p= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-switch-project-command][counsel projectile switch project keymap]]
@@ -17,9 +24,11 @@
 
 *** ivy swiper
 
-   | key | description                                      |
-   |-----+--------------------------------------------------|
-   | M-j | ivy-yank-word; grab text at point for completion |
+   | key     | description                                           |
+   |---------+-------------------------------------------------------|
+   | M-j     | ivy-yank-word; grab text at point for completion      |
+   | C-o     | ivy-hydra/body                                        |
+   | C-c C-o | ivy-occur save current candidate list to a new buffer |
 
 *** wrap-region and insert-pair
 
