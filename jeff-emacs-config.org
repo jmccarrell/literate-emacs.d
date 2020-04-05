@@ -619,10 +619,13 @@
 
     But not =M-`= for me; I prefer that to switch frames, as in the os x convention.
 
+    And also, not =M-<= either; I prefer to use that for beginning/end-of-buffer.  I wonder what keybinding
+    Howard uses for that?
+
     #+BEGIN_SRC emacs-lisp
       (global-set-key (kbd "M-[") 'insert-pair)
       (global-set-key (kbd "M-{") 'insert-pair)
-      (global-set-key (kbd "M-<") 'insert-pair)
+      ;; (global-set-key (kbd "M-<") 'insert-pair)
       (global-set-key (kbd "M-'") 'insert-pair)
       ;; (global-set-key (kbd "M-`") 'insert-pair)
       (global-set-key (kbd "M-\"") 'insert-pair)
