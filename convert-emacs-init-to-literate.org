@@ -14,6 +14,8 @@
      - what does this mean?  I am not really sure.
 
 ** Next Up
+*** NEXT Add useful projectile key sequences to my frequently used emacs cheat sheet
+  <2020-04-05 Sun>
 *** setup occur and how it works with swiper [50%]
     - [ ] watch the [[https://protesilaos.com/codelog/2019-08-04-emacs-occur/][Protesilaos video on occur]]
     - [X] read the [[info:emacs#Other%20Repeating%20Search][occur docs]]
@@ -25,6 +27,11 @@
     In particular, I would like to be able to find file at point in a given window using =ace-window=
 
     There is find-file-in-project, which is closely related to ivy.
+
+*** TODO add support for emojis inside emacs on os x
+  <2020-03-29 Sun>
+
+  copy what Daniel Mai has apparently done in his config: [[file:~/thirdparty/emacs-configs/danielmai-dotemacs/config.org::*Font][Font]]
 
 *** edit filenames inline
 
