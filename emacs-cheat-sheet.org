@@ -22,6 +22,18 @@
     - =C-c p f= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-find-file-command][counsel projectile find file keymap]]
     - =C-c p d= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-find-dir-command][counsel projectile find dir keymap]]
 
+*** projectile
+
+    Recall that I have bound the projectile command map prefix to =s-p= as well as the usual =C-c p=.  Thus
+    =s-p= works everywhere =C-c p= does in these tables.
+
+    | key     | description                                                     |
+    |---------+-----------------------------------------------------------------|
+    | C-c p I | ibuffer; contains many sub commands from the ibuffer view       |
+    | C-c p V | browse dirty projects; useful for ensuring files are committed. |
+    | C-c p S | save all buffers across project.                                |
+    | C-c p D | run dired in project                                            |
+
 *** ivy swiper
 
    | key     | description                                           |
