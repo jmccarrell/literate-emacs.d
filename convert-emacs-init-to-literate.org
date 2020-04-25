@@ -173,6 +173,10 @@
     - [X] read the [[info:emacs#Other%20Repeating%20Search][occur docs]]
 
     it doesn't seem to work well with swiper?
+*** check out this guys emacs configuration
+    - referenced from Stavros Prot emacs video comment
+    - looks like some useful things to consider
+    - https://github.com/hrs/dotfiles/blob/master/emacs/.emacs.d/configuration.org
 *** TODO explore [[https://www.gnu.org/software/emacs/manual/html_node/dired-x/Find-File-At-Point.html#Find-File-At-Point][find file at point]]
     - State "DOING"      from              [2019-09-11 Wed 22:49]
 
