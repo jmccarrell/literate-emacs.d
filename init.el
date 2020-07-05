@@ -460,6 +460,10 @@
 
 (use-package elpy
   :init
+  (setq pyvenv-virtualenvwrapper-python
+        (or (getenv "VIRTUALENVWRAPPER_PYTHON")
+            (executable-find "python3")
+            "python3"))
   (elpy-enable))
 
 (use-package atomic-chrome

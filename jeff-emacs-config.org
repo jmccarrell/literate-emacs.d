@@ -1069,9 +1069,23 @@
    #+end_src
 
    Lets try elpy stock and see what happens.  So far, so good.
+
+   I did run into a wrinkle preferring python3 over python2.  As usual, it comes at the conjunction of
+   several systems that make different assumptions about the global run time configuration.
+
+   This comes down to the expectation of [[https://github.com/jorgenschaefer/pyvenv][pyvenv.el]] that virtualenvwrapper is available for emacs to use and
+   that the python with virtualenvwrapper installed can be easily identified.
+
+   So help things out by explicitly setting =pyvenv-virtualenvwrapper-python= since pyvenv.el does not
+   search for =python3=, just for =python=.
+
    #+begin_src emacs-lisp
      (use-package elpy
        :init
+       (setq pyvenv-virtualenvwrapper-python
+             (or (getenv "VIRTUALENVWRAPPER_PYTHON")
+                 (executable-find "python3")
+                 "python3"))
        (elpy-enable))
    #+end_src
 
