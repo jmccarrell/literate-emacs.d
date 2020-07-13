@@ -464,6 +464,10 @@
         (or (getenv "VIRTUALENVWRAPPER_PYTHON")
             (executable-find "python3")
             "python3"))
+  (setq elpy-rpc-python-command
+        (or (getenv "VIRTUALENVWRAPPER_PYTHON")
+            (executable-find "python3")
+            "python3"))
   (elpy-enable))
 
 (use-package atomic-chrome
