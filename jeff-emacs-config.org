@@ -235,12 +235,9 @@
 ** Howard's Recommended Emacs Lisp Libs
 
    Again [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#init-file-support][following Howard here]]. Add in these supporting libraries to ease emacs lisp development. [[https://github.com/magnars/dash.el][dash]] for a
-   modern list api, [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation. Also load in =cl= as other
-   packages may depend on it.
+   modern list api, [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
 
    #+BEGIN_SRC emacs-lisp
-     (require 'cl)
-
      (use-package dash
        :config (eval-after-load "dash" '(dash-enable-font-lock)))
 

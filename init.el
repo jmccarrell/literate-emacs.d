@@ -56,8 +56,6 @@
 
 (require 'use-package)
 
-(require 'cl)
-
 (use-package dash
   :config (eval-after-load "dash" '(dash-enable-font-lock)))
 
