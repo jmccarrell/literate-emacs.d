@@ -402,6 +402,7 @@
    (lisp . t)
    (scheme . t)
    (shell . t)
+   (sql . t)
    (sqlite . t)
    (js . t)
    (restclient . t)))
@@ -412,6 +413,7 @@
            (string= lang "java")
            (string= lang "python")
            (string= lang "emacs-lisp")
+           (string= lang "sql")
            (string= lang "sqlite"))))
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
