@@ -98,7 +98,6 @@
 (setq-default fill-column 108)
 (auto-fill-mode)
 (global-visual-line-mode)
-(diminish 'visual-line-mode)
 
 (defun jwm/shell-is-zsh-p ()
   (string-suffix-p "zsh" shell-file-name))
@@ -138,6 +137,9 @@
           (t "Monaco-12"))))
       (message "setting Jeff preferred font %s" preferred-font)
       (set-frame-font preferred-font t t)))
+
+(use-package diminish
+  :init (diminish 'visual-line-mode))
 
 (use-package whitespace
   :bind ("C-c T w" . whitespace-mode)

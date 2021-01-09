@@ -310,7 +310,6 @@
      (setq-default fill-column 108)
      (auto-fill-mode)
      (global-visual-line-mode)
-     (diminish 'visual-line-mode)
    #+END_SRC
 
 ** Terminal and Shell (zsh) Settings
@@ -475,6 +474,15 @@
            (message "setting Jeff preferred font %s" preferred-font)
            (set-frame-font preferred-font t t)))
    #+END_SRC
+
+** Diminish
+
+   Manage how minor modes affect the mode line.
+
+   #+begin_src emacs-lisp
+     (use-package diminish
+       :init (diminish 'visual-line-mode))
+   #+end_src
 
 ** Whitespace Mode
 
