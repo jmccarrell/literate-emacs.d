@@ -323,6 +323,11 @@
   ;; show both the index and count of matching items
   (setq ivy-count-format "%d/%d "))
 
+(use-package counsel
+  :bind (("C-c j" . counsel-git-grep)
+         ("C-c k" . counsel-rg)
+         ("C-c K" . counsel-ag)))
+
 (use-package swiper
   :config
   (global-set-key "\C-s" 'swiper))

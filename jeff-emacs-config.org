@@ -803,7 +803,7 @@
        (counsel-projectile-mode))
    #+END_SRC
 
-** Ivy, Avy and Swiper Config
+** Ivy, Counsel, Avy and Swiper Config
 
    #+BEGIN_SRC emacs-lisp
      (use-package ivy
@@ -814,6 +814,11 @@
        (setq ivy-use-virtual-buffers t)
        ;; show both the index and count of matching items
        (setq ivy-count-format "%d/%d "))
+
+     (use-package counsel
+       :bind (("C-c j" . counsel-git-grep)
+              ("C-c k" . counsel-rg)
+              ("C-c K" . counsel-ag)))
 
      (use-package swiper
        :config
