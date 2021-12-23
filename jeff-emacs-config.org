@@ -439,7 +439,7 @@
 
 *** Themes I have experimented with
 
-    First of all, [[https://peach-melpa.org/][peach melba]] is a convient way to preview themes to try out.
+    First of all, [[https://peach-melpa.org/][peach melba]] is a convenient way to preview themes to try out.
 
     Mostly to keep myself from repeating work, here is a partial list of themes I have tried and found
     inferior to zenburn, mostly due to their handling of =org-mode=.
