@@ -705,7 +705,9 @@
    don't want to run it in shared spaces -- especially code spaces -- where rewriting some existing
    whitespace convention might cause unintended changes.
 
-   #+BEGIN_SRC emacs-lisp
+   But, after living with this functionality for a while, I'm not sure I prefer it, so disable it.
+
+   #+BEGIN_SRC emacs-lisp :tangle no
      (defvar jwm/run-whitespace-cleanup-on-save-p nil
        "run whitespace-cleanup on buffer-save. set to t where desired in file or directory local scopes.")
 

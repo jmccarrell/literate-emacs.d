@@ -265,16 +265,6 @@
   (setq which-key-max-description-length nil)
   (which-key-mode 1))
 
-(defvar jwm/run-whitespace-cleanup-on-save-p nil
-  "run whitespace-cleanup on buffer-save. set to t where desired in file or directory local scopes.")
-
-(defun jwm/save-buffer-whitespace-cleanup-hook ()
-  "run whitespace-cleanup when enabled by jwm/run-whitespace-cleanup-on-save-p."
-  (when jwm/run-whitespace-cleanup-on-save-p
-    (whitespace-cleanup)))
-
-(add-hook 'before-save-hook 'jwm/save-buffer-whitespace-cleanup-hook)
-
 (use-package dired
   :ensure nil
   :config
