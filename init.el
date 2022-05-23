@@ -475,11 +475,6 @@
 (use-package dockerfile-mode
   :mode "Dockerfile[a-zA-Z.-]*\\'")
 
-(use-package atomic-chrome
-  :init
-  (ignore-errors
-    (atomic-chrome-server-start)))
-
 ;;; Post initialization
 
 (let ((elapsed (float-time (time-subtract (current-time)

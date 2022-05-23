@@ -1130,7 +1130,7 @@
 
 ** atomic-chrome
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package atomic-chrome
        :init
        (ignore-errors
@@ -1143,7 +1143,7 @@
    runs on the hardware they loan me to use.  So =atomic-chrome= has been a /kiss from your sister/ kind of
    deal.
 
-   I will leave it enabled in the hope that I will find a use case for it in my personal work.
+   I have disabled it unless / until I find a better use case for it.
 
 * Report Startup Timing
 
