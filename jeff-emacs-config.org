@@ -910,7 +910,7 @@
       ;; capture template.
       (setq org-capture-templates
             '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
-               "* TODO %?\n %t\n  %i\n  %a\n")
+               "* TODO %?\n %i\n  %a\n")
               ("T" "Tickler" entry (file+headline jwm/org-tickler-file "Tickler")
                "* %i%?\n %U\n")
               ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
