@@ -355,7 +355,7 @@
 ;; capture template.
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
-         "* TODO %?\n %i\n  %a\n\n")
+         "* TODO %?\n %i\n  %a\n")
         ("T" "Tickler" entry (file+headline jwm/org-tickler-file "Tickler")
          "* %i%?\n %U\n")
         ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
@@ -374,9 +374,9 @@
 
 ;; I prefer 2 levels of headlines for org refile targets
 ;;  this matches well with my TASKS/PROJECTS high level
-;; further, I prefer the refiling to be per-buffer, not across all org-agenda-files
-;;  to preserve context.  most often, I use the file as context.
-(setq org-refile-targets '((nil . (:maxlevel . 2))))
+;; Allow refiling into any of my current projects,
+;;  as named by org-agenda-files.
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
 
 (defun save-org-mode-files ()
   (dolist (buf (buffer-list))
