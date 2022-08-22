@@ -450,15 +450,8 @@
 (setq  python-shell-interpreter "python3")
 
 (use-package elpy
+  :ensure t
   :init
-  (setq pyvenv-virtualenvwrapper-python
-        (or (getenv "VIRTUALENVWRAPPER_PYTHON")
-            (executable-find "python3")
-            "python3"))
-  (setq elpy-rpc-python-command
-        (or (getenv "VIRTUALENVWRAPPER_PYTHON")
-            (executable-find "python3")
-            "python3"))
   (elpy-enable))
 
 (use-package docker
