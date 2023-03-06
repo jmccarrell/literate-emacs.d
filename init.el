@@ -130,8 +130,8 @@
          (cond
           ((and (jwm/font-exists-p "Hack") (jwm/mac-p)) "Hack-14")
           (t "Monaco-12"))))
-      (message "setting Jeff preferred font %s" preferred-font)
-      (set-frame-font preferred-font t t)))
+    (message "setting Jeff preferred font %s" preferred-font)
+    (set-frame-font preferred-font t t)))
 
 (use-package diminish
   :init (diminish 'visual-line-mode))

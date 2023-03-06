@@ -466,8 +466,8 @@
               (cond
                ((and (jwm/font-exists-p "Hack") (jwm/mac-p)) "Hack-14")
                (t "Monaco-12"))))
-           (message "setting Jeff preferred font %s" preferred-font)
-           (set-frame-font preferred-font t t)))
+         (message "setting Jeff preferred font %s" preferred-font)
+         (set-frame-font preferred-font t t)))
    #+END_SRC
 
 ** Diminish
@@ -1113,24 +1113,6 @@
      (use-package dockerfile-mode
        :mode "Dockerfile[a-zA-Z.-]*\\'")
    #+end_src
-
-** atomic-chrome
-
-   #+begin_src emacs-lisp :tangle no
-     (use-package atomic-chrome
-       :init
-       (ignore-errors
-         (atomic-chrome-server-start)))
-   #+end_src
-
-   I have had mixed experience with =atomic-chrome=.  It works just fine on my personal mac, where I don't
-   particularly need it.  Nothing happens with the same configuration on my work mac, where I would use it
-   every day to interact with github if I could, presumably because of the added security gunk my employer
-   runs on the hardware they loan me to use.  So =atomic-chrome= has been a /kiss from your sister/ kind of
-   deal.
-
-   I have disabled it unless / until I find a better use case for it.
-
 * Report Startup Timing
 
   [[https://github.com/jwiegley/dot-emacs/blob/master/init.el#L4095-L4105][from John Weigley]].
