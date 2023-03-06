@@ -124,10 +124,6 @@
      (defun jwm/personal-mac-p ()
        (and (jwm/mac-p)
             (file-exists-p (concat (getenv "HOME") "/jdocs"))))
-
-     (defun jwm/sift-mac-p ()
-       (and (jwm/mac-p)
-            (file-exists-p (expand-file-name "~/code/java/build.gradle"))))
    #+END_SRC
 
 ** Modernizing Emacs
@@ -160,7 +156,6 @@
    #+BEGIN_SRC emacs-lisp
      (setq user-full-name "Jeff McCarrell"
            user-mail-address (cond
-                              ((jwm/sift-mac-p) "jmccarrell@siftscience.com")
                               (t "jeff@mccarrell.org")))
    #+END_SRC
 ** Emacs Server and PATH.
@@ -876,14 +871,12 @@
 
     #+BEGIN_SRC emacs-lisp
       (setq org-directory
-            (cond ((jwm/sift-mac-p) "~/sift/todo")
-                  (t "~/jwm/todo")))
+            (cond (t "~/jwm/todo")))
 
       ;; The default place to put notes for capture mode
       (setq org-default-notes-file
             (concat org-directory
-                    (cond ((jwm/sift-mac-p) "/sift.org")
-                          (t "/todo.org"))))
+                    (cond (t "/todo.org"))))
 
       ;; where I store periodic reminders, ie, ticklers in GTD-talk
       (defvar jwm/org-tickler-file (concat org-directory "/tickler.org"))
