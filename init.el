@@ -36,10 +36,18 @@
 
 (require 'package)
 
-(unless (assoc-default "org" package-archives)
-  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
-(unless (assoc-default "melpa" package-archives)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+(let ((cached-package-dir (concat (getenv "HOME") "/tmp/elpa-mirror/")))
+
+  (cond
+   ((file-directory-p cached-package-dir)
+    ;; elpa-mirror says to use this:
+    ;; myelpa is the ONLY repository now, dont forget trailing slash in the directory
+    (setq package-archives '(("elpa-mirror" . cached-package-dir))))
+   (t
+    (unless (assoc-default "org" package-archives)
+      (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+    (unless (assoc-default "melpa" package-archives)
+      (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)))))
 
 (package-initialize)
 

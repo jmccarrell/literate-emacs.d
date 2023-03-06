@@ -197,15 +197,50 @@
 * Package Initialization
 ** Package Manager
 
-   Ensure the org repository and melpa are searched for packages.
+   Circa 2023, I need to be able to use my emacs config in an offline world.
+
+   Roughly, my plan is to create a container of my environemnt, of course including my emacs.
+   So I need a way to locally cache all of the packages I reference here.
+   Luckily enough, there is [[https://github.com/redguardtoo/elpa-mirror][elpa-mirror]].
+
+   It looks like I can cache the packages using the [[https://github.com/redguardtoo/elpa-mirror#usage][elpa-mirror recipe]].
+   I choose to store these cached packages in ~$HOME/tmp/elpa-mirror~.
+
+   To build the archives, follow the recipe in elpa-mirror.
+
+   One time, put a copy of the elpa-mirror code where we can use it:
+   #+begin_src shell
+     pushd ~/thirdparty
+     git clone git@github.com:redguardtoo/elpa-mirror.git
+   #+end_src
+
+   Then build the local cache:
+   #+begin_src shell
+     mkdir -p $HOME/tmp/elpa-mirror && \
+         emacs --batch -l $HOME/.emacs.d/init.el \
+               -l $HOME/thirdparty/elpa-mirror/elpa-mirror.el \
+               --eval='(setq elpamr-default-output-directory "~/tmp/elpa-mirror")' \
+               --eval='(elpamr-create-mirror-for-installed)'
+   #+end_src
+
+   Ensure the org repository and melpa are searched for packages in the online case.
+   Use cached packages in the offline case.
 
    #+BEGIN_SRC emacs-lisp
      (require 'package)
 
-     (unless (assoc-default "org" package-archives)
-       (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
-     (unless (assoc-default "melpa" package-archives)
-       (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+     (let ((cached-package-dir (concat (getenv "HOME") "/tmp/elpa-mirror/")))
+
+       (cond
+        ((file-directory-p cached-package-dir)
+         ;; elpa-mirror says to use this:
+         ;; myelpa is the ONLY repository now, dont forget trailing slash in the directory
+         (setq package-archives '(("elpa-mirror" . cached-package-dir))))
+        (t
+         (unless (assoc-default "org" package-archives)
+           (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+         (unless (assoc-default "melpa" package-archives)
+           (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)))))
 
      (package-initialize)
    #+END_SRC
