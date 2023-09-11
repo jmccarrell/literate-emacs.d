@@ -53,7 +53,7 @@
 
 ** Which emacs on Mac OS X?
 
-   Circa summer 2019, I prefer [[https://emacsformacosx.com/][GNU Emacs for Mac OS X]] installed by homebrew.
+   Since at least the summer of 2019, I have preferred [[https://emacsformacosx.com/][GNU Emacs for Mac OS X]] installed by homebrew.
 
    #+BEGIN_SRC shell
      brew cask install emacs
