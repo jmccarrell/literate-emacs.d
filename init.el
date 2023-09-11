@@ -415,8 +415,6 @@
            (string= lang "sqlite"))))
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
-(setq org-babel-python-command "python3")
-
 (use-package yasnippet
   :config
   (use-package yasnippet-snippets)
@@ -447,8 +445,6 @@
   (add-to-list 'auto-mode-alist '("\\.es6$" . js2-mode)))
 
 (use-package json-mode)
-
-(setq  python-shell-interpreter "python3")
 
 (use-package elpy
   :ensure t

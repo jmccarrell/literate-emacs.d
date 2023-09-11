@@ -1014,15 +1014,6 @@
      (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
    #+END_SRC
 
-*** prefer python3
-
-    Circa fall 2019 as python2 heads towards its final deprecation date, I want to prefer =python3= over
-    =python2= in all cases.  So start with ob.
-
-    #+BEGIN_SRC emacs-lisp
-      (setq org-babel-python-command "python3")
-    #+END_SRC
-
 * Programming Support
 ** yasnippets
 
@@ -1093,27 +1084,7 @@
 
 ** python
 
-   Prefer python3 in all cases.
-   This work presumes apriori that brew has installed python3 as the mac os python3 does not support readline.
-
-   #+begin_example
-     brew install python3
-   #+end_example
-
-   #+begin_src emacs-lisp
-     (setq  python-shell-interpreter "python3")
-   #+end_src
-
    Lets try elpy stock and see what happens.  So far, so good.
-
-   I did run into a wrinkle preferring python3 over python2.  As usual, it comes at the conjunction of
-   several systems that make different assumptions about the global run time configuration.
-
-   This comes down to the expectation of [[https://github.com/jorgenschaefer/pyvenv][pyvenv.el]] that virtualenvwrapper is available for emacs to use and
-   that the python with virtualenvwrapper installed can be easily identified.
-
-   So help things out by explicitly setting =pyvenv-virtualenvwrapper-python= since pyvenv.el does not
-   search for =python3=, just for =python=.
 
    #+begin_src emacs-lisp
      (use-package elpy
