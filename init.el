@@ -141,6 +141,9 @@
     (message "setting Jeff preferred font %s" preferred-font)
     (set-frame-font preferred-font t t)))
 
+(use-package textsize
+  :init (textsize-mode))
+
 (use-package diminish
   :init (diminish 'visual-line-mode))
 

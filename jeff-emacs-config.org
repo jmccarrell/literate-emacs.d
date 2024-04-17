@@ -507,6 +507,19 @@
          (set-frame-font preferred-font t t)))
    #+END_SRC
 
+
+** Adjust font size to display resolution
+
+   With the broad range of pixels per inch offered by laptops, 4k displays, etc.
+   a mechanism to adjust the font size based on screen resolution is helpful.
+   [[https://github.com/WJCFerguson][WJCFerguson]] seems to have provided just such a capability via [[https://github.com/WJCFerguson/textsize][textsize]]
+
+   #+begin_src emacs-lisp
+     (use-package textsize
+       :init (textsize-mode))
+   #+end_src
+
+
 ** Diminish
 
    Manage how minor modes affect the mode line.
