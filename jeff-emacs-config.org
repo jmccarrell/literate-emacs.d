@@ -267,6 +267,8 @@
    Again [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#init-file-support][following Howard here]]. Add in these supporting libraries to ease emacs lisp development. [[https://github.com/magnars/dash.el][dash]] for a
    modern list api, [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
 
+   I should note that [[https://elpa.gnu.org/packages/seq.html][seq]] is bundled with emacs and seems to be a replacement for dash.
+
    #+BEGIN_SRC emacs-lisp
      (use-package dash
        :config (eval-after-load "dash" '(dash-enable-font-lock)))
