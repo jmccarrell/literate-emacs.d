@@ -267,6 +267,8 @@
    Again [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#init-file-support][following Howard here]]. Add in these supporting libraries to ease emacs lisp development. [[https://github.com/magnars/dash.el][dash]] for a
    modern list api, [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
 
+   I should note that [[https://elpa.gnu.org/packages/seq.html][seq]] is bundled with emacs and seems to be a replacement for dash.
+
    #+BEGIN_SRC emacs-lisp
      (use-package dash
        :config (eval-after-load "dash" '(dash-enable-font-lock)))
@@ -504,6 +506,19 @@
          (message "setting Jeff preferred font %s" preferred-font)
          (set-frame-font preferred-font t t)))
    #+END_SRC
+
+
+** Adjust font size to display resolution
+
+   With the broad range of pixels per inch offered by laptops, 4k displays, etc.
+   a mechanism to adjust the font size based on screen resolution is helpful.
+   [[https://github.com/WJCFerguson][WJCFerguson]] seems to have provided just such a capability via [[https://github.com/WJCFerguson/textsize][textsize]]
+
+   #+begin_src emacs-lisp
+     (use-package textsize
+       :init (textsize-mode))
+   #+end_src
+
 
 ** Diminish
 
