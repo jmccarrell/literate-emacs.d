@@ -514,9 +514,29 @@
    a mechanism to adjust the font size based on screen resolution is helpful.
    [[https://github.com/WJCFerguson][WJCFerguson]] seems to have provided just such a capability via [[https://github.com/WJCFerguson/textsize][textsize]]
 
+   On my 2021 MacBook with retina display at maximum resolution (2056x3129),
+   I wind up with these textsize values:
+   #+begin_example
+     monitor size  mm: 344
+     monitor size pix: 2056
+     pixel pitch 0.17
+     textsize default points 15
+     textsize frame offset 0
+     pixel pitch adjustment 0
+     monitor size adjustment 0
+     text size chosen: 15
+     default-font-width 9
+     default-font-height 18
+   #+end_example
+
+   so choose the default monitor size offset (0) in the usual case of running
+   Emacs on the retina display.
+
    #+begin_src emacs-lisp
      (use-package textsize
-       :init (textsize-mode))
+       :init (textsize-mode)
+       :config (customize-set-variable 'textsize-monitor-size-thresholds
+                                       '((0 . -3) (330 . 0) (500 . 3))))
    #+end_src
 
 

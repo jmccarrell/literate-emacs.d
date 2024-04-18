@@ -142,7 +142,9 @@
     (set-frame-font preferred-font t t)))
 
 (use-package textsize
-  :init (textsize-mode))
+  :init (textsize-mode)
+  :config (customize-set-variable 'textsize-monitor-size-thresholds
+                                  '((0 . -3) (330 . 0) (500 . 3))))
 
 (use-package diminish
   :init (diminish 'visual-line-mode))
