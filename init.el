@@ -146,6 +146,41 @@
   :config (customize-set-variable 'textsize-monitor-size-thresholds
                                   '((0 . -3) (330 . 0) (500 . 3))))
 
+(defun jwm/dump-frame-textsize-metrics ()
+  "Dump selected frame metrics from the currently selected frame to the *Message* buffer.
+Intended to be helpful for debugging the choices textsize makes for a given monitor/display."
+  (interactive)
+  (let (f (selected-frame))
+    (message "emacs frame geometry: X Y WIDTH HEIGHT: %s" (frame-monitor-attribute 'geometry f))
+    (message "emacs monitor size WIDTH HEIGHT mm: %s" (frame-monitor-attribute 'mm-size f))
+    (message "textsize monitor size  mm: %d" (textsize--monitor-size-mm f))
+    (message "textsize monitor size pix: %d" (textsize--monitor-size-px f))
+    (message "pixel pitch %.02f" (textsize--pixel-pitch f))
+    (message "textsize default points %d" textsize-default-points)
+    (message "textsize frame offset %d"
+             (or (frame-parameter f 'textsize-manual-adjustment) 0))
+    (message "pixel pitch adjustment %d"
+             (textsize--threshold-offset textsize-pixel-pitch-thresholds
+                                         (textsize--pixel-pitch f)))
+    (message "monitor size adjustment %d"
+             (textsize--threshold-offset textsize-monitor-size-thresholds
+                                         (textsize--monitor-size-mm f)))
+    (message "text size chosen: %d" (textsize--point-size f))
+    (message "default face font %s" (face-attribute 'default :font))
+    (message "default-font: WIDTHxHEIGHT %dx%d" (default-font-width)(default-font-height))
+    (message "resultant text area in chars WIDTHxHEIGHT %dx%d"
+             (frame-width f)(frame-height f))
+    )
+  nil)
+
+(defun jwm/adjust-textsize-frame-offset (arg)
+  "Supply a per-frame, persistent integer offset (positive or negative) to the textsize font size calculation.
+In effect, adjusts the pixel size of the frame font up or down by the offset value."
+  (interactive "P")
+  (let ((f (selected-frame))
+        (offset arg))
+    (textsize-modify-manual-adjust f offset)))
+
 (use-package diminish
   :init (diminish 'visual-line-mode))
 
