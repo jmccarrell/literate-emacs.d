@@ -514,11 +514,23 @@
    a mechanism to adjust the font size based on screen resolution is helpful.
    [[https://github.com/WJCFerguson][WJCFerguson]] seems to have provided just such a capability via [[https://github.com/WJCFerguson/textsize][textsize]]
 
+   The customizations help me with my specific font size choices;
+
+   My macbook with retina display at max resolution reports 344 mm wide by 2056 pixels
+   for a pixel density of 0.17.  My preference is for the 15 point Hack font.
+   My 27inch Dell 4k monitor reports 598 mm wide by 3840 pixel width == pixel density of 0.16.
+   I seem to prefer Hack-20 on the 27inch Dell.
+   My 32inch Dell 4k monitor reports 701 mm wide by 3840 pixel width for a pixel density of 0.18.
+   I prefer Hack-17 there.
+
    #+begin_src emacs-lisp
      (use-package textsize
        :init (textsize-mode)
-       :config (customize-set-variable 'textsize-monitor-size-thresholds
-                                       '((0 . -3) (330 . 0) (500 . 3))))
+       :config
+       (customize-set-variable 'textsize-monitor-size-thresholds
+                               '((0 . 0) (400 . 5) (650 . 2)))
+       (customize-set-variable 'textsize-pixel-pitch-thresholds
+                               '((0 . 0))))
    #+end_src
 
    To help understand and manage the choices made by [[https://github.com/WJCFerguson/textsize][textsize]], here is a helper
@@ -547,10 +559,10 @@
                   (textsize--threshold-offset textsize-monitor-size-thresholds
                                               (textsize--monitor-size-mm f)))
          (message "text size chosen: %d" (textsize--point-size f))
-         (message "default face font %s" (face-attribute 'default :font))
          (message "default-font: WIDTHxHEIGHT %dx%d" (default-font-width)(default-font-height))
          (message "resultant text area in chars WIDTHxHEIGHT %dx%d"
                   (frame-width f)(frame-height f))
+         (message "default face font %s" (face-attribute 'default :font))
          )
        nil)
    #+end_src

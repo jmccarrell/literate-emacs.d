@@ -143,8 +143,11 @@
 
 (use-package textsize
   :init (textsize-mode)
-  :config (customize-set-variable 'textsize-monitor-size-thresholds
-                                  '((0 . -3) (330 . 0) (500 . 3))))
+  :config
+  (customize-set-variable 'textsize-monitor-size-thresholds
+                          '((0 . 0) (400 . 5) (650 . 2)))
+  (customize-set-variable 'textsize-pixel-pitch-thresholds
+                          '((0 . 0))))
 
 (defun jwm/dump-frame-textsize-metrics ()
   "Dump selected frame metrics from the currently selected frame to the *Message* buffer.
@@ -166,10 +169,10 @@ Intended to be helpful for debugging the choices textsize makes for a given moni
              (textsize--threshold-offset textsize-monitor-size-thresholds
                                          (textsize--monitor-size-mm f)))
     (message "text size chosen: %d" (textsize--point-size f))
-    (message "default face font %s" (face-attribute 'default :font))
     (message "default-font: WIDTHxHEIGHT %dx%d" (default-font-width)(default-font-height))
     (message "resultant text area in chars WIDTHxHEIGHT %dx%d"
              (frame-width f)(frame-height f))
+    (message "default face font %s" (face-attribute 'default :font))
     )
   nil)
 
