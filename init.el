@@ -178,7 +178,7 @@ Intended to be helpful for debugging the choices textsize makes for a given moni
 
 (defun jwm/adjust-textsize-frame-offset (arg)
   "Supply a per-frame, persistent integer offset (positive or negative) to the textsize font size calculation.
-In effect, adjusts the pixel size of the frame font up or down by the offset value."
+In effect, adjusts the pixel size of the frame font up or down by the prefix value."
   (interactive "P")
   (let ((f (selected-frame))
         (offset arg))

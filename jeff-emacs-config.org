@@ -571,7 +571,7 @@
    #+begin_src emacs-lisp
      (defun jwm/adjust-textsize-frame-offset (arg)
        "Supply a per-frame, persistent integer offset (positive or negative) to the textsize font size calculation.
-     In effect, adjusts the pixel size of the frame font up or down by the offset value."
+     In effect, adjusts the pixel size of the frame font up or down by the prefix value."
        (interactive "P")
        (let ((f (selected-frame))
              (offset arg))
@@ -882,7 +882,7 @@
   I choose to pattern my config for these related packages after abo-abo, the author.  Well, it turns out
   abo-abo has a pretty baroque way of loading his configuration.
 
-  So combine the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]] with that used by [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Projectile][Daneil's projectile config]].
+  So combine the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]] with that used by [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Projectile][Daniel's projectile config]].
 
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
