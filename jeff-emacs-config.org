@@ -1167,6 +1167,17 @@
    #+end_src
 
 * Integration with the Outside World
+** direnv support
+
+   Circa 2024, I finally got around to using [[https://direnv.net/][direnv]].  Of course, I want the same functionality in emacs.
+
+   Steve Purcell to the rescue again with [[https://github.com/purcell/envrc][envrc]].
+
+   #+begin_src emacs-lisp
+     (use-package envrc
+       :hook (after-init . envrc-global-mode))
+   #+end_src
+
 ** docker and dockerfile
    Surveying my field of emacs devotees for their docker integrations, it seems to me that these two are worthy of study:
    - docker integraton by [[https://github.com/jwiegley/dot-emacs/blob/master/init.el#L1291-L1310][John Wiegley]]

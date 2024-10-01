@@ -494,6 +494,9 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :init
   (elpy-enable))
 
+(use-package envrc
+  :hook (after-init . envrc-global-mode))
+
 (use-package docker
   :bind ("C-c d" . docker)
   :diminish)
