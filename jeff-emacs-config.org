@@ -1157,9 +1157,12 @@
 
 ** python
 
+*** elpy deprecated
+   Circa Oct 2024, I want to try [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]], so first remove elpy
+
    Lets try elpy stock and see what happens.  So far, so good.
 
-   #+begin_src emacs-lisp
+   #+begin_src emacs-lisp :tangle no
      (use-package elpy
        :ensure t
        :init

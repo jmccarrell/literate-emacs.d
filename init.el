@@ -489,11 +489,6 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 
 (use-package json-mode)
 
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable))
-
 (use-package envrc
   :hook (after-init . envrc-global-mode))
 
