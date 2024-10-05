@@ -1157,6 +1157,24 @@
 
 ** python
 
+*** use python-mode
+
+  This is lifted straigt from David Wilson's [[https://github.com/daviwil/emacs-from-scratch/blob/5e1f99448e32852277e2d274ce2057d55b8c7aaf/init.el#L465][Emacs From Scratch]]
+  However, I haven't (yet) set up lsp-mode.
+
+  #+begin_src emacs-lisp
+    (use-package python-mode
+      :ensure t)
+      ;; :hook (python-mode . lsp-deferred)
+
+      ;; NOTE: Set these if Python 3 is called "python3" on your system!
+      ;; (python-shell-interpreter "python3")
+      ;; (dap-python-executable "python3")
+      ;; (dap-python-debugger 'debugpy)
+      ;; :config
+      ;; (require 'dap-python))
+  #+end_src
+
 *** elpy deprecated
    Circa Oct 2024, I want to try [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]], so first remove elpy
 

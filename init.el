@@ -489,6 +489,17 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 
 (use-package json-mode)
 
+(use-package python-mode
+  :ensure t)
+  ;; :hook (python-mode . lsp-deferred)
+
+  ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  ;; (python-shell-interpreter "python3")
+  ;; (dap-python-executable "python3")
+  ;; (dap-python-debugger 'debugpy)
+  ;; :config
+  ;; (require 'dap-python))
+
 (use-package envrc
   :hook (after-init . envrc-global-mode))
 
