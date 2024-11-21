@@ -517,18 +517,19 @@
    The customizations help me with my specific font size choices;
 
    My macbook with retina display at max resolution reports 344 mm wide by 2056 pixels
-   for a pixel density of 0.17.  My preference is for the 15 point Hack font.
+   for a pixel density of 0.17.  My preference is for the 17 point Hack font,
+   which requires an offset of 2.
    My 27inch Dell 4k monitor reports 598 mm wide by 3840 pixel width == pixel density of 0.16.
    I seem to prefer Hack-20 on the 27inch Dell.
    My 32inch Dell 4k monitor reports 701 mm wide by 3840 pixel width for a pixel density of 0.18.
-   I prefer Hack-17 there.
+   I prefer Hack-24 there, which requires the offset of 9.
 
    #+begin_src emacs-lisp
      (use-package textsize
        :init (textsize-mode)
        :config
        (customize-set-variable 'textsize-monitor-size-thresholds
-                               '((0 . 0) (400 . 5) (650 . 2)))
+                               '((0 . 2) (400 . 5) (650 . 9)))
        (customize-set-variable 'textsize-pixel-pitch-thresholds
                                '((0 . 0))))
    #+end_src
@@ -577,6 +578,12 @@
              (offset arg))
          (textsize-modify-manual-adjust f offset)))
    #+end_src
+
+** Emacs global-text-scale-adjust
+
+   Emacs provides global-text-scale-adjust as of version 29.1 that will change the text size.
+   However, I found the window sizing operations would reset to the default font size,
+   typically rendering this capability not so useful.  [[https://emacs.stackexchange.com/a/78792/9834][Reference]]
 
 ** Diminish
 
