@@ -500,6 +500,11 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   ;; :config
   ;; (require 'dap-python))
 
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+
 (use-package envrc
   :hook (after-init . envrc-global-mode))
 

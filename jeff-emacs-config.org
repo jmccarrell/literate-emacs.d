@@ -1194,6 +1194,16 @@
        (elpy-enable))
    #+end_src
 
+** flycheck
+
+  Straightforward use of flycheck.
+  #+begin_src emacs-lisp
+    (use-package flycheck
+      :ensure t
+      :config
+      (add-hook 'after-init-hook #'global-flycheck-mode))
+  #+end_src
+
 * Integration with the Outside World
 ** direnv support
 
