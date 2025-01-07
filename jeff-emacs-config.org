@@ -1204,6 +1204,14 @@
       (add-hook 'after-init-hook #'global-flycheck-mode))
   #+end_src
 
+** terraform
+
+Lifted directly from jwiegley.
+#+begin_src emacs-lisp
+(use-package terraform-mode
+  :mode "\.tf\\'")
+#+end_src
+
 * Integration with the Outside World
 ** direnv support
 
