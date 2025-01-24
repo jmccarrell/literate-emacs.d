@@ -1162,6 +1162,12 @@
      (use-package json-mode)
    #+END_SRC
 
+** jsonnet
+
+#+begin_src emacs-lisp
+  (use-package jsonnet-mode)
+#+end_src
+
 ** python
 
 *** use python-mode
