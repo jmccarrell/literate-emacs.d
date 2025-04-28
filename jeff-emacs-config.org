@@ -523,6 +523,8 @@
    I seem to prefer Hack-20 on the 27inch Dell.
    My 32inch Dell 4k monitor reports 701 mm wide by 3840 pixel width for a pixel density of 0.18.
    I prefer Hack-24 there, which requires the offset of 9.
+   The ultra-wide monitors at the office report 801 mm wide by pixel width 3440 == density: 0.23
+   I prefer Hack-21 there for offset 6
 
    #+begin_src emacs-lisp
      (use-package textsize
@@ -531,7 +533,7 @@
        (customize-set-variable 'textsize-monitor-size-thresholds
                                '((0 . 2) (400 . 5) (650 . 9)))
        (customize-set-variable 'textsize-pixel-pitch-thresholds
-                               '((0 . 0))))
+                               '((0 . 3) (0.22 . -3))))
    #+end_src
 
    To help understand and manage the choices made by [[https://github.com/WJCFerguson/textsize][textsize]], here is a helper
