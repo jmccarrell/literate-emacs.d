@@ -147,7 +147,7 @@
   (customize-set-variable 'textsize-monitor-size-thresholds
                           '((0 . 2) (400 . 5) (650 . 9)))
   (customize-set-variable 'textsize-pixel-pitch-thresholds
-                          '((0 . 3) (0.22 . -3))))
+                          '((0 . 3) (0.22 . -4))))
 
 (defun jwm/dump-frame-textsize-metrics ()
   "Dump selected frame metrics from the currently selected frame to the *Message* buffer.
