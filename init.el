@@ -350,6 +350,8 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :config
   (counsel-projectile-mode))
 
+(use-package hydra)
+
 (use-package ivy
   :diminish (ivy-mode . "")
   :config
@@ -358,6 +360,9 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   (setq ivy-use-virtual-buffers t)
   ;; show both the index and count of matching items
   (setq ivy-count-format "%d/%d "))
+
+(use-package ivy-hydra
+  :after (ivy hydra))
 
 (use-package counsel
   :bind (("C-c j" . counsel-git-grep)

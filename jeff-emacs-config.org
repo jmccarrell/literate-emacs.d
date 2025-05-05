@@ -920,6 +920,8 @@
 ** Ivy, Counsel, Avy and Swiper Config
 
    #+BEGIN_SRC emacs-lisp
+     (use-package hydra)
+
      (use-package ivy
        :diminish (ivy-mode . "")
        :config
@@ -928,6 +930,9 @@
        (setq ivy-use-virtual-buffers t)
        ;; show both the index and count of matching items
        (setq ivy-count-format "%d/%d "))
+
+     (use-package ivy-hydra
+       :after (ivy hydra))
 
      (use-package counsel
        :bind (("C-c j" . counsel-git-grep)
