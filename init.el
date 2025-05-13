@@ -145,7 +145,7 @@
   :init (textsize-mode)
   :config
   (customize-set-variable 'textsize-monitor-size-thresholds
-                          '((0 . 2) (400 . 5) (650 . 9)))
+                          '((0 . 2) (400 . 5) (650 . 6)))
   (customize-set-variable 'textsize-pixel-pitch-thresholds
                           '((0 . 3) (0.22 . -6))))
 
