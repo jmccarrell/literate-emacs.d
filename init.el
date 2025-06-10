@@ -515,6 +515,11 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 (use-package terraform-mode
   :mode "\.tf\\'")
 
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
 (use-package envrc
   :hook (after-init . envrc-global-mode))
 

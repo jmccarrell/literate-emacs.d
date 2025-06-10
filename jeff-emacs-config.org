@@ -1228,6 +1228,17 @@ Lifted directly from jwiegley.
 #+end_src
 
 * Integration with the Outside World
+** editorconfig
+
+   Honor editor config whenever available.
+
+   #+begin_src emacs-lisp
+     (use-package editorconfig
+       :ensure t
+       :config
+       (editorconfig-mode 1))
+   #+end_src
+
 ** direnv support
 
    Circa 2024, I finally got around to using [[https://direnv.net/][direnv]].  Of course, I want the same functionality in emacs.
