@@ -1177,8 +1177,16 @@
   (use-package jsonnet-mode)
 #+end_src
 
-** python
+** go
+*** use go-mode
+  #+begin_src emacs-lisp
+    (use-package go-mode
+      :ensure t
+      :config
+      (add-hook 'before-save-hook #'gofmt-before-save))
+  #+end_src
 
+** python
 *** use python-mode
 
   This is lifted straigt from David Wilson's [[https://github.com/daviwil/emacs-from-scratch/blob/5e1f99448e32852277e2d274ce2057d55b8c7aaf/init.el#L465][Emacs From Scratch]]
