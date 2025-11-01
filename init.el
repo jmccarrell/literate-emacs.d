@@ -517,6 +517,8 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
+(use-package just-mode)
+
 (use-package terraform-mode
   :mode "\.tf\\'")
 

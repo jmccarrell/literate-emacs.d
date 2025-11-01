@@ -252,6 +252,9 @@
    Prefer [[https://github.com/jwiegley/use-package][use-package]] more or less as a more convenient way of customizing emacs. It does a whole lot more
    than that. My usage is fairly shallow.
 
+   As of emacs 29, use-package is built in, so some of this is probably no longer
+   needed.
+
    #+BEGIN_SRC emacs-lisp
      (unless (package-installed-p 'use-package)
        (package-install 'use-package))
@@ -1225,6 +1228,12 @@
       :ensure t
       :config
       (add-hook 'after-init-hook #'global-flycheck-mode))
+  #+end_src
+
+** justfile support
+
+  #+begin_src emacs-lisp
+    (use-package just-mode)
   #+end_src
 
 ** terraform
