@@ -1168,6 +1168,12 @@
      (use-package json-mode)
    #+END_SRC
 
+** yaml mode
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :mode ("\\.ya?ml\\'" . yaml-mode))
+#+end_src
+
 ** jsonnet
 
 #+begin_src emacs-lisp
