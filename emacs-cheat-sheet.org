@@ -584,3 +584,75 @@
    | C-c C-c | make current heading line invisibile  (not in org mode; use TAB) |
    | C-c C-e | ... visible (not in org mode; use TAB)                           |
    | ...     | many others that are not terribly releveant in org mode          |
+
+* Markdown mode
+
+  See [[https://jblevins.org/projects/markdown-mode/][markdown-mode home]].
+  Bindings below apply to both =markdown-mode= and =gfm-mode=.
+
+** Headings & outline motion
+
+   | key          | description                |
+   |--------------+----------------------------|
+   | C-c C-n      | next heading               |
+   | C-c C-p      | previous heading           |
+   | C-c C-u      | up to parent heading       |
+   | M-RET        | new heading at same level  |
+   | C-c C-t 1..6 | set heading level 1..6     |
+
+** Move / promote / demote  (context-aware)
+
+   The =M-<arrow>= keys do different things depending on where point is.
+   Same key, different behavior — this is the single most useful thing
+   to internalize about markdown-mode.
+
+   | key       | on heading | in list   | in table          |
+   |-----------+------------+-----------+-------------------|
+   | M-<left>  | promote    | outdent   | move column left  |
+   | M-<right> | demote     | indent    | move column right |
+   | M-<up>    | move up    | move up   | move row up       |
+   | M-<down>  | move down  | move down | move row down     |
+
+** Text styles  (C-c C-s prefix)
+
+   | key       | description                             |
+   |-----------+-----------------------------------------|
+   | C-c C-s e | emphasis (italic)                       |
+   | C-c C-s s | strong (bold)                           |
+   | C-c C-s c | inline code                             |
+   | C-c C-s b | blockquote                              |
+   | C-c C-s p | fenced code block (pre)                 |
+   | C-c C-s C | GFM fenced code block with language tag |
+
+** Tables
+
+   Align a table to a visible monospaced grid:  =C-c C-c |=
+
+   | key       | description  |
+   |-----------+--------------|
+   | C-c C-s t | insert table |
+
+   (See also the =M-<arrow>= table above — those keys reshape tables
+   when point is inside a cell.)
+
+** Links
+
+   | key     | description                  |
+   |---------+------------------------------|
+   | C-c C-l | insert or edit link at point |
+   | C-c C-o | follow link at point         |
+
+** Display toggles
+
+   | key         | description                                 |
+   |-------------+---------------------------------------------|
+   | C-c C-x C-f | toggle native code-block fontification      |
+   | C-c C-x m   | toggle markup hiding (cleaner reading view) |
+   | C-c C-x C-l | toggle URL hiding                           |
+
+** GFM lists & checkboxes
+
+   | key         | description                    |
+   |-------------+--------------------------------|
+   | M-RET       | new list item (when in a list) |
+   | C-c C-x C-b | toggle GFM checkbox at point   |
