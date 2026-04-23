@@ -463,6 +463,19 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
            (string= lang "sqlite"))))
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
+(use-package markdown-mode
+  :mode (("\\.md\\'"       . gfm-mode)
+         ("\\.markdown\\'" . gfm-mode))
+  :custom
+  ;; render fenced code blocks using the language's native font-lock
+  (markdown-fontify-code-blocks-natively t)
+  ;; progressively larger fonts for h1..h6
+  (markdown-header-scaling t)
+  ;; no extra space between ``` and the language name
+  (markdown-spaces-after-code-fence 0)
+  ;; pandoc is flexible if we ever want `C-c C-c p` preview
+  (markdown-command "pandoc --from=gfm --to=html5 --standalone"))
+
 (use-package yasnippet
   :config
   (use-package yasnippet-snippets)
