@@ -1100,6 +1100,42 @@
      (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
    #+END_SRC
 
+* Markdown
+
+  A pleasant in-buffer experience for reading and editing markdown files.
+  The big wins:
+  - syntax-highlighted code inside fenced blocks (python, elisp, etc.
+    get their native font-lock inside ~```lang~ fences)
+  - progressively larger heading fonts
+  - =gfm-mode= for =.md= since most real-world markdown is GitHub-flavored
+
+  Reading/editing only; live preview and export are out of scope for this
+  pilot.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package markdown-mode
+      :mode (("\\.md\\'"       . gfm-mode)
+             ("\\.markdown\\'" . gfm-mode))
+      :custom
+      ;; render fenced code blocks using the language's native font-lock
+      (markdown-fontify-code-blocks-natively t)
+      ;; progressively larger fonts for h1..h6
+      (markdown-header-scaling t)
+      ;; no extra space between ``` and the language name
+      (markdown-spaces-after-code-fence 0)
+      ;; pandoc is flexible if we ever want `C-c C-c p` preview
+      (markdown-command "pandoc --from=gfm --to=html5 --standalone"))
+  #+END_SRC
+
+  Handy bindings:
+
+  | keys           | command                                     |
+  |----------------+---------------------------------------------|
+  | C-c C-x C-f    | toggle native code-block fontification      |
+  | C-c C-x m      | toggle markup hiding (cleaner reading view) |
+  | C-c C-s        | text-style menu (bold/italic/code/...)      |
+  | M-left/M-right | promote/demote heading                      |
+
 * Programming Support
 ** yasnippets
 
