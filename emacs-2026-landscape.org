@@ -1,0 +1,392 @@
+#+TITLE: Emacs 2020 → 2026 Landscape Survey
+#+AUTHOR: Jeff McCarrell (with Claude)
+#+DATE: 2026-04-23
+#+STARTUP: showall
+#+OPTIONS: toc:2 num:nil
+
+* Purpose
+
+This document is the Phase 0 deliverable of the modernization plan: a
+map from Jeff's current ~jeff-emacs-config.org~ (last seriously
+refactored around 2020) to the state of the Emacs ecosystem in 2026,
+plus a prioritized backlog of sub-goals.
+
+It is a reference doc, not part of the tangled config. Keep it in the
+~main/~ worktree and update it as sub-goals land.
+
+* TLDR — what actually changed 2020 → 2026
+
+Four things matter most, in rough order of impact on Jeff's config:
+
+1. *The completion stack flipped.* The 2020 default of
+   ivy/counsel/swiper has been displaced in new configs by the
+   vertico + consult + marginalia + embark + orderless ecosystem
+   (authored by Daniel Mendler). Ivy is still maintained (Basil
+   Contovounesios now leads; 0.15.x released 2025) — but the
+   center of gravity, including /abo-abo's own/ config, moved
+   toward eglot + orderless-style filtering. Not a crisis; a
+   weather report.
+
+2. *LSP, tree-sitter, use-package, and which-key are now built in.*
+   Emacs 29 (July 2023) bundled use-package and eglot and added
+   tree-sitter (~treesit.el~). Emacs 30 (Feb 2025) added
+   which-key as built-in and ~:vc~ to use-package (install
+   directly from a git repo, no package manager gymnastics). This
+   collapses a lot of third-party bootstrap code.
+
+3. *Python dev changed out from under elpy.* Jeff already noted
+   elpy was deprecated. The 2026 answer is eglot + a modern LSP:
+   basedpyright (a faster/community fork of pyright) for types,
+   ruff-lsp for lint/format, optionally ty (new, fast Python
+   type-checker from the ruff team). ~python-ts-mode~ replaces
+   ~python-mode~ where tree-sitter is available. uv is
+   increasingly replacing pyenv+poetry.
+
+4. *AI showed up and is now a real dimension of the config.* This
+   didn't exist in 2020. In 2026: gptel is the de-facto general
+   LLM client (Claude, GPT, Gemini, local via ollama, MCP
+   tool-use); copilot.el or claudemacs for inline completion;
+   aidermacs for autonomous refactoring; local models via
+   llama-swap / ollama / LiteLLM. jwiegley's config (the most
+   sophisticated reference in the set) is now /dominated/ by
+   AI-related modules.
+
+Secondary shifts that matter: flycheck → flymake (because eglot
+ships with flymake); projectile → ~project.el~ (built-in is now
+good enough for most); company → corfu+cape; ag → consult-ripgrep;
+zenburn is fine but the modern accessibility-first default is
+modus-themes (also built in since 28.1); expand-region has a
+leaner successor in ~expreg~.
+
+* What changed in Jeff's reference repos
+
+I re-fetched all 14 reference repos and compared local HEAD to
+current origin. Here is the signal-sorted result.
+
+** High signal (actively evolved)
+
+*** jwiegley-dotemacs — 2024-11 → 2026-04, 396 commits
+
+   *The most sophisticated reference.* His recent commits are
+   /overwhelmingly/ AI-related: ~gptel-presets.el~,
+   ~gptel-ext.el~, ~gptel-backends.el~, ~gptel-agent~ submodule,
+   ~gptel-rag.el~, ~gptel-prompts~, ~hf.el~ (local Hugging Face
+   models, LiteLLM config generation, llama-swap orchestration),
+   ~agent-shell~, ~mcp-server-lib~, ~macher~, ~magit-ai~. He
+   runs multiple local LLMs (Qwen3 series, Devstral) behind
+   LiteLLM and switches between them and cloud (Claude Opus/
+   Sonnet 4-6) via gptel presets.
+
+   Non-AI touches: relint, magit ANSI coloring, org-roam-sync,
+   capture-link-to-entry, org-inlinetask tweaks.
+
+   *Takeaway:* if you want to see the ambitious ceiling of emacs
+   + AI, this is it. Also: jwiegley didn't rip out fundamentals;
+   the 2020 completion stack and organization are broadly
+   preserved. AI is /additive/.
+
+*** steve-purcell-dotemacs — 2018-06 → 2026-04, 576 commits
+
+   *The best migration reference for Jeff.* Purcell's
+   chronological diff is essentially the exact path from where
+   Jeff is to modern:
+   - ivy → selectrum → vertico (init-minibuffer.el is now the
+     active file; init-ivy.el is legacy)
+   - added consult + embark; ~consult-ripgrep-at-point~ wrapper
+   - flycheck → flymake (has init-flymake.el)
+   - company → corfu (with careful Emacs version guards)
+   - added tree-sitter (init-treesitter.el) then /removed/
+     treesit-auto once Emacs 30 covered his needs natively
+   - eglot everywhere, with LSPs: ty and basedpyright for
+     Python; nixd for Nix; tofu-ls for Terraform; ocaml-ts-mode
+     with LSP; clojure-ts-mode + cider
+   - ~ruff-fix-on-save-mode~ for Python
+   - Removed ~ag~ (dropped in favor of consult-ripgrep)
+   - Added pulsar (visual feedback on cursor jumps), eat
+     (modern terminal, alternative to vterm)
+   - Added ns-auto-titlebar for macOS
+   - Uses pyproject.toml and uv.lock as project root markers
+
+   *Takeaway:* walk ~git log~ on this repo when planning any
+   sub-goal. He has /already done/ the migration you are
+   contemplating, with clean small commits.
+
+*** bbatsov-dotemacs — 2021-07 → 2026-04, 95 commits
+
+   Parallel modernization to Purcell, but with different
+   opinions:
+   - Dropped use-package bootstrap (built-in since 29)
+   - Moved which-key to "built-in packages" section (built-in
+     since 30)
+   - Dropped ~ag~ → consult-ripgrep
+   - Dropped elixir-mode, rust-mode, yaml-mode in favor of
+     built-in ts-modes
+   - Dropped treesit-auto (redundant on Emacs 30+)
+   - Switched from expand-region to ~expreg~
+   - Added copilot
+   - Eglot auto-shutdown when no longer needed
+   - Switched theme to tokyo-night / tokyo-storm
+   - Enabled ~repeat-mode~ with a custom repeat-map for expreg
+   - Added ~minibuffer-regexp-mode~, ~visual-wrap-prefix-mode~
+   - ~read-extended-command-predicate~ to filter ~M-x~
+   - File-notification-based auto-revert
+
+   *Takeaway:* bbatsov is a great source of small,
+   self-contained quality-of-life upgrades. Many of these are
+   one-line adoptions.
+
+*** abo-abo-dotemacs — 2021-10 → 2025-12, 227 commits
+
+   *Significant:* abo-abo /is the author/ of ivy/counsel/swiper/
+   avy. Yet his own recent commits include:
+   - ~modes/ora-python.el: Fix eglot completion delay~ (he uses
+     eglot for Python!)
+   - ~init.el: Don't load ora-lsp~ (dropped lsp-mode)
+   - ~init.el: Load ora-flycheck~, ~ora-vterm~ (still uses
+     flycheck, still uses vterm)
+   - Still uses ~ora-ivy.el~, ~ora-company.el~ — so he hasn't
+     migrated off his own stack, but the LSP world has moved on
+     around him.
+
+   *Takeaway:* the ivy author uses eglot. That's the story.
+   Ivy is not dead, but depending on it for LSP UX is no longer
+   where the maintenance is.
+
+*** munen-emacs.d — 2019-07 → 2026-04, 336 commits
+
+   Another AI-heavy evolution, but a different flavor than
+   jwiegley: munen has built an extensive set of /gptel tools/
+   (custom functions exposed to the LLM as tools):
+   ~read_file~, ~edit_file~, ~edit_file_non_interactive~,
+   ~apply_diff~, ~replace_buffer~, ~list_directory~,
+   ~file_lint_with_flycheck~, ~run_clojure_in_repl~. Uses
+   ~agent-shell~ with ~opencode~ as default agent; uses the
+   ~mcp~ package. Packages managed via Guix.
+
+   *Takeaway:* if the goal is "make emacs an agentic coding
+   environment driven by an LLM I trust," munen's pattern (gptel
+   + custom tools + MCP) is one viable shape. Less polished than
+   jwiegley but more compact.
+
+*** sacha-chua-dotemacs — 2019-09 → 2026-04, 262 commits (gh-pages branch)
+
+   Organic evolution rather than a clean migration; Sacha's use
+   of Emacs is heavily blogging + life-admin + transcript work
+   (whisperx for audio, ox-11ty for static site). Relevant
+   signals: she adopted marginalia, ~minibuffer-regexp-mode~,
+   ~goto-chg~, ~substitute~. Explicit "more tips from bbatsov"
+   commits show cross-pollination. Still on vertico/marginalia
+   stack; not on the AI bandwagon as deeply as jwiegley/munen.
+
+** Low signal (dormant or not useful)
+
+- *howardabrams-dot-files*: no commits since 2019. Howard moved
+  to DoomEmacs and blogs there. His /old/ config remains the
+  literate-style model Jeff's config is built on, but it's not
+  evolving.
+- *danielmai-dotemacs*: last activity 2023-02; the config Jeff
+  cloned is current.
+- *andreyorst-dotfiles*, *ebzzry-dotfiles*: unchanged.
+- *sirpscl-emacs.d*: only activity was 2020.
+- *editorconfig-emacs*, *smartparens*: these are package repos,
+  not configs. Relevant if we revisit those packages.
+- *greendog-gtd*: no remote configured; can't fetch.
+
+* Section-by-section mapping of Jeff's config
+
+This is the working map. Each row: what Jeff has → what 2026
+looks like → effort.
+
+#+ATTR_HTML: :class landscape-table
+| Section of jeff-emacs-config.org   | Current choice              | 2026 status   | Recommended action                                          | Effort | Priority |
+|------------------------------------+-----------------------------+---------------+-------------------------------------------------------------+--------+----------|
+| Package Manager                    | package.el + elpa-mirror    | Still fine    | Keep. elpa-mirror is Jeff-specific and worth preserving.    | —      | —        |
+| Use-Package bootstrap              | ~(unless ... package-install)~ | Obsolete 29+ | Remove bootstrap; use-package is built in.                 | Low    | Cleanup  |
+| dash / s / f libraries             | as listed                   | Still fine    | Keep if used. Some code may now prefer ~seq~ (built-in).    | —      | —        |
+| Color theme                        | zenburn                     | Still works   | Consider modus-themes (built-in, WCAG AAA); zenburn OK.     | Trivial | Low     |
+| Font / textsize                    | Hack + textsize             | Fine          | Keep.                                                       | —      | —        |
+| expand-region                      | expand-region + ha/ wrappers | Superseded   | Evaluate ~expreg~ (what bbatsov moved to); leaner.         | Low    | Low      |
+| ace-window                         | ace-window                  | Still current | Keep.                                                       | —      | —        |
+| which-key                          | which-key (third-party)     | Built-in 30+  | On Emacs 30, replace with built-in.                        | Trivial | Cleanup |
+| wrap-region                        | wrap-region                 | Dormant       | Evaluate ~electric-pair-mode~ or keep. Low risk either way.| Low    | Low      |
+| Dired                              | built-in + dired-x          | Same          | Consider ~dirvish~ (modern dired front-end). Optional.      | Low    | Low      |
+| ag                                 | ag                          | Superseded    | Replace with ~consult-ripgrep~ (part of completion sub-goal).| Low   | Medium   |
+| Projectile + counsel-projectile    | projectile + counsel-proj   | Superseded    | Evaluate ~project.el~ (built-in); projectile still works.   | Medium | Medium   |
+| Ivy / Counsel / Avy / Swiper       | full ivy stack              | Minority      | Migrate to vertico/consult/marginalia/embark/orderless.     | Medium | *High*  |
+| Hydra / ivy-hydra                  | hydra                       | Still fine    | Keep; or explore ~transient~ (used by magit).              | Low    | Low      |
+| Magit                              | magit                       | Still dominant | Keep. Consider ~magit-todos~, ~magit-delta~, ~difftastic~. | —      | —        |
+| Org global keys / agenda / refile  | as configured               | Fine          | Keep. Consider ~org-modern~ for visual polish.             | Trivial | Low     |
+| Org babel                          | ob-restclient               | Fine          | Keep. ~verb~ is a modern alternative worth knowing about.   | —      | —        |
+| yasnippet / auto-yasnippet         | yasnippet + snippets        | Still current | Keep. Integrates with corfu via ~yasnippet-capf~.           | —      | —        |
+| crux                               | crux                        | Still current | Keep.                                                       | —      | —        |
+| js2-mode + json-mode               | third-party modes           | Superseded    | Switch to ~js-ts-mode~, ~json-ts-mode~ (Emacs 29+).         | Low    | Low      |
+| yaml-mode                          | yaml-mode                   | Superseded    | Switch to ~yaml-ts-mode~ (built-in Emacs 29+).              | Trivial | Low     |
+| jsonnet-mode                       | jsonnet-mode                | Still current | Keep (no built-in alternative).                             | —      | —        |
+| go-mode                            | go-mode                     | Fine          | Consider ~go-ts-mode~ + eglot + ~gopls~.                   | Low    | Low      |
+| python-mode + elpy                 | python-mode + elpy          | *Broken*      | Replace with python-ts-mode + eglot + basedpyright + ruff. | Medium | *High*  |
+| flycheck                           | flycheck                    | Being displaced | Evaluate ~flymake~ (built-in); eglot integrates natively.  | Low    | Medium   |
+| just-mode                          | just-mode                   | Fine          | Consider ~just-ts-mode~ (purcell has it).                  | Trivial | Low     |
+| terraform-mode                     | terraform-mode              | Fine          | Consider eglot + ~terraform-ls~ or ~tofu-ls~ (purcell).    | Low    | Low      |
+| editorconfig                       | editorconfig                | Built-in 30   | On Emacs 30, can drop the package.                         | Trivial | Cleanup |
+| envrc                              | envrc                       | Still current | Keep. Upstream now checks direnv availability (Purcell note). | —    | —        |
+| docker / dockerfile-mode           | docker + dockerfile-mode    | Still current | Keep. Consider ~dockerfile-ts-mode~.                        | Trivial | Low     |
+| *AI / LLM integration*             | *(none)*                    | *New domain*  | New sub-goal: pick gptel + optional inline completion.     | Medium | *High (if you want it)* |
+| Tree-sitter usage overall          | not configured              | Built-in 29+  | Turn on ~major-mode-remap-alist~ for Python/JS/YAML/etc.   | Low    | Cleanup  |
+| In-buffer completion               | default (none configured)   | Corfu era     | Add corfu + cape; pair with eglot.                         | Low    | Medium (part of LSP) |
+| use-package ~:vc~                  | n/a                         | New in 30     | Use when you want a package straight from a git repo.      | —      | Reference only |
+
+* Prioritized backlog
+
+Three high-value sub-goals, in recommended order. Each is sized
+for one focused session plus a week of living with it.
+
+** 1. Completion stack migration (recommended pilot)
+
+   Replace ivy/counsel/swiper with vertico + consult + marginalia
+   + embark + orderless. Also replace counsel-projectile with
+   consult-project-extra (or project.el's built-ins). Replace
+   ag with consult-ripgrep.
+
+   *Why first:* highest daily-surface impact, well-trodden path,
+   low research risk, unlocks ergonomics for later sub-goals
+   (consult-ripgrep, embark-act on LSP results, etc.).
+
+   *Touches these sections:* "Search/ag", "Ivy, Avy, Swiper,
+   Projectile", "Counsel Projectile".
+
+   *Effort:* Medium — maybe 2-4 hours including muscle-memory
+   rebinding + a week of daily use.
+
+   *Reference:* steve-purcell's ~lisp/init-minibuffer.el~ is the
+   closest drop-in template.
+
+** 2. Python + LSP + tree-sitter
+
+   Replace python-mode + elpy with python-ts-mode + eglot +
+   basedpyright + ruff-lsp. Add tree-sitter grammars. Add
+   ~major-mode-remap-alist~ for other languages where it's free
+   (js/json/yaml/dockerfile). Evaluate flymake as diagnostics
+   displacement while we're in there.
+
+   *Why second:* concrete, bounded, high-leverage (Jeff already
+   flagged elpy as dead). Gives Jeff a real eglot config as
+   template for future languages.
+
+   *Effort:* Medium — 2-3 hours, plus verifying pyenv interop
+   (Jeff has pyenv in ~exec-path~).
+
+   *Reference:* steve-purcell's ~lisp/init-python.el~; jwiegley's
+   eglot config. The ~eglot-booster~ package is worth a look if
+   jsonrpc parsing latency shows up.
+
+** 3. AI / LLM integration
+
+   New section in the config. Start narrow: gptel with a Claude
+   backend for general chat. Optionally add one of: copilot.el
+   for inline completion, aidermacs for agentic refactoring,
+   local-via-ollama for offline use. Keep the first landing
+   small.
+
+   *Why third:* this is where the 2026 ecosystem is /moving
+   fastest/, so recency matters more than in the other sub-
+   goals. Shipping the completion and LSP stacks first means
+   the AI context is nicer (consult-ripgrep feeding prompts,
+   orderless filtering agent suggestions, etc.).
+
+   *Effort:* Low for basic chat (30 min). Medium if you want
+   custom tools / MCP / local models — that's a rabbit hole.
+   jwiegley's and munen's configs are the two extremes to
+   calibrate against.
+
+   *Caveat:* this area moves monthly. Whatever we pick in week
+   1 may have a better alternative in week 12. The plan should
+   bias toward reversibility.
+
+** Lower-priority cleanups (bundle into whichever sub-goal touches them)
+
+- Drop use-package bootstrap (do this in whichever sub-goal
+  edits the Package Initialization section)
+- Switch to built-in which-key on Emacs 30
+- Switch js2-mode/yaml-mode/etc. to built-in ts-modes
+- Replace expand-region with expreg
+- Drop editorconfig package on Emacs 30
+
+* Known open questions / things to verify
+
+These are items I want to double-check before committing to them
+in a sub-goal proposal:
+
+1. Which Emacs version Jeff is actually running. The config
+   comment "As of emacs 29, use-package is built in" suggests 29,
+   but the config still has the ~package-initialize~ pattern
+   and doesn't use ~:vc~. Emacs 30 (Feb 2025) is current stable;
+   Emacs 31 is in development. This matters for the "built-in
+   which-key", ~:vc~, and built-in editorconfig calls. Run
+   ~M-x emacs-version~.
+
+2. ~exec-path-from-shell~. Jeff decided against it in 2020 on
+   the grounds that he always invokes Emacs from iTerm. That
+   decision is still fine, but worth revisiting if Emacs starts
+   auto-launching outside a shell (e.g. via macOS Launchpad)
+   because of something downstream (e.g. eglot needing
+   ~PYENV_ROOT~).
+
+3. macOS Emacs build. Jeff uses ~brew install emacs-app~. The
+   2026 field contains at least emacs-app, emacs-plus,
+   emacs-plus-app (new 2026 cask), and mitsuharu's Mac port.
+   If Jeff is still on an older emacs-app without native
+   compilation, an upgrade here is free performance.
+
+4. ~elpa-mirror~ offline setup. This is unique to Jeff. Any
+   migration that adds new packages needs to be tested through
+   the mirror build step. Not a blocker, but keep it in mind.
+
+* How to use this document
+
+- Treat the /Section-by-section mapping/ as Jeff's backlog.
+- Pick a sub-goal. Spin up a feature worktree
+  (~literate-emacs.d/<feature>/~). Drop a ~TASK.md~ in it
+  describing the goal and approach, per the workspace
+  convention.
+- Follow the five-step loop: research → evaluate → propose →
+  implement → verify.
+- Come back here after each sub-goal lands; revise the table.
+
+* Sources
+
+Package repos and primary docs:
+- [[https://github.com/minad/vertico][Vertico]]
+- [[https://github.com/minad/consult][Consult]]
+- [[https://github.com/minad/marginalia][Marginalia]]
+- [[https://github.com/oantolin/embark][Embark]]
+- [[https://github.com/oantolin/orderless][Orderless]]
+- [[https://github.com/minad/corfu][Corfu]] / [[https://github.com/minad/cape][Cape]]
+- [[https://www.gnu.org/software/emacs/manual/html_mono/eglot.html][Eglot manual]]
+- [[https://www.gnu.org/software/emacs/manual/html_mono/use-package.html][use-package manual]]
+- [[https://github.com/protesilaos/modus-themes][Modus themes]] (Prot)
+- [[https://github.com/karthink/gptel][gptel]]
+- [[https://github.com/MatthewZMD/aidermacs][aidermacs]]
+- [[https://github.com/detsikas/copilot.el][copilot.el]]
+- [[https://github.com/DetachHead/basedpyright][basedpyright]]
+- [[https://github.com/astral-sh/ruff][ruff]]
+- [[https://github.com/renzmann/treesit-auto][treesit-auto]]
+- [[https://github.com/mickeynp/expreg][expreg]]
+
+Reference configs (re-fetched for this survey):
+- [[https://github.com/jwiegley/dot-emacs][jwiegley]] — AI-heavy ceiling
+- [[https://github.com/purcell/emacs.d][steve-purcell]] — cleanest migration reference
+- [[https://github.com/bbatsov/emacs.d][bbatsov]] — pragmatic small upgrades
+- [[https://github.com/abo-abo/oremacs][abo-abo]] — ivy author on eglot
+- [[https://github.com/munen/emacs.d][munen]] — gptel + custom tools + MCP pattern
+- [[https://github.com/sachac/.emacs.d][sacha-chua]] — organic evolution
+
+Community context:
+- [[https://protesilaos.com/codelog/][Prot's codelog]]
+- [[https://www.masteringemacs.org/][Mastering Emacs]]
+- [[https://systemcrafters.net/][System Crafters]]
+- [[https://sachachua.com/blog/category/emacs-news/][Sacha Chua's Emacs News]]
+
+Claims in this document that depend on recent package state (e.g.
+specific MELPA package names, exact Emacs version that shipped
+feature X) should be spot-checked against these sources before
+landing a sub-goal.
