@@ -1222,6 +1222,15 @@
       (markdown-command "pandoc --from=gfm --to=html5 --standalone"))
   #+END_SRC
 
+  =C-c '= in a fenced code block opens the block in its native major
+  mode for editing; =markdown-mode= uses =edit-indirect= for the
+  temp-buffer dance. Declaring =edit-indirect= here makes the
+  dependency explicit rather than adopted-by-prompt.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package edit-indirect)
+  #+END_SRC
+
   Handy bindings:
 
   | keys           | command                                     |
@@ -1229,6 +1238,7 @@
   | C-c C-x C-f    | toggle native code-block fontification      |
   | C-c C-x m      | toggle markup hiding (cleaner reading view) |
   | C-c C-s        | text-style menu (bold/italic/code/...)      |
+  | C-c '          | edit fenced block in its native major mode  |
   | M-left/M-right | promote/demote heading                      |
 
 * Programming Support
@@ -1320,46 +1330,96 @@
       (add-hook 'before-save-hook #'gofmt-before-save))
   #+end_src
 
-** python
-*** use python-mode
+** Tree-sitter
 
-  This is lifted straigt from David Wilson's [[https://github.com/daviwil/emacs-from-scratch/blob/5e1f99448e32852277e2d274ce2057d55b8c7aaf/init.el#L465][Emacs From Scratch]]
-  However, I haven't (yet) set up lsp-mode.
+   Emacs 30 ships =treesit.el= and =-ts-mode= variants for most major
+   languages. Grammars must be installed once per machine via
+   =M-x treesit-install-language-grammar=. Once a grammar is available,
+   =major-mode-remap-alist= redirects the legacy mode to its
+   tree-sitter cousin without touching =auto-mode-alist=.
 
-  #+begin_src emacs-lisp
-    (use-package python-mode
-      :ensure t)
-      ;; :hook (python-mode . lsp-deferred)
+   #+BEGIN_SRC emacs-lisp
+     (setq treesit-font-lock-level 4)  ; maximum fontification
 
-      ;; NOTE: Set these if Python 3 is called "python3" on your system!
-      ;; (python-shell-interpreter "python3")
-      ;; (dap-python-executable "python3")
-      ;; (dap-python-debugger 'debugpy)
-      ;; :config
-      ;; (require 'dap-python))
-  #+end_src
+     (when (treesit-ready-p 'python)
+       (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode)))
+   #+END_SRC
 
-*** elpy deprecated
-   Circa Oct 2024, I want to try [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]], so first remove elpy
+** Python
 
-   Lets try elpy stock and see what happens.  So far, so good.
+   Built-in =python.el= (distinct from the third-party =python-mode=
+   package on MELPA, which is no longer needed). The tree-sitter
+   variant =python-ts-mode= is active when the grammar is installed
+   (see Tree-sitter section above).
 
-   #+begin_src emacs-lisp :tangle no
-     (use-package elpy
-       :ensure t
-       :init
-       (elpy-enable))
-   #+end_src
+   =eglot-ensure= starts the language server when a Python buffer
+   opens; the server is configured in the Eglot section below.
 
-** flycheck
+   =ruff-format-on-save-mode= runs Ruff's formatter on save.
+   =flymake-ruff= surfaces Ruff's lint diagnostics inline alongside
+   the LSP's type errors.
 
-  Straightforward use of flycheck.
-  #+begin_src emacs-lisp
-    (use-package flycheck
-      :ensure t
-      :config
-      (add-hook 'after-init-hook #'global-flycheck-mode))
-  #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (use-package python
+       :ensure nil  ; built-in
+       :custom
+       (python-shell-interpreter "python3")
+       :hook
+       ((python-mode python-ts-mode) . eglot-ensure))
+
+     (use-package reformatter)
+
+     (reformatter-define ruff-format
+       :program "ruff"
+       :args `("format" "--stdin-filename" ,(or buffer-file-name "stdin.py") "-"))
+
+     (use-package flymake-ruff
+       :hook ((python-mode python-ts-mode) . flymake-ruff-load))
+
+     (add-hook 'python-mode-hook    #'ruff-format-on-save-mode)
+     (add-hook 'python-ts-mode-hook #'ruff-format-on-save-mode)
+   #+END_SRC
+
+** Eglot
+
+   Built-in LSP client since Emacs 29. Natively integrates with
+   Flymake for diagnostics and ElDoc for docstrings.
+   =eglot-autoshutdown= stops the language server when the last
+   buffer using it closes, so background servers don't linger.
+
+   For Python we use =ty= (astral's fast type-checker, same team as
+   ruff). The =ty server= subcommand launches it in LSP stdio mode.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package eglot
+       :ensure nil  ; built-in
+       :custom
+       (eglot-autoshutdown t)
+       :config
+       (add-to-list 'eglot-server-programs
+                    '((python-mode python-ts-mode)
+                      . ("ty" "server"))))
+   #+END_SRC
+
+** Flymake
+
+   Built-in diagnostic framework. Replaces =flycheck=. Eglot pipes
+   LSP diagnostics into Flymake automatically. =flymake-ruff=
+   (configured in the Python section) adds Ruff's lint results for
+   Python buffers on top of the LSP diagnostics.
+
+   =C-c != prefix preserves the flycheck-style error-navigation
+   muscle memory.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package flymake
+       :ensure nil  ; built-in
+       :hook (prog-mode . flymake-mode)
+       :bind (:map flymake-mode-map
+                   ("C-c ! n" . flymake-goto-next-error)
+                   ("C-c ! p" . flymake-goto-prev-error)
+                   ("C-c ! l" . flymake-show-buffer-diagnostics)))
+   #+END_SRC
 
 ** justfile support
 

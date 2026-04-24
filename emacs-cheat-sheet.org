@@ -694,6 +694,12 @@
    | C-c C-x m   | toggle markup hiding (cleaner reading view) |
    | C-c C-x C-l | toggle URL hiding                           |
 
+** Code blocks
+
+   | key   | description                                |
+   |-------+--------------------------------------------|
+   | C-c ' | edit fenced block in its native major mode |
+
 ** GFM lists & checkboxes
 
    | key         | description                    |

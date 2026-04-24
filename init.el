@@ -519,6 +519,8 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   ;; pandoc is flexible if we ever want `C-c C-c p` preview
   (markdown-command "pandoc --from=gfm --to=html5 --standalone"))
 
+(use-package edit-indirect)
+
 (use-package yasnippet
   :config
   (use-package yasnippet-snippets)
@@ -560,21 +562,46 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :config
   (add-hook 'before-save-hook #'gofmt-before-save))
 
-(use-package python-mode
-  :ensure t)
-  ;; :hook (python-mode . lsp-deferred)
+(setq treesit-font-lock-level 4)  ; maximum fontification
 
-  ;; NOTE: Set these if Python 3 is called "python3" on your system!
-  ;; (python-shell-interpreter "python3")
-  ;; (dap-python-executable "python3")
-  ;; (dap-python-debugger 'debugpy)
-  ;; :config
-  ;; (require 'dap-python))
+(when (treesit-ready-p 'python)
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode)))
 
-(use-package flycheck
-  :ensure t
+(use-package python
+  :ensure nil  ; built-in
+  :custom
+  (python-shell-interpreter "python3")
+  :hook
+  ((python-mode python-ts-mode) . eglot-ensure))
+
+(use-package reformatter)
+
+(reformatter-define ruff-format
+  :program "ruff"
+  :args `("format" "--stdin-filename" ,(or buffer-file-name "stdin.py") "-"))
+
+(use-package flymake-ruff
+  :hook ((python-mode python-ts-mode) . flymake-ruff-load))
+
+(add-hook 'python-mode-hook    #'ruff-format-on-save-mode)
+(add-hook 'python-ts-mode-hook #'ruff-format-on-save-mode)
+
+(use-package eglot
+  :ensure nil  ; built-in
+  :custom
+  (eglot-autoshutdown t)
   :config
-  (add-hook 'after-init-hook #'global-flycheck-mode))
+  (add-to-list 'eglot-server-programs
+               '((python-mode python-ts-mode)
+                 . ("ty" "server"))))
+
+(use-package flymake
+  :ensure nil  ; built-in
+  :hook (prog-mode . flymake-mode)
+  :bind (:map flymake-mode-map
+              ("C-c ! n" . flymake-goto-next-error)
+              ("C-c ! p" . flymake-goto-prev-error)
+              ("C-c ! l" . flymake-show-buffer-diagnostics)))
 
 (use-package just-mode)
 
