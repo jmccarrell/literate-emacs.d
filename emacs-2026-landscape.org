@@ -306,6 +306,245 @@ The rough order the sub-goals landed in:
 
     *Effort:* Low — 30-60 minutes including verification.
 
+*** Terraform LSP + format-on-save
+
+    Jeff has =terraform-mode= (MELPA) installed but no language
+    server or formatter wired up. Mirror the Python sub-goal
+    pattern in the existing =** Eglot= and =** Flymake= sections:
+
+    - Add =terraform-ls= (HashiCorp's official LSP) to
+      =eglot-server-programs= for =terraform-mode=.
+    - Add =eglot-ensure= hook to =terraform-mode=.
+    - Define a =reformatter= for =terraform fmt= and enable a
+      =terraform-format-on-save-mode= hook (mirror of
+      =ruff-format-on-save-mode=).
+    - Flymake diagnostics flow through eglot automatically; no
+      extra wiring needed.
+
+    No tree-sitter work: Emacs 30 has no built-in
+    =terraform-ts-mode=, and the HCL/Terraform grammar story is
+    community-only. =terraform-mode= still handles the buffer.
+
+    *Alternative:* =tofu-ls= for OpenTofu (HashiCorp's license
+    change drove some users to OpenTofu; Purcell switched
+    recently). Pick based on which CLI you actually use.
+
+    *Preconditions:* =brew install terraform-ls= (or =tofu-ls=).
+    The =terraform= binary already needs to be on =PATH= for
+    =terraform fmt= to work.
+
+    *Effort:* Low — 30-60 minutes. Simpler than Python (one LSP,
+    no type-checker + linter split).
+
+    *Reference:* Purcell's =Define a reformatter for terraform=
+    and =Add tofu-ls as an eglot LSP for terraform= commits
+    (~2025-2026).
+
+*** Extend LSP / tree-sitter coverage to more languages
+
+    Continuing the pattern from the Python sub-goal: install
+    tree-sitter grammars, add =major-mode-remap-alist= entries,
+    wire eglot for languages with good LSP servers. Can be done
+    as one session or split per language.
+
+    - *Go:* the biggest add. go-mode → go-ts-mode remap;
+      eglot with =gopls=; =reformatter=-defined
+      =gofmt-format-on-save=. Needs =go= + =gopls= on PATH.
+      Scope is similar to Python.
+    - *Dockerfile:* dockerfile-mode → dockerfile-ts-mode remap.
+      Optional: =hadolint-ls= for linting.
+    - *JavaScript:* js2-mode → js-ts-mode remap. Optional:
+      =typescript-language-server= as JS/TS LSP.
+    - *Justfile:* just-mode → just-ts-mode remap. No common
+      LSP; pure tree-sitter upgrade.
+    - (Already done:) json-mode → json-ts-mode (in the Python
+      sub-goal).
+
+    Each addition also appends a language to
+    =jwm/required-treesit-grammars= + a recipe to
+    =treesit-language-source-alist=.
+
+    *Effort:* Medium if done all at once (2-3 hours). Can be
+    split: Go as its own session; the other three ~20 min each.
+
+    *Reference:* Purcell's =init.el= per-language files;
+    =eglot-server-programs= defaults.
+
+*** Investigate uv for Python
+
+    =uv= is astral's fast Python package/project manager (same team
+    as ruff and ty). It subsumes pip / pipx / poetry / pyenv /
+    virtualenv. Some of Jeff's current python tooling path — pyenv
+    for interpreter management, pipx for =ty= and =ruff= — is
+    orthogonal to what uv replaces; some of it may be redundant.
+
+    Scope of the investigation (research, not implementation):
+
+    - What does Purcell actually do? His =init-python.el= has a
+      =uv.lock → toml-mode= entry (a small signal that he opens
+      uv projects). Is there more downstream?
+    - What does =uv-mode= (MELPA) provide? Useful or overkill?
+    - Does =eglot-python-preset= or =emacs-pet= already know about
+      uv venvs, or do we need to wire it up manually?
+    - Should we install =ty= / =ruff= / =basedpyright= via
+      =uv tool install= instead of =pipx install=, for
+      consistency?
+    - Does uv's project venv (=.venv= in project root) get
+      auto-picked-up by eglot + ty when opening a file?
+
+    *Output:* a short write-up plus a recommendation — either "no
+    action needed, uv Just Works with the current setup" or
+    "here's a proposed sub-goal to wire in uv support." The
+    investigation itself is the deliverable; any implementation
+    would be a separate follow-on sub-goal.
+
+    *Effort:* Low — an hour of reading Purcell, the uv docs, and
+    testing on a sample project.
+
+    *Reference:* Purcell's current =init-python.el=;
+    https://docs.astral.sh/uv/; =uv-mode= on MELPA;
+    =emacs-pet= on MELPA.
+
+*** Investigate eat (terminal emulator, vterm alternative)
+
+    =eat= ("Emulate a Terminal") is a pure-elisp terminal emulator
+    package available on GNU ELPA. Purcell adopted it recently per
+    his commit log (=Eat terminal tweaks=, =Don't keep adding the
+    same keybinding to eat-semi-char-non-bound-keys=). The case
+    for it over =vterm= is portability — vterm needs libvterm + a
+    C module build step; eat doesn't.
+
+    Scope of the investigation (research, not implementation):
+
+    - What does Purcell configure for eat?
+    - How does eat compare to =ansi-term= / =term= / =shell= for
+      Jeff's typical use (running =git=, =pytest=, etc.)?
+    - Is Jeff currently using any in-Emacs terminal at all? The
+      current config has no =vterm=, =eat=, or =ansi-term=
+      customization — he may be entirely shell-out-to-iTerm. If
+      so, is there a reason to add a terminal to Emacs now?
+    - Performance claims vs measured reality.
+
+    *Output:* a short write-up plus recommendation. If yes, a
+    sub-goal proposal for wiring eat into the config.
+
+    *Effort:* Low — 30-60 minutes to read Purcell's commits, the
+    eat README, and try it briefly.
+
+    *Reference:* Purcell's eat-related commits in =init.el=;
+    https://codeberg.org/akib/emacs-eat.
+
+*** Investigate migrating off dash / s / f onto built-ins
+
+    Jeff's config pulls in =dash= (list API), =s= (strings), and
+    =f= (files) as "Howard's recommended libs." He already noted
+    in the config itself that "seq is bundled with emacs and seems
+    to be a replacement for dash." Emacs 28 and 29 added more
+    built-ins (=string-trim=, =string-replace=, =file-name-concat=,
+    =thread-first=, =thread-last=, etc.) that subsume most of
+    =s= and =f= and parts of =dash=.
+
+    Scope of the investigation (research, not implementation):
+
+    - What actually uses dash/s/f in Jeff's config today? Grep
+      for =dash-=, =s-=, =f-=, =->=, =-->=, =-map=, =-filter=,
+      etc. May well turn out to be zero call sites — the
+      =use-package= forms just install the libraries.
+    - For each call site found, is there a built-in equivalent
+      on Emacs 30? Table of replacements:
+      - =s-trim= → =string-trim=
+      - =s-split= → =string-split=
+      - =s-replace= → =string-replace=
+      - =s-starts-with-p= → =string-prefix-p=
+      - =f-exists?= → =file-exists-p=
+      - =f-join= → =file-name-concat= (Emacs 28+)
+      - =f-parent= → =file-name-parent-directory= (Emacs 29+)
+      - =-map=, =-filter=, =-reduce= → =seq-map=, =seq-filter=,
+        =seq-reduce=
+      - =->=, =-->= → =thread-first=, =thread-last=
+    - What does Purcell currently use? He's been trimming
+      external-lib dependencies steadily.
+    - Is the cost of migrating (risk of subtle behavior
+      differences in edge cases) worth the benefit (slimmer
+      dependency surface, faster startup by microseconds)?
+
+    *Output:* a short write-up and recommendation. Likely
+    options:
+    - "Drop all three — config doesn't actually call them."
+    - "Keep =dash= for its threading macros, drop =s= and =f=."
+    - "No action; migrating more costly than valuable."
+
+    *Effort:* Low for the investigation — 30-60 minutes of grep
+    + judgment. Implementation cost depends on findings.
+
+    *Reference:* Jeff's own comment in the =Howard's Recommended
+    Emacs Lisp Libs= section of =jeff-emacs-config.org=.
+
+*** Investigate =verb= (org-babel HTTP client)
+
+    =verb= is a newer org-mode HTTP client with per-request
+    variables, environment files, and richer response handling
+    than =ob-restclient= (which Jeff currently uses). Evaluate
+    whether the added features justify a switch.
+
+    *Effort:* Low — 30 min of docs reading + sample comparison.
+    *Reference:* https://github.com/federicotdn/verb
+
+*** Investigate =org-modern=
+
+    =org-modern= (minad, same author as vertico/consult) makes
+    org buffers look dramatically nicer (cleaner bullets, boxed
+    headings, syntax-highlighted keywords) without changing
+    semantics. Widely adopted in 2024+ configs.
+
+    Check interaction with =zenburn= — some themes compose well
+    with org-modern, some clash.
+
+    *Effort:* Low — 15 minutes to enable and eyeball.
+    *Reference:* https://github.com/minad/org-modern
+
+*** Investigate magit ecosystem additions
+
+    Three independent, orthogonal packages — evaluate each
+    separately:
+
+    - =magit-todos= — surfaces TODO/FIXME/HACK in magit-status.
+    - =magit-delta= — routes magit diffs through =delta= (rust)
+      for syntax-highlighted output.
+    - =difftastic= — tree-sitter-based structural diff; can
+      replace =git diff= or be invoked from magit.
+
+    *Effort:* Low — 15-30 min per package.
+
+*** Investigate hydra → =transient=
+
+    =hydra= still loads in Jeff's config post-ivy migration
+    (=ivy-hydra= gone; plain =hydra= left). =transient= is
+    built-in (Emacs 28+) and is what =magit= uses — arguably
+    the modern replacement.
+
+    - If Jeff's config never actually uses hydra, just drop it
+      (overlap with Small cleanup pass).
+    - If any =jwm/*= helpers use hydra, consider rewriting in
+      transient for better discoverability and a single source
+      of truth for menus.
+
+    *Effort:* Low — 30 min of grep + judgment.
+    *Reference:* =transient= manual, built-in.
+
+*** Investigate =dirvish= (modern dired front-end)
+
+    =dirvish= wraps dired with a sidebar, preview pane, file-
+    info header, and IDE-like browsing. Some users love it,
+    some find it overkill for dired's "buffer of text"
+    minimalism.
+
+    Precondition question: does Jeff use dired frequently
+    enough to justify the added surface?
+
+    *Effort:* Low — try it for a day, see if it sticks.
+    *Reference:* https://github.com/alexluigit/dirvish
+
 *** Small cleanup pass (accumulated drift from earlier sub-goals)
 
     Each item is too small to deserve its own sub-goal; together
