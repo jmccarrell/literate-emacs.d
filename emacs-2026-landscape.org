@@ -237,79 +237,109 @@ looks like → effort.
 
 * Prioritized backlog
 
-Three high-value sub-goals, in recommended order. Each is sized
-for one focused session plus a week of living with it.
+** Shipped
 
-** 1. Completion stack migration (recommended pilot)
+The rough order the sub-goals landed in:
 
-   Replace ivy/counsel/swiper with vertico + consult + marginalia
-   + embark + orderless. Also replace counsel-projectile with
-   consult-project-extra (or project.el's built-ins). Replace
-   ag with consult-ripgrep.
+- *Phase 0 landscape survey* (this document).
+- *Markdown rendering pilot* — =gfm-mode= with native code-block
+  fontification, heading scaling, =edit-indirect= for =C-c '= on
+  fenced blocks.
+- *Cheat sheet — markdown mode* — documented bindings as its own
+  section in =emacs-cheat-sheet.org=.
+- *Completion stack migration* — ivy/counsel/swiper/counsel-
+  projectile/ivy-hydra/ag replaced with vertico + consult +
+  marginalia + embark + embark-consult + orderless +
+  consult-ripgrep. Savehist and vertico-directory wired.
+  Projectile kept with =default= completion-system. =C-.= →
+  embark-act; =C-;= → avy. Cheat sheet updated.
+- *Emacs-30 cleanups* — dropped use-package bootstrap; built-in
+  =which-key= and =editorconfig= (=:ensure nil=); fixed elpa-mirror
+  =cached-package-dir= interpolation bug; swapped
+  =defalias 'yes-or-no-p= for =(setq use-short-answers t)=.
+- *Python + LSP + tree-sitter* — =python-mode=/elpy/flycheck →
+  built-in =python.el= (with =python-ts-mode= remap) + eglot +
+  ty + ruff + flymake + flymake-ruff. Tree-sitter grammar
+  bootstrap helper =jwm/ensure-treesit-grammars= plus source-alist
+  for python/json/yaml/toml. Mode remaps for json/yaml/toml.
+  Cheat sheet updated (=C-c '= for edit-indirect + a new Code
+  blocks subsection).
 
-   *Why first:* highest daily-surface impact, well-trodden path,
-   low research risk, unlocks ergonomics for later sub-goals
-   (consult-ripgrep, embark-act on LSP results, etc.).
+** Pending
 
-   *Touches these sections:* "Search/ag", "Ivy, Avy, Swiper,
-   Projectile", "Counsel Projectile".
+*** AI / LLM integration
 
-   *Effort:* Medium — maybe 2-4 hours including muscle-memory
-   rebinding + a week of daily use.
+    New section in the config. Start narrow: gptel with a Claude
+    backend for general chat. Optionally add one of: copilot.el
+    for inline completion, aidermacs for agentic refactoring,
+    local-via-ollama for offline use. Keep the first landing
+    small.
 
-   *Reference:* steve-purcell's ~lisp/init-minibuffer.el~ is the
-   closest drop-in template.
+    *Effort:* Low for basic chat (30 min). Medium if you want
+    custom tools / MCP / local models — that's a rabbit hole.
+    jwiegley's and munen's configs are the two extremes to
+    calibrate against.
 
-** 2. Python + LSP + tree-sitter
+    *Caveat:* this area moves monthly. Whatever we pick in week
+    1 may have a better alternative in week 12. The plan should
+    bias toward reversibility.
 
-   Replace python-mode + elpy with python-ts-mode + eglot +
-   basedpyright + ruff-lsp. Add tree-sitter grammars. Add
-   ~major-mode-remap-alist~ for other languages where it's free
-   (js/json/yaml/dockerfile). Evaluate flymake as diagnostics
-   displacement while we're in there.
+*** zsh → bash shell config migration
 
-   *Why second:* concrete, bounded, high-leverage (Jeff already
-   flagged elpy as dead). Gives Jeff a real eglot config as
-   template for future languages.
+    The =* Variables → ** Terminal and Shell (zsh) Settings=
+    section is entirely zsh-specific (the =-conorcs= discussion,
+    =jwm/shell-is-zsh-p=, the =shell-command-switch= override).
+    Jeff no longer uses zsh — the interactive shell is now bash.
 
-   *Effort:* Medium — 2-3 hours, plus verifying pyenv interop
-   (Jeff has pyenv in ~exec-path~).
+    Bash's behavior is simpler: non-interactive shells
+    (=bash -c=) don't read =.bashrc= or =.bash_profile= by default,
+    so the whole "optimize startup" dance the zsh section
+    describes is unnecessary for bash. The migration is therefore
+    mostly /deletion/:
 
-   *Reference:* steve-purcell's ~lisp/init-python.el~; jwiegley's
-   eglot config. The ~eglot-booster~ package is worth a look if
-   jsonrpc parsing latency shows up.
+    - Remove =jwm/shell-is-zsh-p= and the =shell-command-switch=
+      override (bash's default =-c= is already fast).
+    - Rewrite or remove the prose about zsh invocation flags —
+      mostly historical at this point.
+    - Rename section to something shorter, e.g.
+      =** Terminal and Shell Settings=.
 
-** 3. AI / LLM integration
+    *Effort:* Low — 30-60 minutes including verification.
 
-   New section in the config. Start narrow: gptel with a Claude
-   backend for general chat. Optionally add one of: copilot.el
-   for inline completion, aidermacs for agentic refactoring,
-   local-via-ollama for offline use. Keep the first landing
-   small.
+*** Small cleanup pass (accumulated drift from earlier sub-goals)
 
-   *Why third:* this is where the 2026 ecosystem is /moving
-   fastest/, so recency matters more than in the other sub-
-   goals. Shipping the completion and LSP stacks first means
-   the AI context is nicer (consult-ripgrep feeding prompts,
-   orderless filtering agent suggestions, etc.).
+    Each item is too small to deserve its own sub-goal; together
+    they make a reasonable 15-30 minute pass.
 
-   *Effort:* Low for basic chat (30 min). Medium if you want
-   custom tools / MCP / local models — that's a rabbit hole.
-   jwiegley's and munen's configs are the two extremes to
-   calibrate against.
+    - Drop the MELPA =json-mode= and =yaml-mode= packages — now
+      vestigial since the tree-sitter remaps do the work. Replace
+      their =:mode= directives with bare =auto-mode-alist= entries
+      pointing directly at =json-ts-mode= / =yaml-ts-mode=.
+    - Remove the =(markdown-command "pandoc ...")= line in the
+      Markdown section — preview isn't configured and the line is
+      latent-error material.
+    - Swap =expand-region= for =expreg= (bbatsov's modern default).
+      Update cheat sheet.
+    - Check whether =hydra= is still used anywhere post-ivy
+      migration; drop the =use-package hydra= form if no consumers
+      remain.
+    - Switch =js2-mode= to =js-ts-mode= (install javascript
+      grammar; add to =jwm/required-treesit-grammars=;
+      =major-mode-remap-alist= entry).
 
-   *Caveat:* this area moves monthly. Whatever we pick in week
-   1 may have a better alternative in week 12. The plan should
-   bias toward reversibility.
+    *Effort:* Low. One worktree, one or two commits.
 
-** Lower-priority cleanups (bundle into whichever sub-goal touches them)
+** Future (not yet scoped)
 
-- Drop use-package bootstrap (do this in whichever sub-goal
-  edits the Package Initialization section)
-- Switch to built-in which-key on Emacs 30
-- Switch js2-mode/yaml-mode/etc. to built-in ts-modes
-- Replace expand-region with expreg
-- Drop editorconfig package on Emacs 30
+- /In-buffer completion/: corfu + cape (with eglot integration
+  for LSP completion in Python buffers). Orthogonal to the
+  minibuffer completion work already shipped.
+- /project.el migration/ (out from projectile) — still fine to
+  delay; projectile works alongside vertico/consult. Worth doing
+  only when specific projectile friction shows up.
+- /Go + eglot + gopls + tree-sitter/ — same pattern as Python.
+- /Theme evaluation/: Modus themes (built-in, WCAG AAA, Prot).
+  Not urgent; zenburn is fine.
 
 * Known open questions / things to verify
 
