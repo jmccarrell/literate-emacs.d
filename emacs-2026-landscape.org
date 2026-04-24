@@ -264,6 +264,12 @@ The rough order the sub-goals landed in:
   for python/json/yaml/toml. Mode remaps for json/yaml/toml.
   Cheat sheet updated (=C-c '= for edit-indirect + a new Code
   blocks subsection).
+- *Extend LSP / tree-sitter coverage* — grammars + remaps for
+  go/dockerfile/javascript/just. Go gets eglot + gopls (default) +
+  =goimports-format-on-save-mode= replacing =gofmt-before-save=.
+  Dockerfile gets eglot + =docker-langserver= (delegates to
+  hadolint for lint). Justfile gets =just-ts-mode= alongside
+  =just-mode=. JavaScript gets ts-mode remap, no LSP.
 
 ** Pending
 
@@ -339,36 +345,6 @@ The rough order the sub-goals landed in:
     *Reference:* Purcell's =Define a reformatter for terraform=
     and =Add tofu-ls as an eglot LSP for terraform= commits
     (~2025-2026).
-
-*** Extend LSP / tree-sitter coverage to more languages
-
-    Continuing the pattern from the Python sub-goal: install
-    tree-sitter grammars, add =major-mode-remap-alist= entries,
-    wire eglot for languages with good LSP servers. Can be done
-    as one session or split per language.
-
-    - *Go:* the biggest add. go-mode → go-ts-mode remap;
-      eglot with =gopls=; =reformatter=-defined
-      =gofmt-format-on-save=. Needs =go= + =gopls= on PATH.
-      Scope is similar to Python.
-    - *Dockerfile:* dockerfile-mode → dockerfile-ts-mode remap.
-      Optional: =hadolint-ls= for linting.
-    - *JavaScript:* js2-mode → js-ts-mode remap. Optional:
-      =typescript-language-server= as JS/TS LSP.
-    - *Justfile:* just-mode → just-ts-mode remap. No common
-      LSP; pure tree-sitter upgrade.
-    - (Already done:) json-mode → json-ts-mode (in the Python
-      sub-goal).
-
-    Each addition also appends a language to
-    =jwm/required-treesit-grammars= + a recipe to
-    =treesit-language-source-alist=.
-
-    *Effort:* Medium if done all at once (2-3 hours). Can be
-    split: Go as its own session; the other three ~20 min each.
-
-    *Reference:* Purcell's =init.el= per-language files;
-    =eglot-server-programs= defaults.
 
 *** Investigate uv for Python
 

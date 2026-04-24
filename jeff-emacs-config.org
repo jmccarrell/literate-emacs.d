@@ -1321,14 +1321,28 @@
   (use-package jsonnet-mode)
 #+end_src
 
-** go
-*** use go-mode
-  #+begin_src emacs-lisp
-    (use-package go-mode
-      :ensure t
-      :config
-      (add-hook 'before-save-hook #'gofmt-before-save))
-  #+end_src
+** Go
+
+   =eglot-ensure= starts the language server when a Go buffer opens.
+   Eglot's default =eglot-server-programs= maps both =go-mode= and
+   =go-ts-mode= to =gopls= — no explicit entry needed.
+
+   =goimports-format-on-save-mode= runs =goimports= on save, which
+   is =gofmt= + automatic import management (adds missing, removes
+   unused). Replaces the old =gofmt-before-save= hook.
+
+   #+begin_src emacs-lisp
+     (use-package go-mode
+       :ensure t
+       :hook
+       ((go-mode go-ts-mode) . eglot-ensure))
+
+     (reformatter-define goimports-format
+       :program "goimports")
+
+     (add-hook 'go-mode-hook    #'goimports-format-on-save-mode)
+     (add-hook 'go-ts-mode-hook #'goimports-format-on-save-mode)
+   #+end_src
 
 ** Tree-sitter
 
@@ -1358,6 +1372,18 @@
      ;; directly to the tree-sitter mode.
      (when (treesit-ready-p 'toml t)
        (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode)))
+
+     (when (treesit-ready-p 'go t)
+       (add-to-list 'major-mode-remap-alist '(go-mode . go-ts-mode)))
+
+     (when (treesit-ready-p 'dockerfile t)
+       (add-to-list 'major-mode-remap-alist '(dockerfile-mode . dockerfile-ts-mode)))
+
+     (when (treesit-ready-p 'javascript t)
+       (add-to-list 'major-mode-remap-alist '(js2-mode . js-ts-mode)))
+
+     (when (treesit-ready-p 'just t)
+       (add-to-list 'major-mode-remap-alist '(just-mode . just-ts-mode)))
    #+END_SRC
 
 *** Bootstrap on a new machine
@@ -1381,13 +1407,18 @@
       ;; helper below). Without an entry, it errors with
       ;; "Cannot find recipe for this language".
       (dolist (source
-               '((python "https://github.com/tree-sitter/tree-sitter-python")
-                 (json   "https://github.com/tree-sitter/tree-sitter-json")
-                 (yaml   "https://github.com/ikatyang/tree-sitter-yaml")
-                 (toml   "https://github.com/ikatyang/tree-sitter-toml")))
+               '((python     "https://github.com/tree-sitter/tree-sitter-python")
+                 (json       "https://github.com/tree-sitter/tree-sitter-json")
+                 (yaml       "https://github.com/ikatyang/tree-sitter-yaml")
+                 (toml       "https://github.com/ikatyang/tree-sitter-toml")
+                 (go         "https://github.com/tree-sitter/tree-sitter-go")
+                 (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+                 (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+                 (just       "https://github.com/IndianBoy42/tree-sitter-just")))
         (add-to-list 'treesit-language-source-alist source))
 
-      (defvar jwm/required-treesit-grammars '(python json toml yaml)
+      (defvar jwm/required-treesit-grammars
+        '(python json toml yaml go dockerfile javascript just)
         "Languages for which this config wants tree-sitter grammars.
       Add to this list as sub-goals add more -ts-mode remaps.")
 
@@ -1454,7 +1485,14 @@
        :config
        (add-to-list 'eglot-server-programs
                     '((python-mode python-ts-mode)
-                      . ("ty" "server"))))
+                      . ("ty" "server")))
+       ;; Dockerfile LSP. =docker-langserver= is the binary from the
+       ;; npm package =dockerfile-language-server-nodejs=; it
+       ;; delegates to =hadolint= for lint diagnostics when hadolint
+       ;; is on PATH.
+       (add-to-list 'eglot-server-programs
+                    '((dockerfile-mode dockerfile-ts-mode)
+                      . ("docker-langserver" "--stdio"))))
    #+END_SRC
 
 ** Flymake
@@ -1479,8 +1517,13 @@
 
 ** justfile support
 
+   =just-mode= is the legacy fallback; =just-ts-mode= is preferred
+   when the tree-sitter grammar is available. Mode selection happens
+   via the tree-sitter remap in the Tree-sitter section.
+
   #+begin_src emacs-lisp
     (use-package just-mode)
+    (use-package just-ts-mode)
   #+end_src
 
 ** terraform
@@ -1529,7 +1572,9 @@ Lifted directly from jwiegley.
        :diminish)
 
      (use-package dockerfile-mode
-       :mode "Dockerfile[a-zA-Z.-]*\\'")
+       :mode "Dockerfile[a-zA-Z.-]*\\'"
+       :hook
+       ((dockerfile-mode dockerfile-ts-mode) . eglot-ensure))
    #+end_src
 * Report Startup Timing
 

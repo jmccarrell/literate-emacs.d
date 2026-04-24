@@ -559,8 +559,14 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 
 (use-package go-mode
   :ensure t
-  :config
-  (add-hook 'before-save-hook #'gofmt-before-save))
+  :hook
+  ((go-mode go-ts-mode) . eglot-ensure))
+
+(reformatter-define goimports-format
+  :program "goimports")
+
+(add-hook 'go-mode-hook    #'goimports-format-on-save-mode)
+(add-hook 'go-ts-mode-hook #'goimports-format-on-save-mode)
 
 (setq treesit-font-lock-level 4)  ; maximum fontification
 
@@ -582,18 +588,35 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 (when (treesit-ready-p 'toml t)
   (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode)))
 
+(when (treesit-ready-p 'go t)
+  (add-to-list 'major-mode-remap-alist '(go-mode . go-ts-mode)))
+
+(when (treesit-ready-p 'dockerfile t)
+  (add-to-list 'major-mode-remap-alist '(dockerfile-mode . dockerfile-ts-mode)))
+
+(when (treesit-ready-p 'javascript t)
+  (add-to-list 'major-mode-remap-alist '(js2-mode . js-ts-mode)))
+
+(when (treesit-ready-p 'just t)
+  (add-to-list 'major-mode-remap-alist '(just-mode . just-ts-mode)))
+
 ;; Recipe for each grammar. treesit-install-language-grammar
 ;; looks these up when called non-interactively (e.g. from the
 ;; helper below). Without an entry, it errors with
 ;; "Cannot find recipe for this language".
 (dolist (source
-         '((python "https://github.com/tree-sitter/tree-sitter-python")
-           (json   "https://github.com/tree-sitter/tree-sitter-json")
-           (yaml   "https://github.com/ikatyang/tree-sitter-yaml")
-           (toml   "https://github.com/ikatyang/tree-sitter-toml")))
+         '((python     "https://github.com/tree-sitter/tree-sitter-python")
+           (json       "https://github.com/tree-sitter/tree-sitter-json")
+           (yaml       "https://github.com/ikatyang/tree-sitter-yaml")
+           (toml       "https://github.com/ikatyang/tree-sitter-toml")
+           (go         "https://github.com/tree-sitter/tree-sitter-go")
+           (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+           (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+           (just       "https://github.com/IndianBoy42/tree-sitter-just")))
   (add-to-list 'treesit-language-source-alist source))
 
-(defvar jwm/required-treesit-grammars '(python json toml yaml)
+(defvar jwm/required-treesit-grammars
+  '(python json toml yaml go dockerfile javascript just)
   "Languages for which this config wants tree-sitter grammars.
 Add to this list as sub-goals add more -ts-mode remaps.")
 
@@ -632,7 +655,14 @@ Idempotent; safe to run on every machine after config clone."
   :config
   (add-to-list 'eglot-server-programs
                '((python-mode python-ts-mode)
-                 . ("ty" "server"))))
+                 . ("ty" "server")))
+  ;; Dockerfile LSP. =docker-langserver= is the binary from the
+  ;; npm package =dockerfile-language-server-nodejs=; it
+  ;; delegates to =hadolint= for lint diagnostics when hadolint
+  ;; is on PATH.
+  (add-to-list 'eglot-server-programs
+               '((dockerfile-mode dockerfile-ts-mode)
+                 . ("docker-langserver" "--stdio"))))
 
 (use-package flymake
   :ensure nil  ; built-in
@@ -643,6 +673,7 @@ Idempotent; safe to run on every machine after config clone."
               ("C-c ! l" . flymake-show-buffer-diagnostics)))
 
 (use-package just-mode)
+(use-package just-ts-mode)
 
 (use-package terraform-mode
   :mode "\.tf\\'")
@@ -660,7 +691,9 @@ Idempotent; safe to run on every machine after config clone."
   :diminish)
 
 (use-package dockerfile-mode
-  :mode "Dockerfile[a-zA-Z.-]*\\'")
+  :mode "Dockerfile[a-zA-Z.-]*\\'"
+  :hook
+  ((dockerfile-mode dockerfile-ts-mode) . eglot-ensure))
 
 ;;; Post initialization
 
