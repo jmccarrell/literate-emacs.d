@@ -42,7 +42,7 @@
    ((file-directory-p cached-package-dir)
     ;; elpa-mirror says to use this:
     ;; myelpa is the ONLY repository now, dont forget trailing slash in the directory
-    (setq package-archives '(("elpa-mirror" . cached-package-dir))))
+    (setq package-archives `(("elpa-mirror" . ,cached-package-dir))))
    (t
     (unless (assoc-default "org" package-archives)
       (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
@@ -51,12 +51,8 @@
 
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
 (setq use-package-verbose t)
 (setq use-package-always-ensure t)
-
 (require 'use-package)
 
 (use-package dash
@@ -117,8 +113,8 @@
 ;; highlight the matching parenthesis
 (show-paren-mode t)
 
-;; Answering just 'y' or 'n' will do
-(defalias 'yes-or-no-p 'y-or-n-p)
+;; Answering just 'y' or 'n' will do (use-short-answers is Emacs 28+)
+(setq use-short-answers t)
 
 ;; revert buffers automatically when underlying files are changed externally
 (global-auto-revert-mode t)
@@ -301,10 +297,9 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :diminish wrap-region-mode)
 
 (use-package which-key
-  :config
+  :ensure nil  ; built-in since Emacs 30
   :diminish which-key-mode
   :config
-
   ;; prefer to show the entire command name with no truncation.
   ;;  some of those projectile command names exceed the default value of 27, eg
   ;;  projectile-toggle-between-implementation-and-test
@@ -587,7 +582,7 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :mode "\.tf\\'")
 
 (use-package editorconfig
-  :ensure t
+  :ensure nil  ; built-in since Emacs 30
   :config
   (editorconfig-mode 1))
 

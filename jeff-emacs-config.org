@@ -229,7 +229,7 @@
         ((file-directory-p cached-package-dir)
          ;; elpa-mirror says to use this:
          ;; myelpa is the ONLY repository now, dont forget trailing slash in the directory
-         (setq package-archives '(("elpa-mirror" . cached-package-dir))))
+         (setq package-archives `(("elpa-mirror" . ,cached-package-dir))))
         (t
          (unless (assoc-default "org" package-archives)
            (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
@@ -246,16 +246,13 @@
    Prefer [[https://github.com/jwiegley/use-package][use-package]] more or less as a more convenient way of customizing emacs. It does a whole lot more
    than that. My usage is fairly shallow.
 
-   As of emacs 29, use-package is built in, so some of this is probably no longer
-   needed.
+   =use-package= is built in to Emacs since 29, so the bootstrap install
+   is gone. We still set the two defaults and =require= it so the macro
+   is fully loaded at config-parse time.
 
    #+BEGIN_SRC emacs-lisp
-     (unless (package-installed-p 'use-package)
-       (package-install 'use-package))
-
      (setq use-package-verbose t)
      (setq use-package-always-ensure t)
-
      (require 'use-package)
    #+END_SRC
 
@@ -442,8 +439,8 @@
      ;; highlight the matching parenthesis
      (show-paren-mode t)
 
-     ;; Answering just 'y' or 'n' will do
-     (defalias 'yes-or-no-p 'y-or-n-p)
+     ;; Answering just 'y' or 'n' will do (use-short-answers is Emacs 28+)
+     (setq use-short-answers t)
 
      ;; revert buffers automatically when underlying files are changed externally
      (global-auto-revert-mode t)
@@ -798,10 +795,9 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
-       :config
+       :ensure nil  ; built-in since Emacs 30
        :diminish which-key-mode
        :config
-
        ;; prefer to show the entire command name with no truncation.
        ;;  some of those projectile command names exceed the default value of 27, eg
        ;;  projectile-toggle-between-implementation-and-test
@@ -1386,7 +1382,7 @@ Lifted directly from jwiegley.
 
    #+begin_src emacs-lisp
      (use-package editorconfig
-       :ensure t
+       :ensure nil  ; built-in since Emacs 30
        :config
        (editorconfig-mode 1))
    #+end_src
