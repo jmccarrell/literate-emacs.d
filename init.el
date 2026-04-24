@@ -328,53 +328,101 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   ;; enable some really cool extensions like C-x C-j (dired-jump)
   (require 'dired-x))
 
-;; ag config derived from danielmai's config
-(use-package ag
-  :commands ag)
-
 (use-package projectile
   :diminish projectile-mode
   :commands (projectile-mode projectile-switch-project)
-  :bind (("C-c p p" . projectile-switch-project)
-         ("C-c p s s" . projectile-ag)
-         ("C-c p s r" . projectile-ripgrep))
+  :bind (("C-c p p" . projectile-switch-project))
   :init
-  (setq projectile-completion-system 'ivy)
+  (setq projectile-completion-system 'default)
   :config
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq projectile-keymap-prefix (kbd "C-c p"))
   (projectile-global-mode t))
 
-(use-package counsel-projectile
+(use-package savehist
+  :ensure nil
+  :init (savehist-mode))
+
+(use-package vertico
+  :init (vertico-mode)
+  :custom
+  (vertico-cycle t)
+  (vertico-resize t))
+
+(use-package vertico-directory
+  :ensure nil  ; ships with vertico
+  :after vertico
+  :bind (:map vertico-map
+              ("RET"   . vertico-directory-enter)
+              ("DEL"   . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word)))
+
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
+(use-package marginalia
+  :init (marginalia-mode))
+
+(use-package consult
+  :bind (;; C-x bindings (buffer list, remapped)
+         ([remap switch-to-buffer]              . consult-buffer)
+         ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
+         ([remap switch-to-buffer-other-frame]  . consult-buffer-other-frame)
+         ;; yanking
+         ("M-y" . consult-yank-pop)
+         ;; go-to (M-g) map
+         ([remap goto-line] . consult-goto-line)
+         ("M-g i"           . consult-imenu)
+         ;; search (M-s) map
+         ("M-s l" . consult-line)
+         ("M-s r" . consult-ripgrep)
+         ("M-s f" . consult-find)
+         ;; swiper muscle memory
+         ("C-s"   . consult-line)
+         ;; preserved from old counsel bindings
+         ("C-c j" . consult-git-grep)
+         ("C-c k" . consult-ripgrep))
   :config
-  (counsel-projectile-mode))
+  ;; defer previews until asked; avoids opening many large files
+  ;; as you arrow through candidates.
+  (consult-customize
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   :preview-key "M-."))
+
+;; Press M-? on a symbol (or selected region) to search the
+;; project for it. Adapted from steve-purcell's init-minibuffer.el.
+(defun jwm/consult-ripgrep-at-point (&optional dir initial)
+  "Run `consult-ripgrep' seeded with the symbol or region at point."
+  (interactive
+   (list current-prefix-arg
+         (if (use-region-p)
+             (buffer-substring-no-properties (region-beginning) (region-end))
+           (when-let* ((s (symbol-at-point)))
+             (symbol-name s)))))
+  (consult-ripgrep dir initial))
+
+(when (executable-find "rg")
+  (global-set-key (kbd "M-?") #'jwm/consult-ripgrep-at-point))
+
+(use-package embark
+  :bind (("C-."   . embark-act)
+         ("C-h B" . embark-bindings))  ; inspect bindings for a prefix
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package embark-consult
+  :after (embark consult)
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package hydra)
 
-(use-package ivy
-  :diminish (ivy-mode . "")
-  :config
-  (ivy-mode 1)
-  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-  (setq ivy-use-virtual-buffers t)
-  ;; show both the index and count of matching items
-  (setq ivy-count-format "%d/%d "))
-
-(use-package ivy-hydra
-  :after (ivy hydra))
-
-(use-package counsel
-  :bind (("C-c j" . counsel-git-grep)
-         ("C-c k" . counsel-rg)
-         ("C-c K" . counsel-ag)))
-
-(use-package swiper
-  :config
-  (global-set-key "\C-s" 'swiper))
-
 (use-package avy
-  :bind* ("C-." . avy-goto-char-timer)
+  :bind* ("C-;" . avy-goto-char-timer)
   :config
   (avy-setup-default))
 

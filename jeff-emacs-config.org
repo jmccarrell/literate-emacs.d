@@ -869,84 +869,183 @@
       (require 'dired-x))
   #+END_SRC
 
-* Search
-** ag
-
-   #+BEGIN_SRC emacs-lisp
-     ;; ag config derived from danielmai's config
-     (use-package ag
-       :commands ag)
-   #+END_SRC
-
-** ripgrep
-
-   I get ripgrep as a dependency of =projectile-ripgrep=.  Since I am using (apparently) the bone-stock
-   configuration, there is nothing in this section.
-
-* Ivy, Avy, Swiper, Projectile
+* Completion and Navigation
 
 ** Projectile Config
 
-  I choose to pattern my config for these related packages after abo-abo, the author.  Well, it turns out
-  abo-abo has a pretty baroque way of loading his configuration.
+   Projectile handles per-project commands; vertico handles the
+   completion UI. =projectile-completion-system= is =default=
+   (meaning: use =completing-read=, which vertico wraps).
 
-  So combine the [[https://github.com/bbatsov/emacs.d/blob/master/init.el#L538-L572][approach used by bbatsov]] with that used by [[file:/t/emacs-configs/danielmai-dotemacs/config.org::*Projectile][Daniel's projectile config]].
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package projectile
-      :diminish projectile-mode
-      :commands (projectile-mode projectile-switch-project)
-      :bind (("C-c p p" . projectile-switch-project)
-             ("C-c p s s" . projectile-ag)
-             ("C-c p s r" . projectile-ripgrep))
-      :init
-      (setq projectile-completion-system 'ivy)
-      :config
-      (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-      (setq projectile-keymap-prefix (kbd "C-c p"))
-      (projectile-global-mode t))
-  #+END_SRC
-
-** Counsel Projectile
+   The old =projectile-ag= / =projectile-ripgrep= bindings are
+   dropped: =consult-ripgrep= (and =M-?= below) do the same job
+   with better UX.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package counsel-projectile
+     (use-package projectile
+       :diminish projectile-mode
+       :commands (projectile-mode projectile-switch-project)
+       :bind (("C-c p p" . projectile-switch-project))
+       :init
+       (setq projectile-completion-system 'default)
        :config
-       (counsel-projectile-mode))
+       (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+       (setq projectile-keymap-prefix (kbd "C-c p"))
+       (projectile-global-mode t))
    #+END_SRC
 
-** Ivy, Counsel, Avy and Swiper Config
+** Savehist
+
+   Built-in. Makes vertico remember recent completions across sessions,
+   surfacing them as defaults on subsequent calls.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package savehist
+       :ensure nil
+       :init (savehist-mode))
+   #+END_SRC
+
+** Vertico
+
+   Vertical minibuffer completion UI. Replaced ivy.
+
+   =vertico-directory= (ships with vertico) makes file-path editing in
+   the minibuffer feel right: =RET= enters a directory candidate, =DEL=
+   deletes a single char or pops up one component, =M-DEL= erases a
+   whole component.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package vertico
+       :init (vertico-mode)
+       :custom
+       (vertico-cycle t)
+       (vertico-resize t))
+
+     (use-package vertico-directory
+       :ensure nil  ; ships with vertico
+       :after vertico
+       :bind (:map vertico-map
+                   ("RET"   . vertico-directory-enter)
+                   ("DEL"   . vertico-directory-delete-char)
+                   ("M-DEL" . vertico-directory-delete-word)))
+   #+END_SRC
+
+** Orderless
+
+   Space-separated fuzzy matching. Typing =py test run= matches any
+   candidate containing all three tokens in any order. Files get a
+   =partial-completion= override so =~/j/d/fo= expands through
+   directories as you type.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package orderless
+       :custom
+       (completion-styles '(orderless basic))
+       (completion-category-defaults nil)
+       (completion-category-overrides '((file (styles partial-completion)))))
+   #+END_SRC
+
+** Marginalia
+
+   Annotations alongside candidates: file sizes & modes, command
+   docstrings, buffer major-modes, etc.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package marginalia
+       :init (marginalia-mode))
+   #+END_SRC
+
+** Consult
+
+   Command family for searching, navigating, and jumping. Replaced
+   counsel and swiper.
+
+   =consult-ripgrep= is the frontend for project-wide search; it needs
+   =rg= on PATH (already installed as a =projectile-ripgrep= dep).
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package consult
+       :bind (;; C-x bindings (buffer list, remapped)
+              ([remap switch-to-buffer]              . consult-buffer)
+              ([remap switch-to-buffer-other-window] . consult-buffer-other-window)
+              ([remap switch-to-buffer-other-frame]  . consult-buffer-other-frame)
+              ;; yanking
+              ("M-y" . consult-yank-pop)
+              ;; go-to (M-g) map
+              ([remap goto-line] . consult-goto-line)
+              ("M-g i"           . consult-imenu)
+              ;; search (M-s) map
+              ("M-s l" . consult-line)
+              ("M-s r" . consult-ripgrep)
+              ("M-s f" . consult-find)
+              ;; swiper muscle memory
+              ("C-s"   . consult-line)
+              ;; preserved from old counsel bindings
+              ("C-c j" . consult-git-grep)
+              ("C-c k" . consult-ripgrep))
+       :config
+       ;; defer previews until asked; avoids opening many large files
+       ;; as you arrow through candidates.
+       (consult-customize
+        consult-ripgrep consult-git-grep consult-grep
+        consult-bookmark consult-recent-file consult-xref
+        :preview-key "M-."))
+
+     ;; Press M-? on a symbol (or selected region) to search the
+     ;; project for it. Adapted from steve-purcell's init-minibuffer.el.
+     (defun jwm/consult-ripgrep-at-point (&optional dir initial)
+       "Run `consult-ripgrep' seeded with the symbol or region at point."
+       (interactive
+        (list current-prefix-arg
+              (if (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (when-let* ((s (symbol-at-point)))
+                  (symbol-name s)))))
+       (consult-ripgrep dir initial))
+
+     (when (executable-find "rg")
+       (global-set-key (kbd "M-?") #'jwm/consult-ripgrep-at-point))
+   #+END_SRC
+
+** Embark
+
+   Act on the candidate at point. In the minibuffer, =C-.= pops a menu
+   of actions appropriate to the candidate (copy path, open in other
+   window, rename, grep-in-it, etc.). Works outside the minibuffer too
+   — =C-.= on a symbol in code offers xref, occur, rename, etc.
+
+   =embark-consult= makes consult and embark interoperate: press =C-.=
+   during =consult-ripgrep= to export matches to a buffer.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package embark
+       :bind (("C-."   . embark-act)
+              ("C-h B" . embark-bindings))  ; inspect bindings for a prefix
+       :init
+       (setq prefix-help-command #'embark-prefix-help-command))
+
+     (use-package embark-consult
+       :after (embark consult)
+       :hook (embark-collect-mode . consult-preview-at-point-mode))
+   #+END_SRC
+
+** Hydra
+
+   Kept from the old stack; =ivy-hydra= is gone along with ivy.
 
    #+BEGIN_SRC emacs-lisp
      (use-package hydra)
-
-     (use-package ivy
-       :diminish (ivy-mode . "")
-       :config
-       (ivy-mode 1)
-       ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-       (setq ivy-use-virtual-buffers t)
-       ;; show both the index and count of matching items
-       (setq ivy-count-format "%d/%d "))
-
-     (use-package ivy-hydra
-       :after (ivy hydra))
-
-     (use-package counsel
-       :bind (("C-c j" . counsel-git-grep)
-              ("C-c k" . counsel-rg)
-              ("C-c K" . counsel-ag)))
-
-     (use-package swiper
-       :config
-       (global-set-key "\C-s" 'swiper))
    #+END_SRC
 
-   this is stolen from [[https://github.com/jwiegley/dot-emacs/blob/master/init.el#L420][jwiegley's config]]
+** Avy
+
+   Jump to visible text by typing 2-3 chars. Moved off =C-.= since
+   embark claims that binding by ecosystem convention.
+
    #+BEGIN_SRC emacs-lisp
      (use-package avy
-       :bind* ("C-." . avy-goto-char-timer)
+       :bind* ("C-;" . avy-goto-char-timer)
        :config
        (avy-setup-default))
    #+END_SRC
