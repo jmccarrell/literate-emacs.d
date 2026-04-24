@@ -3,7 +3,7 @@
 
    | key       | description                                 |
    |-----------+---------------------------------------------|
-   | C-.       | avy character timer; jump to 3-char pattern |
+   | C-;       | avy character timer; jump to 3-char pattern |
    | C-c C-r   | crux rename file and buffer                 |
    | C-c & C-s | choose a snippet to insert                  |
    | s-x       | create an auto-snippet                      |
@@ -584,6 +584,50 @@
    | C-c C-c | make current heading line invisibile  (not in org mode; use TAB) |
    | C-c C-e | ... visible (not in org mode; use TAB)                           |
    | ...     | many others that are not terribly releveant in org mode          |
+
+* Completion and Navigation
+
+  The vertico + consult + embark stack replaced ivy / counsel / swiper.
+  Projectile keeps its =C-c p ...= command map.
+
+** Consult  (search, navigate, jump)
+
+   | key   | command                                         |
+   |-------+-------------------------------------------------|
+   | C-x b | consult-buffer (buffers, recents, bookmarks)    |
+   | M-y   | consult-yank-pop                                |
+   | M-g g | consult-goto-line                               |
+   | M-g i | consult-imenu                                   |
+   | M-s l | consult-line (lines in current buffer)          |
+   | M-s r | consult-ripgrep (project-wide)                  |
+   | M-s f | consult-find                                    |
+   | C-s   | consult-line (swiper-style muscle memory)       |
+   | C-c j | consult-git-grep                                |
+   | C-c k | consult-ripgrep                                 |
+   | M-?   | jwm/consult-ripgrep-at-point (seeded w/ symbol) |
+   | M-.   | toggle preview (inside any consult prompt)      |
+
+** Embark  (act on candidate)
+
+   In the minibuffer, =C-.= pops a menu of actions on the current
+   candidate. Outside the minibuffer, acts on the symbol / link /
+   file at point.
+
+   | key   | command         |
+   |-------+-----------------|
+   | C-.   | embark-act      |
+   | C-h B | embark-bindings |
+
+   Useful patterns:
+   - =C-.= during =consult-ripgrep= → export matches to a buffer
+   - =C-.= on a file candidate → rename, copy, open other window
+   - =C-.= on a symbol in code → xref, occur, rename-symbol
+
+** Avy  (jump to visible text)
+
+   | key | command             |
+   |-----+---------------------|
+   | C-; | avy-goto-char-timer |
 
 * Markdown mode
 
