@@ -564,8 +564,47 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 
 (setq treesit-font-lock-level 4)  ; maximum fontification
 
-(when (treesit-ready-p 'python)
+;; When a grammar is present, remap the legacy mode (for
+;; languages where a legacy mode exists) or wire auto-mode-alist
+;; directly (for languages with no legacy mode) to the
+;; tree-sitter variant.
+(when (treesit-ready-p 'python t)
   (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode)))
+
+(when (treesit-ready-p 'json t)
+  (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode)))
+
+(when (treesit-ready-p 'yaml t)
+  (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
+
+;; toml has no legacy mode in this config; wire the extension
+;; directly to the tree-sitter mode.
+(when (treesit-ready-p 'toml t)
+  (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode)))
+
+;; Recipe for each grammar. treesit-install-language-grammar
+;; looks these up when called non-interactively (e.g. from the
+;; helper below). Without an entry, it errors with
+;; "Cannot find recipe for this language".
+(dolist (source
+         '((python "https://github.com/tree-sitter/tree-sitter-python")
+           (json   "https://github.com/tree-sitter/tree-sitter-json")
+           (yaml   "https://github.com/ikatyang/tree-sitter-yaml")
+           (toml   "https://github.com/ikatyang/tree-sitter-toml")))
+  (add-to-list 'treesit-language-source-alist source))
+
+(defvar jwm/required-treesit-grammars '(python json toml yaml)
+  "Languages for which this config wants tree-sitter grammars.
+Add to this list as sub-goals add more -ts-mode remaps.")
+
+(defun jwm/ensure-treesit-grammars ()
+  "Install any grammars in `jwm/required-treesit-grammars' that aren't present.
+Idempotent; safe to run on every machine after config clone."
+  (interactive)
+  (dolist (lang jwm/required-treesit-grammars)
+    (unless (treesit-ready-p lang t)  ; t = silent check
+      (message "Installing tree-sitter grammar for %s..." lang)
+      (treesit-install-language-grammar lang))))
 
 (use-package python
   :ensure nil  ; built-in
