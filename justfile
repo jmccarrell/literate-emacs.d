@@ -27,3 +27,30 @@ verify-tangle: tangle
           --eval '(condition-case err (load-file "init.el") (error (princ (format "ERROR loading init.el: %S\n" err)) (kill-emacs 1)))' \
           --eval '(kill-emacs 0)'
     @echo "verify-tangle: PASS"
+
+# Refresh info-dir.txt — a snapshot of all Info manuals visible to
+# this Emacs install. Run when packages change. The file is tracked
+# in git; commit after running.
+#
+# Implementation note: capture the absolute output path BEFORE
+# (info "(dir)") runs, because that call switches to the *info*
+# buffer whose default-directory is Emacs's info-data dir, not the
+# shell's cwd. Without expand-file-name, write-region would land
+# in /Applications/Emacs.app/.../share/info/.
+info-dir-update:
+    @emacs --batch \
+           --eval '(package-initialize)' \
+           --eval '(let ((out (expand-file-name "info-dir.txt"))) (condition-case err (progn (info "(dir)") (write-region (point-min) (point-max) out)) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1))))'
+    @echo "info-dir-update: wrote info-dir.txt ($(wc -l < info-dir.txt) lines)"
+
+# Dump a specific Info node to /tmp for attachment to a session.
+# Use after consulting info-dir.txt to find the right node.
+# Usage: just info-node "(magit) Worktree"
+# Output: /tmp/info-node.txt (overwritten each call).
+#
+# /tmp/info-node.txt is absolute, so no expand-file-name dance needed.
+info-node node:
+    @emacs --batch \
+           --eval '(package-initialize)' \
+           --eval '(condition-case err (progn (info "{{node}}") (write-region (point-min) (point-max) "/tmp/info-node.txt")) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1)))'
+    @echo "info-node: wrote /tmp/info-node.txt ($(wc -l < /tmp/info-node.txt) lines)"

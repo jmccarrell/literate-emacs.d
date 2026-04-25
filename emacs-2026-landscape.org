@@ -297,6 +297,13 @@ The rough order the sub-goals landed in:
   calls, no =/body=). The =** Hydra= section was vestigial.
   For any future menu-style commands, prefer =transient=
   (built-in Emacs 28+; what magit uses).
+- *Add info-tooling* — two new justfile recipes for grounding
+  investigations in Jeff's specific Emacs install state.
+  =info-dir-update= regenerates a tracked =info-dir.txt= snapshot
+  of all visible Info manuals. =info-node "(...)"= dumps a
+  specific node to =/tmp/info-node.txt= for attaching to a
+  session. Workspace =CLAUDE.md= documents the standard workflow:
+  investigations start by reading =info-dir.txt=.
 
 ** Pending
 
