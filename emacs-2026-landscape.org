@@ -286,8 +286,12 @@ The rough order the sub-goals landed in:
   produces byte-identical output to interactive
   =M-x org-babel-tangle= (empty diff against
   =main/init.el=, ~480ms wall-clock cold). Recommended a
-  =Justfile= recipe; implementation tracked as a separate
-  Pending sub-goal below.
+  =justfile= recipe; implementation shipped below.
+- *Add justfile with tangle and verify recipes* — added
+  =literate-emacs.d/main/justfile= with =tangle= (regenerates
+  =init.el=), =verify= (tangles + loads in batch =-Q= to catch
+  load errors), and a private =@_= recipe that prints the list.
+  Workspace =CLAUDE.md= updated to document the commands.
 
 ** Pending
 
@@ -470,36 +474,6 @@ The rough order the sub-goals landed in:
 
     *Effort:* Low — try it for a day, see if it sticks.
     *Reference:* https://github.com/alexluigit/dirvish
-
-*** Add a Justfile with tangle recipe
-
-    Follow-on to the batch-tangle investigation (Shipped above).
-    The investigation confirmed
-    =emacs --batch -l org --eval '(org-babel-tangle-file ...)'=
-    produces byte-identical output to interactive tangling, in
-    ~480ms cold. This sub-goal wires the command into a Justfile
-    recipe so it's discoverable and one-keystroke from the shell.
-
-    Scope:
-
-    - Add a =Justfile= to =literate-emacs.d/main/= with at least
-      a =tangle= recipe.
-    - Likely also: a =verify= (or =check=) recipe that tangles
-      and then loads the produced =init.el= via
-      =emacs --batch -Q -l init.el --eval '(kill-emacs 0)'= to
-      catch load errors fast.
-    - Document the new commands in workspace =CLAUDE.md= so
-      Claude can suggest =just tangle= as part of TASK.md
-      verification flows.
-
-    Out of scope:
-    - Pre-commit hook (defer — adds ~480ms commit tax and needs
-      per-worktree replication; revisit later if useful).
-    - Gitignoring =init.el= (defer — keeping committed for now
-      simplifies bootstrap on fresh machines; reconsider if/when
-      a pre-commit hook is added).
-
-    *Effort:* Low — 15-20 minutes. One worktree, one commit.
 
 *** Investigate magit's git worktree support
 
