@@ -43,14 +43,12 @@ info-dir-update:
            --eval '(let ((out (expand-file-name "info-dir.txt"))) (condition-case err (progn (info "(dir)") (write-region (point-min) (point-max) out)) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1))))'
     @echo "info-dir-update: wrote info-dir.txt ($(wc -l < info-dir.txt) lines)"
 
-# Dump a specific Info node to /tmp for attachment to a session.
+# Dump a specific Info node to info-node.txt for attachment to a session.
 # Use after consulting info-dir.txt to find the right node.
 # Usage: just info-node "(magit) Worktree"
-# Output: /tmp/info-node.txt (overwritten each call).
-#
-# /tmp/info-node.txt is absolute, so no expand-file-name dance needed.
+# Output: info-node.txt (overwritten each call).
 info-node node:
     @emacs --batch \
            --eval '(package-initialize)' \
-           --eval '(condition-case err (progn (info "{{node}}") (write-region (point-min) (point-max) "/tmp/info-node.txt")) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1)))'
-    @echo "info-node: wrote /tmp/info-node.txt ($(wc -l < /tmp/info-node.txt) lines)"
+           --eval '(let ((out (expand-file-name "info-node.txt"))) (condition-case err (progn (info "{{node}}") (write-region (point-min) (point-max) out)) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1))))'
+    @echo "info-node: wrote info-node.txt ($(wc -l < info-node.txt) lines)"
