@@ -270,6 +270,12 @@ The rough order the sub-goals landed in:
   Dockerfile gets eglot + =docker-langserver= (delegates to
   hadolint for lint). Justfile gets =just-ts-mode= alongside
   =just-mode=. JavaScript gets ts-mode remap, no LSP.
+- *zsh → bash shell config migration* — replaced the multi-level
+  zsh-specific =-conorcs= / =-cf= optimization with a brief
+  =** Terminal and Shell Settings= section. Bash's
+  non-interactive default is fast enough; no
+  =shell-command-switch= override needed. =jwm/shell-is-zsh-p=
+  removed.
 
 ** Pending
 
@@ -289,28 +295,6 @@ The rough order the sub-goals landed in:
     *Caveat:* this area moves monthly. Whatever we pick in week
     1 may have a better alternative in week 12. The plan should
     bias toward reversibility.
-
-*** zsh → bash shell config migration
-
-    The =* Variables → ** Terminal and Shell (zsh) Settings=
-    section is entirely zsh-specific (the =-conorcs= discussion,
-    =jwm/shell-is-zsh-p=, the =shell-command-switch= override).
-    Jeff no longer uses zsh — the interactive shell is now bash.
-
-    Bash's behavior is simpler: non-interactive shells
-    (=bash -c=) don't read =.bashrc= or =.bash_profile= by default,
-    so the whole "optimize startup" dance the zsh section
-    describes is unnecessary for bash. The migration is therefore
-    mostly /deletion/:
-
-    - Remove =jwm/shell-is-zsh-p= and the =shell-command-switch=
-      override (bash's default =-c= is already fast).
-    - Rewrite or remove the prose about zsh invocation flags —
-      mostly historical at this point.
-    - Rename section to something shorter, e.g.
-      =** Terminal and Shell Settings=.
-
-    *Effort:* Low — 30-60 minutes including verification.
 
 *** Terraform LSP + format-on-save
 
