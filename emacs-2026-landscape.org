@@ -321,6 +321,33 @@ The rough order the sub-goals landed in:
     and =Add tofu-ls as an eglot LSP for terraform= commits
     (~2025-2026).
 
+*** Drop explicit =ty= entry from =eglot-server-programs= (when upstreamed)
+
+    Steve Purcell removed =ty= from his =eglot-server-programs=
+    customization in 2026-04 (commit message: "Remove now-upstreamed
+    addition of ty to eglot-server-programs"). =ty= is now in
+    eglot's default =eglot-server-programs= for Python in upstream
+    Emacs.
+
+    Our =** Eglot= section in =jeff-emacs-config.org= still has an
+    explicit entry:
+
+    #+begin_src emacs-lisp
+      (add-to-list 'eglot-server-programs
+                   '((python-mode python-ts-mode)
+                     . ("ty" "server")))
+    #+end_src
+
+    This becomes redundant once we're on an Emacs version where the
+    upstream change has shipped. Worth removing for cleanliness.
+
+    *Triggering condition:* upgrade to an Emacs version that
+    includes the upstream change (likely 30.3+ or 31). Verify with
+    =C-h v eglot-server-programs= and check whether the python-mode
+    entry already includes =ty=.
+
+    *Effort:* Trivial (5 lines deleted) once condition triggers.
+
 *** Investigate uv for Python
 
     =uv= is astral's fast Python package/project manager (same team
@@ -473,6 +500,23 @@ The rough order the sub-goals landed in:
 
     *Reference:* magit user manual,
     https://magit.vc/manual/magit/Worktree.html
+
+*** Investigate =pulsar= (cursor-jump visual feedback)
+
+    =pulsar= is a small package by Protesilaos that briefly
+    highlights the line you just jumped to — after =M-.= xref,
+    =M-,= back, page navigation, search jumps, etc. Steve Purcell
+    adopted it on 2026-04 with the commit "Enable pulsar, but
+    conservatively" (suggesting he tunes which commands trigger
+    a pulse).
+
+    Surfaced from the 2026-04-25 reference-config resync. Question:
+    would Jeff find the visual feedback helpful or noisy?
+
+    *Effort:* Low — 30 min of trying it across navigation
+    workflows.
+
+    *Reference:* https://protesilaos.com/emacs/pulsar
 
 *** Investigate modern undo patterns
 
