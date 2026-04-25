@@ -338,92 +338,19 @@
      (global-visual-line-mode)
    #+END_SRC
 
-** Terminal and Shell (zsh) Settings
+** Terminal and Shell Settings
 
-*** Reduce Startup Time for zsh
+   Bash's default behavior is sufficient for Emacs subprocess use:
+   non-interactive shells (=bash -c=) don't read =.bashrc= or
+   =.bash_profile= by default, so there's no startup overhead to
+   eliminate. =shell-command-switch= stays at its default =-c=.
 
-    I find the battle to keep shell startup time crisp to be never ending.  I have come to regard it in the
-    same vein as spring cleaning or maybe dental visits for teeth cleaning: useful, but never my first
-    choice.
-
-    As of this writing, my interactive zsh startup times are on the order of 1 second:
-
-    #+BEGIN_EXAMPLE
-    ❯ time zsh -i -c exit
-    zsh -i -c exit  0.68s user 0.36s system 97% cpu 1.066 total
-    #+END_EXAMPLE
-
-    which is too long.  [[https://github.com/abo-abo/swiper/issues/2190#issuecomment-525385066][Especially for counsel-grep]].  So configure the arguments given to zsh by emacs when
-    attempting to run processes via =shell-command= and friends to ignore reading initialization files.
-
-    That this works is dependent on already having a reasonable environment configured -- including and most
-    especially PATH -- so that we don't *need* to re-execute all of that lovely zsh initialization code
-    every time emacs wants to run a process.
-
-**** =-f= is an alias for =-conorcs=
-
-     The following section on =-conorcs= is true, and valid.  In addition, [[http://zsh.sourceforge.net/Doc/Release/Options.html#Default-set][=-f= will suppress reading RC files]]:
-
-     #+begin_example
-       -f
-         NO_RCS
-     #+end_example
-
-**** What is =-conorcs=?
-
-     As described in [[http://zsh.sourceforge.net/Doc/Release/Invocation.html#Invocation-2][zsh invocation]], zsh allows concatenation of single character command line options.  We
-     want both
-     - =-c=
-     - =-o norcs=
-     and as a single argument to reduce potential issues with whitespace evaluation at the emacs shell
-     boundary.  We can express that as =-conorcs=.
-
-     The intuition about this setting is reinforced by measurement:
-
-     #+BEGIN_EXAMPLE
-       M-x shell-command time zsh -onorcsc exit
-       zsh -onorcsc exit  0.00s user 0.00s system 69% cpu 0.004 total
-     #+END_EXAMPLE
-
-     and
-
-     #+begin_example
-       M-x shell-command time zsh -cf exit
-       zsh -f -c exit  0.00s user 0.00s system 64% cpu 0.006 total
-     #+end_example
-
-     Which leads to:
-
-     #+BEGIN_SRC emacs-lisp
-       (defun jwm/shell-is-zsh-p ()
-         (string-suffix-p "zsh" shell-file-name))
-
-       (when (jwm/shell-is-zsh-p)
-         (setq shell-command-switch "-cf"))
-     #+END_SRC
-
-**** Effect
-
-    After this setting is in place, response time for emacs executed processes improve, for me by 3 orders
-    of magnitude.
-
-    #+BEGIN_EXAMPLE
-      M-x shell-command time date
-      Sun Mar 29 10:33:10 PDT 2020
-      date  0.00s user 0.00s system 66% cpu 0.002 total
-    #+END_EXAMPLE
-
-    Your mileage will vary depending on the contents of your zsh dot files.
-
-**** What about =bash=?
-
-     An alternative would be to switch to bash, which from my measurements and current config shows shorter
-     startup time.  This difference is no doubt entirely due to my zsh initialization scripts.
-
-     #+BEGIN_EXAMPLE
-       M-x shell-command time bash -c exit
-       bash -c exit  0.00s user 0.00s system 69% cpu 0.004 total
-     #+END_EXAMPLE
+   Historical note: this section previously housed an extensive
+   zsh-specific optimization that overrode =shell-command-switch=
+   to =-cf= (no-rcs mode) because zsh /does/ read =.zshenv= even
+   in non-interactive mode. With the migration to bash, that
+   workaround is unnecessary; the helper =jwm/shell-is-zsh-p= is
+   gone with it.
 
 ** Other Misc Settings
 

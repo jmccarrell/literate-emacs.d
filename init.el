@@ -98,12 +98,6 @@
 (auto-fill-mode)
 (global-visual-line-mode)
 
-(defun jwm/shell-is-zsh-p ()
-  (string-suffix-p "zsh" shell-file-name))
-
-(when (jwm/shell-is-zsh-p)
-  (setq shell-command-switch "-cf"))
-
 ;; always end a file with a newline
 (setq require-final-newline t)
 
