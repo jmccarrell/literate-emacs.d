@@ -55,13 +55,6 @@
 (setq use-package-always-ensure t)
 (require 'use-package)
 
-(use-package dash
-  :config (eval-after-load "dash" '(dash-enable-font-lock)))
-
-(use-package s)
-
-(use-package f)
-
 (setq inhibit-startup-message t)
 ;; needed for emacs23
 (setq inhibit-splash-screen t)

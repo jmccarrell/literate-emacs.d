@@ -276,6 +276,11 @@ The rough order the sub-goals landed in:
   non-interactive default is fast enough; no
   =shell-command-switch= override needed. =jwm/shell-is-zsh-p=
   removed.
+- *Drop dash / s / f libraries* — investigation found zero call
+  sites in the config; the =** Howard's Recommended Emacs Lisp
+  Libs= section was vestigial. Dropped the three =use-package=
+  forms (transitive deps via magit etc. still keep the libs
+  installed in =~/.emacs.d/elpa/=).
 
 ** Pending
 
@@ -394,52 +399,6 @@ The rough order the sub-goals landed in:
     *Reference:* Purcell's eat-related commits in =init.el=;
     https://codeberg.org/akib/emacs-eat.
 
-*** Investigate migrating off dash / s / f onto built-ins
-
-    Jeff's config pulls in =dash= (list API), =s= (strings), and
-    =f= (files) as "Howard's recommended libs." He already noted
-    in the config itself that "seq is bundled with emacs and seems
-    to be a replacement for dash." Emacs 28 and 29 added more
-    built-ins (=string-trim=, =string-replace=, =file-name-concat=,
-    =thread-first=, =thread-last=, etc.) that subsume most of
-    =s= and =f= and parts of =dash=.
-
-    Scope of the investigation (research, not implementation):
-
-    - What actually uses dash/s/f in Jeff's config today? Grep
-      for =dash-=, =s-=, =f-=, =->=, =-->=, =-map=, =-filter=,
-      etc. May well turn out to be zero call sites — the
-      =use-package= forms just install the libraries.
-    - For each call site found, is there a built-in equivalent
-      on Emacs 30? Table of replacements:
-      - =s-trim= → =string-trim=
-      - =s-split= → =string-split=
-      - =s-replace= → =string-replace=
-      - =s-starts-with-p= → =string-prefix-p=
-      - =f-exists?= → =file-exists-p=
-      - =f-join= → =file-name-concat= (Emacs 28+)
-      - =f-parent= → =file-name-parent-directory= (Emacs 29+)
-      - =-map=, =-filter=, =-reduce= → =seq-map=, =seq-filter=,
-        =seq-reduce=
-      - =->=, =-->= → =thread-first=, =thread-last=
-    - What does Purcell currently use? He's been trimming
-      external-lib dependencies steadily.
-    - Is the cost of migrating (risk of subtle behavior
-      differences in edge cases) worth the benefit (slimmer
-      dependency surface, faster startup by microseconds)?
-
-    *Output:* a short write-up and recommendation. Likely
-    options:
-    - "Drop all three — config doesn't actually call them."
-    - "Keep =dash= for its threading macros, drop =s= and =f=."
-    - "No action; migrating more costly than valuable."
-
-    *Effort:* Low for the investigation — 30-60 minutes of grep
-    + judgment. Implementation cost depends on findings.
-
-    *Reference:* Jeff's own comment in the =Howard's Recommended
-    Emacs Lisp Libs= section of =jeff-emacs-config.org=.
-
 *** Investigate =verb= (org-babel HTTP client)
 
     =verb= is a newer org-mode HTTP client with per-request
@@ -504,6 +463,57 @@ The rough order the sub-goals landed in:
 
     *Effort:* Low — try it for a day, see if it sticks.
     *Reference:* https://github.com/alexluigit/dirvish
+
+*** Investigate batch-mode tangling from the shell
+
+    Currently the workflow requires Jeff to run =M-x org-babel-tangle=
+    inside Emacs after every edit to =jeff-emacs-config.org= before
+    restarting. Emacs supports batch invocation that could do this
+    from the command line — something like:
+
+    #+begin_example
+      emacs --batch \
+            -l org \
+            --eval '(org-babel-tangle-file "jeff-emacs-config.org")'
+    #+end_example
+
+    If this works correctly, several workflow improvements unlock:
+
+    - Claude can tangle directly in the sandbox and verify =init.el=
+      shape via grep before handing back, removing one round-trip.
+    - A pre-commit or post-edit shell script could keep
+      =init.el= in sync with =jeff-emacs-config.org= automatically.
+    - A =justfile= recipe (or a Makefile target) makes "regenerate
+      init.el" a one-keystroke operation.
+
+    Scope of the investigation:
+
+    - Confirm the batch invocation produces byte-identical output
+      to interactive =M-x org-babel-tangle=. Diff the two against
+      a controlled .org file.
+    - Test edge cases: blocks with =:tangle no=, blocks that
+      reference =:noweb= or =:exports= flags, blocks across
+      multiple files.
+    - Decide whether to commit =init.el= (current practice) or
+      treat it strictly as a build artifact (gitignore + tangle
+      on demand). Either is defensible; consistency matters.
+    - Decide where the tangle command lives: a =Justfile= recipe,
+      a =scripts/= directory, or just documented in
+      =main/CLAUDE.md=.
+
+    *Output:* a write-up + recommendation. Likely outcomes:
+    - "Yes — add a =Justfile= recipe; Claude uses it; init.el
+      stays committed for now."
+    - "Yes — add the recipe; gitignore init.el and treat it as
+      build artifact."
+    - "No — the marginal gain over =M-x org-babel-tangle= isn't
+      worth the integration work."
+
+    *Effort:* Low — an hour to test and decide. Implementation,
+    if any, depends on the chosen approach.
+
+    *Reference:* GNU Emacs manual §"Batch Mode";
+    org-mode docs on =org-babel-tangle-file=.
 
 *** Investigate modern undo patterns
 
