@@ -401,8 +401,6 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :after (embark consult)
   :hook (embark-collect-mode . consult-preview-at-point-mode))
 
-(use-package hydra)
-
 (use-package avy
   :bind* ("C-;" . avy-goto-char-timer)
   :config

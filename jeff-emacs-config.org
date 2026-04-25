@@ -937,14 +937,6 @@
        :hook (embark-collect-mode . consult-preview-at-point-mode))
    #+END_SRC
 
-** Hydra
-
-   Kept from the old stack; =ivy-hydra= is gone along with ivy.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package hydra)
-   #+END_SRC
-
 ** Avy
 
    Jump to visible text by typing 2-3 chars. Moved off =C-.= since

@@ -2,7 +2,7 @@
 #
 # Run `just --list` to see all recipes.
 # Run `just tangle` after editing jeff-emacs-config.org.
-# Run `just verify` to tangle and then load the result in batch
+# Run `just verify-tangle` to tangle and then load the result in batch
 # emacs (-Q) to catch syntax/load errors fast.
 
 # Default: show the recipe list. Underscore-prefixed name marks
@@ -18,9 +18,12 @@ tangle:
           --eval '(org-babel-tangle-file "jeff-emacs-config.org")'
 
 # Tangle, then load init.el in batch emacs to catch load-time errors.
-# Uses -Q (no user init), then explicitly loads the just-tangled init.el.
-# Exits 0 on clean load; non-zero on error.
-verify: tangle
+# Uses -Q (no user init), then loads init.el inside a condition-case
+# so any error is caught explicitly. Clean load -> exit 0; any error
+# during load -> print the error to stderr and exit 1. just then
+# reports success/failure based on the exit code.
+verify-tangle: tangle
     emacs --batch -Q \
-          -l init.el \
+          --eval '(condition-case err (load-file "init.el") (error (princ (format "ERROR loading init.el: %S\n" err)) (kill-emacs 1)))' \
           --eval '(kill-emacs 0)'
+    @echo "verify-tangle: PASS"

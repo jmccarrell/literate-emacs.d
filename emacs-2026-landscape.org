@@ -287,11 +287,16 @@ The rough order the sub-goals landed in:
   =M-x org-babel-tangle= (empty diff against
   =main/init.el=, ~480ms wall-clock cold). Recommended a
   =justfile= recipe; implementation shipped below.
-- *Add justfile with tangle and verify recipes* — added
+- *Add justfile with tangle and verify-tangle recipes* — added
   =literate-emacs.d/main/justfile= with =tangle= (regenerates
-  =init.el=), =verify= (tangles + loads in batch =-Q= to catch
-  load errors), and a private =@_= recipe that prints the list.
-  Workspace =CLAUDE.md= updated to document the commands.
+  =init.el=), =verify-tangle= (tangles + loads in batch =-Q= to
+  catch load errors), and a private =@_= recipe that prints the
+  list. Workspace =CLAUDE.md= updated to document the commands.
+- *Drop hydra use-package declaration* — investigation found
+  zero call sites in the config (no =defhydra=, no =(hydra-...)=
+  calls, no =/body=). The =** Hydra= section was vestigial.
+  For any future menu-style commands, prefer =transient=
+  (built-in Emacs 28+; what magit uses).
 
 ** Pending
 
@@ -446,22 +451,6 @@ The rough order the sub-goals landed in:
 
     *Effort:* Low — 15-30 min per package.
 
-*** Investigate hydra → =transient=
-
-    =hydra= still loads in Jeff's config post-ivy migration
-    (=ivy-hydra= gone; plain =hydra= left). =transient= is
-    built-in (Emacs 28+) and is what =magit= uses — arguably
-    the modern replacement.
-
-    - If Jeff's config never actually uses hydra, just drop it
-      (overlap with Small cleanup pass).
-    - If any =jwm/*= helpers use hydra, consider rewriting in
-      transient for better discoverability and a single source
-      of truth for menus.
-
-    *Effort:* Low — 30 min of grep + judgment.
-    *Reference:* =transient= manual, built-in.
-
 *** Investigate =dirvish= (modern dired front-end)
 
     =dirvish= wraps dired with a sidebar, preview pane, file-
@@ -565,9 +554,6 @@ The rough order the sub-goals landed in:
       latent-error material.
     - Swap =expand-region= for =expreg= (bbatsov's modern default).
       Update cheat sheet.
-    - Check whether =hydra= is still used anywhere post-ivy
-      migration; drop the =use-package hydra= form if no consumers
-      remain.
     - Switch =js2-mode= to =js-ts-mode= (install javascript
       grammar; add to =jwm/required-treesit-grammars=;
       =major-mode-remap-alist= entry).
