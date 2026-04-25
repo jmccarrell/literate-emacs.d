@@ -521,6 +521,42 @@ The rough order the sub-goals landed in:
     *Effort:* Low — try it for a day, see if it sticks.
     *Reference:* https://github.com/alexluigit/dirvish
 
+*** Investigate modern undo patterns
+
+    Jeff uses the built-in =undo= via =C-x u=. It works — and
+    it's actually a tree, not linear — but the UX is notoriously
+    confusing: undo-then-type creates a branch that's hard to
+    recover. Three 2026 options to compare:
+
+    - =vundo= (Casouri, 2022+) — visualizes the built-in undo
+      tree without replacing the underlying system. Lightweight,
+      well-regarded, no format lock-in.
+    - =undo-fu= + =undo-fu-session= — minimalist linear
+      undo/redo semantics (closer to Ctrl-Z in other editors);
+      session package persists history across restarts.
+    - =undo-tree= (longstanding) — visualizes and navigates
+      branches; older than vundo; some known concerns about its
+      on-disk storage format at scale.
+
+    Scope of the investigation:
+    - What do Purcell / bbatsov / jwiegley use in their current
+      configs? Good chance of a clear community signal.
+    - Demo each on a sample buffer to see which feels best
+      for Jeff's editing style.
+    - Keybinding question: stay on =C-x u=, or add Ctrl-Z /
+      Ctrl-Shift-Z bindings that match other editors? (Note:
+      =C-z= is =suspend-frame= by default — frequently rebound.)
+
+    *Output:* a write-up + recommendation. If a clear winner, a
+    follow-on sub-goal to wire it in.
+
+    *Effort:* Low — 30-60 min of reading + testing on a scratch
+    buffer.
+
+    *References:* https://github.com/casouri/vundo;
+    https://codeberg.org/ideasman42/emacs-undo-fu;
+    https://www.dr-qubit.org/undo-tree.html
+
 *** Small cleanup pass (accumulated drift from earlier sub-goals)
 
     Each item is too small to deserve its own sub-goal; together
