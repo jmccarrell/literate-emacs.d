@@ -281,6 +281,13 @@ The rough order the sub-goals landed in:
   Libs= section was vestigial. Dropped the three =use-package=
   forms (transitive deps via magit etc. still keep the libs
   installed in =~/.emacs.d/elpa/=).
+- *Investigation: batch-mode tangling* — confirmed
+  =emacs --batch -l org --eval '(org-babel-tangle-file ...)'=
+  produces byte-identical output to interactive
+  =M-x org-babel-tangle= (empty diff against
+  =main/init.el=, ~480ms wall-clock cold). Recommended a
+  =Justfile= recipe; implementation tracked as a separate
+  Pending sub-goal below.
 
 ** Pending
 
@@ -464,56 +471,35 @@ The rough order the sub-goals landed in:
     *Effort:* Low — try it for a day, see if it sticks.
     *Reference:* https://github.com/alexluigit/dirvish
 
-*** Investigate batch-mode tangling from the shell
+*** Add a Justfile with tangle recipe
 
-    Currently the workflow requires Jeff to run =M-x org-babel-tangle=
-    inside Emacs after every edit to =jeff-emacs-config.org= before
-    restarting. Emacs supports batch invocation that could do this
-    from the command line — something like:
+    Follow-on to the batch-tangle investigation (Shipped above).
+    The investigation confirmed
+    =emacs --batch -l org --eval '(org-babel-tangle-file ...)'=
+    produces byte-identical output to interactive tangling, in
+    ~480ms cold. This sub-goal wires the command into a Justfile
+    recipe so it's discoverable and one-keystroke from the shell.
 
-    #+begin_example
-      emacs --batch \
-            -l org \
-            --eval '(org-babel-tangle-file "jeff-emacs-config.org")'
-    #+end_example
+    Scope:
 
-    If this works correctly, several workflow improvements unlock:
+    - Add a =Justfile= to =literate-emacs.d/main/= with at least
+      a =tangle= recipe.
+    - Likely also: a =verify= (or =check=) recipe that tangles
+      and then loads the produced =init.el= via
+      =emacs --batch -Q -l init.el --eval '(kill-emacs 0)'= to
+      catch load errors fast.
+    - Document the new commands in workspace =CLAUDE.md= so
+      Claude can suggest =just tangle= as part of TASK.md
+      verification flows.
 
-    - Claude can tangle directly in the sandbox and verify =init.el=
-      shape via grep before handing back, removing one round-trip.
-    - A pre-commit or post-edit shell script could keep
-      =init.el= in sync with =jeff-emacs-config.org= automatically.
-    - A =justfile= recipe (or a Makefile target) makes "regenerate
-      init.el" a one-keystroke operation.
+    Out of scope:
+    - Pre-commit hook (defer — adds ~480ms commit tax and needs
+      per-worktree replication; revisit later if useful).
+    - Gitignoring =init.el= (defer — keeping committed for now
+      simplifies bootstrap on fresh machines; reconsider if/when
+      a pre-commit hook is added).
 
-    Scope of the investigation:
-
-    - Confirm the batch invocation produces byte-identical output
-      to interactive =M-x org-babel-tangle=. Diff the two against
-      a controlled .org file.
-    - Test edge cases: blocks with =:tangle no=, blocks that
-      reference =:noweb= or =:exports= flags, blocks across
-      multiple files.
-    - Decide whether to commit =init.el= (current practice) or
-      treat it strictly as a build artifact (gitignore + tangle
-      on demand). Either is defensible; consistency matters.
-    - Decide where the tangle command lives: a =Justfile= recipe,
-      a =scripts/= directory, or just documented in
-      =main/CLAUDE.md=.
-
-    *Output:* a write-up + recommendation. Likely outcomes:
-    - "Yes — add a =Justfile= recipe; Claude uses it; init.el
-      stays committed for now."
-    - "Yes — add the recipe; gitignore init.el and treat it as
-      build artifact."
-    - "No — the marginal gain over =M-x org-babel-tangle= isn't
-      worth the integration work."
-
-    *Effort:* Low — an hour to test and decide. Implementation,
-    if any, depends on the chosen approach.
-
-    *Reference:* GNU Emacs manual §"Batch Mode";
-    org-mode docs on =org-babel-tangle-file=.
+    *Effort:* Low — 15-20 minutes. One worktree, one commit.
 
 *** Investigate magit's git worktree support
 
