@@ -515,6 +515,46 @@ The rough order the sub-goals landed in:
     *Reference:* GNU Emacs manual §"Batch Mode";
     org-mode docs on =org-babel-tangle-file=.
 
+*** Investigate magit's git worktree support
+
+    Jeff has been using git worktrees heavily in this project (and
+    in other personal / professional repos). Magit ships some
+    worktree support — accessible via the magit-status dispatch
+    transient — but the exact capabilities and how they compare
+    to the shell =git worktree= commands haven't been mapped.
+
+    Scope of the investigation:
+
+    - What does magit's worktree UI cover? Add, remove, switch,
+      list, branch-from-worktree?
+    - How does it compare to running =git worktree= by hand?
+      Better discoverability, but does it cover the flags
+      typically used (=-b <branch>=, =--no-checkout=, etc.)?
+    - Does it integrate with project.el or projectile so jumping
+      to "the markdown-rendering worktree" is one keystroke
+      from anywhere?
+    - Could it replace parts of the manual command block in the
+      workspace =CLAUDE.md= for setting up sub-goal worktrees?
+      (Note: our setup also creates =info/=, the =TASK.md=
+      exclude, and the =init.el= symlink — those are
+      project-specific and magit won't do them automatically.)
+    - Are there third-party helpers that fill gaps (e.g. a
+      function wrapping magit + our boilerplate)?
+
+    *Output:* a write-up + recommendation. Likely outcomes:
+    - "Use magit's worktree commands for the git plumbing;
+      everything else stays manual."
+    - "Wrap our setup boilerplate in a =jwm/start-sub-goal-worktree=
+      function that invokes magit-worktree-checkout-new and then
+      handles =info/exclude=, =TASK.md=, and the symlink."
+    - "Magit's worktree UI doesn't add much; stay with shell."
+
+    *Effort:* Low — 30-45 min of poking around in =magit-status=,
+    reading the manual, and pondering integration.
+
+    *Reference:* magit user manual,
+    https://magit.vc/manual/magit/Worktree.html
+
 *** Investigate modern undo patterns
 
     Jeff uses the built-in =undo= via =C-x u=. It works — and
