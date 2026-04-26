@@ -110,7 +110,7 @@ looks like → effort.
 | editorconfig                       | editorconfig                | Built-in 30   | On Emacs 30, can drop the package.                         | Trivial | Cleanup |
 | envrc                              | envrc                       | Still current | Keep. Upstream now checks direnv availability (Purcell note). | —    | —        |
 | docker / dockerfile-mode           | docker + dockerfile-mode    | Still current | Keep. Consider ~dockerfile-ts-mode~.                        | Trivial | Low     |
-| *AI / LLM integration*             | *(none)*                    | *New domain*  | New sub-goal: pick gptel + optional inline completion.     | Medium | *High (if you want it)* |
+| *AI / LLM integration*             | =gptel= chat foundation     | *New domain*  | Next: add local backend + switching ergonomics.            | Medium | *High (if you want it)* |
 | Tree-sitter usage overall          | not configured              | Built-in 29+  | Turn on ~major-mode-remap-alist~ for Python/JS/YAML/etc.   | Low    | Cleanup  |
 | In-buffer completion               | default (none configured)   | Corfu era     | Add corfu + cape; pair with eglot.                         | Low    | Medium (part of LSP) |
 | use-package ~:vc~                  | n/a                         | New in 30     | Use when you want a package straight from a git repo.      | —      | Reference only |
@@ -184,6 +184,13 @@ The rough order the sub-goals landed in:
   specific node to =/tmp/info-node.txt= for attaching to a
   session. Workspace =CLAUDE.md= documents the standard workflow:
   investigations start by reading =info-dir.txt=.
+- *AI chat foundation* — added =gptel= as the first AI/LLM
+  integration slice. It opens Org-mode chat buffers, binds
+  =C-c g g= / =C-c g s= / =C-c g m=, uses an auth-source-backed
+  Anthropic backend, and documents the keys in
+  =emacs-cheat-sheet.org=. Verified with =just verify-tangle=.
+  Deliberately did not add local models, tools, MCP, agentic
+  editing, or inline completion yet.
 
 ** Pending
 
@@ -204,42 +211,46 @@ The rough order the sub-goals landed in:
     =gptel= + Ollama + custom tools, with =agent-shell=,
     =aidermacs=, and MCP kept as later layers.
 
-    Proposed sub-goals:
+    Current state:
 
-    1. *AI chat foundation* — add a small =gptel= section with
-       =org-mode= chat buffers, conservative keybindings, and an
-       auth-source-backed cloud backend. Do not add tools yet.
-       Verify that a plain chat buffer works and can be saved as
-       an ordinary org/markdown/text buffer.
+    - *Shipped:* =gptel= chat foundation with an Anthropic Claude
+      backend using auth-source. Keybindings are documented in
+      =emacs-cheat-sheet.org=. Jeff verified the live behavior and
+      =just verify-tangle= passed on =main=.
+    - *Next likely slice:* add one local backend, probably Ollama,
+      and decide whether native =gptel-menu= selection is sufficient
+      or if small cloud/local wrapper commands would help.
 
-    2. *Local model backend* — add one local backend, probably
+    Proposed remaining sub-goals:
+
+    1. *Local model backend* — add one local backend, probably
        Ollama first because it is the lowest-friction local runner
        and both =gptel= and =ellama= document it directly. Keep the
        model name configurable and document the shell precondition
        (=ollama serve= plus one pulled model). This proves the
        cloud/local switch without introducing a model gateway.
 
-    3. *Backend switching ergonomics* — decide whether Jeff wants
+    2. *Backend switching ergonomics* — decide whether Jeff wants
        =gptel-menu= / per-buffer settings only, named =gptel=
        presets, or a small =jwm/gptel-use-local= /
        =jwm/gptel-use-cloud= wrapper. Prefer built-in =gptel=
        affordances first; wrappers only if the native UI feels
        fussy.
 
-    4. *Completion boundary* — keep LSP completion and LLM
+    3. *Completion boundary* — keep LSP completion and LLM
        completion separate. LSP/corfu/cape owns symbol-aware,
        low-latency completion and diagnostics. LLM inline
        completion is a later experiment with =copilot.el=,
        =minuet-ai.el=, or another package. Do not mix this into
        the first chat landing.
 
-    5. *Agentic editing* — evaluate =aidermacs= and =agent-shell=
+    4. *Agentic editing* — evaluate =aidermacs= and =agent-shell=
        only after chat is useful. These packages imply stronger
        file-editing permissions, external CLIs, and more workflow
        decisions. Treat them as separate opt-in work, not part of
        "install an LLM client."
 
-    6. *Tool use / MCP* — evaluate =gptel= tools and =mcp.el=
+    5. *Tool use / MCP* — evaluate =gptel= tools and =mcp.el=
        after Jeff has a feel for basic chat and local/cloud model
        switching. Start with read-only tools if we go there:
        describe symbol, read buffer, read file, or list project
