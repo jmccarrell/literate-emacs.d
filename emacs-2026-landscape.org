@@ -80,7 +80,7 @@ looks like → effort.
 #+ATTR_HTML: :class landscape-table
 | Section of jeff-emacs-config.org   | Current choice              | 2026 status   | Recommended action                                          | Effort | Priority |
 |------------------------------------+-----------------------------+---------------+-------------------------------------------------------------+--------+----------|
-| Package Manager                    | package.el + elpa-mirror    | Still fine    | Keep. elpa-mirror is Jeff-specific and worth preserving.    | —      | —        |
+| Package Manager                    | package.el                  | Still fine    | Keep the online archive setup simple.                       | —      | —        |
 | Use-Package bootstrap              | ~(unless ... package-install)~ | Obsolete 29+ | Remove bootstrap; use-package is built in.                 | Low    | Cleanup  |
 | dash / s / f libraries             | as listed                   | Still fine    | Keep if used. Some code may now prefer ~seq~ (built-in).    | —      | —        |
 | Color theme                        | zenburn                     | Still works   | Consider modus-themes (built-in, WCAG AAA); zenburn OK.     | Trivial | Low     |
@@ -134,9 +134,9 @@ The rough order the sub-goals landed in:
   Projectile kept with =default= completion-system. =C-.= →
   embark-act; =C-;= → avy. Cheat sheet updated.
 - *Emacs-30 cleanups* — dropped use-package bootstrap; built-in
-  =which-key= and =editorconfig= (=:ensure nil=); fixed elpa-mirror
-  =cached-package-dir= interpolation bug; swapped
-  =defalias 'yes-or-no-p= for =(setq use-short-answers t)=.
+  =which-key= and =editorconfig= (=:ensure nil=); simplified package
+  archive setup; swapped =defalias 'yes-or-no-p= for
+  =(setq use-short-answers t)=.
 - *Python + LSP + tree-sitter* — =python-mode=/elpy/flycheck →
   built-in =python.el= (with =python-ts-mode= remap) + eglot +
   ty + ruff + flymake + flymake-ruff. Tree-sitter grammar
@@ -484,10 +484,6 @@ in a sub-goal proposal:
    emacs-plus-app (new 2026 cask), and mitsuharu's Mac port.
    If Jeff is still on an older emacs-app without native
    compilation, an upgrade here is free performance.
-
-4. ~elpa-mirror~ offline setup. This is unique to Jeff. Any
-   migration that adds new packages needs to be tested through
-   the mirror build step. Not a blocker, but keep it in mind.
 
 * How to use this document
 
