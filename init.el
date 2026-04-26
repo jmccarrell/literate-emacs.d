@@ -508,7 +508,7 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
     "Auth-source host for the Anthropic API key.")
 
   (defvar jwm/gptel-claude-model 'claude-sonnet-4-5-20250929
-    "Default Claude model for gptel.")
+    "Selectable Claude model for gptel.")
 
   (defvar jwm/gptel-ollama-host "localhost:11434"
     "Host for the local Ollama gptel backend.")
@@ -524,17 +524,17 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 
   :config
   (setq gptel-default-mode 'org-mode)
-  (setq gptel-model jwm/gptel-claude-model)
-  (setq gptel-backend
-        (gptel-make-anthropic "Claude"
-          :stream t
-          :key (lambda ()
-                 (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
-          :models (list jwm/gptel-claude-model)))
-  (gptel-make-ollama "Ollama"
-    :host jwm/gptel-ollama-host
+  (gptel-make-anthropic "Claude"
     :stream t
-    :models (list jwm/gptel-gemma4-model))
+    :key (lambda ()
+           (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
+    :models (list jwm/gptel-claude-model))
+  (setq gptel-model jwm/gptel-gemma4-model)
+  (setq gptel-backend
+        (gptel-make-ollama "Ollama"
+          :host jwm/gptel-ollama-host
+          :stream t
+          :models (list jwm/gptel-gemma4-model)))
 
   (with-eval-after-load 'which-key
     (which-key-add-key-based-replacements "C-c g" "gptel")))
