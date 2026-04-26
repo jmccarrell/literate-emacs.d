@@ -58,139 +58,19 @@ zenburn is fine but the modern accessibility-first default is
 modus-themes (also built in since 28.1); expand-region has a
 leaner successor in ~expreg~.
 
-* What changed in Jeff's reference repos
+* Reference config synthesis
 
-I re-fetched all 14 reference repos and compared local HEAD to
-current origin. Here is the signal-sorted result.
+Detailed analysis of external Emacs configs now lives in the workspace-level
+[[../../reference-configs.md][reference-configs.md]]. That file sits beside
+~reference-repos.list~, ~reference-emacs-configs/~, and the ~just ref-*~
+workflow, so it is the right place to track per-repo state, upstream commit
+deltas, and what we have extracted from each reference.
 
-** High signal (actively evolved)
-
-*** jwiegley-dotemacs — 2024-11 → 2026-04, 396 commits
-
-   *The most sophisticated reference.* His recent commits are
-   /overwhelmingly/ AI-related: ~gptel-presets.el~,
-   ~gptel-ext.el~, ~gptel-backends.el~, ~gptel-agent~ submodule,
-   ~gptel-rag.el~, ~gptel-prompts~, ~hf.el~ (local Hugging Face
-   models, LiteLLM config generation, llama-swap orchestration),
-   ~agent-shell~, ~mcp-server-lib~, ~macher~, ~magit-ai~. He
-   runs multiple local LLMs (Qwen3 series, Devstral) behind
-   LiteLLM and switches between them and cloud (Claude Opus/
-   Sonnet 4-6) via gptel presets.
-
-   Non-AI touches: relint, magit ANSI coloring, org-roam-sync,
-   capture-link-to-entry, org-inlinetask tweaks.
-
-   *Takeaway:* if you want to see the ambitious ceiling of emacs
-   + AI, this is it. Also: jwiegley didn't rip out fundamentals;
-   the 2020 completion stack and organization are broadly
-   preserved. AI is /additive/.
-
-*** steve-purcell-dotemacs — 2018-06 → 2026-04, 576 commits
-
-   *The best migration reference for Jeff.* Purcell's
-   chronological diff is essentially the exact path from where
-   Jeff is to modern:
-   - ivy → selectrum → vertico (init-minibuffer.el is now the
-     active file; init-ivy.el is legacy)
-   - added consult + embark; ~consult-ripgrep-at-point~ wrapper
-   - flycheck → flymake (has init-flymake.el)
-   - company → corfu (with careful Emacs version guards)
-   - added tree-sitter (init-treesitter.el) then /removed/
-     treesit-auto once Emacs 30 covered his needs natively
-   - eglot everywhere, with LSPs: ty and basedpyright for
-     Python; nixd for Nix; tofu-ls for Terraform; ocaml-ts-mode
-     with LSP; clojure-ts-mode + cider
-   - ~ruff-fix-on-save-mode~ for Python
-   - Removed ~ag~ (dropped in favor of consult-ripgrep)
-   - Added pulsar (visual feedback on cursor jumps), eat
-     (modern terminal, alternative to vterm)
-   - Added ns-auto-titlebar for macOS
-   - Uses pyproject.toml and uv.lock as project root markers
-
-   *Takeaway:* walk ~git log~ on this repo when planning any
-   sub-goal. He has /already done/ the migration you are
-   contemplating, with clean small commits.
-
-*** bbatsov-dotemacs — 2021-07 → 2026-04, 95 commits
-
-   Parallel modernization to Purcell, but with different
-   opinions:
-   - Dropped use-package bootstrap (built-in since 29)
-   - Moved which-key to "built-in packages" section (built-in
-     since 30)
-   - Dropped ~ag~ → consult-ripgrep
-   - Dropped elixir-mode, rust-mode, yaml-mode in favor of
-     built-in ts-modes
-   - Dropped treesit-auto (redundant on Emacs 30+)
-   - Switched from expand-region to ~expreg~
-   - Added copilot
-   - Eglot auto-shutdown when no longer needed
-   - Switched theme to tokyo-night / tokyo-storm
-   - Enabled ~repeat-mode~ with a custom repeat-map for expreg
-   - Added ~minibuffer-regexp-mode~, ~visual-wrap-prefix-mode~
-   - ~read-extended-command-predicate~ to filter ~M-x~
-   - File-notification-based auto-revert
-
-   *Takeaway:* bbatsov is a great source of small,
-   self-contained quality-of-life upgrades. Many of these are
-   one-line adoptions.
-
-*** abo-abo-dotemacs — 2021-10 → 2025-12, 227 commits
-
-   *Significant:* abo-abo /is the author/ of ivy/counsel/swiper/
-   avy. Yet his own recent commits include:
-   - ~modes/ora-python.el: Fix eglot completion delay~ (he uses
-     eglot for Python!)
-   - ~init.el: Don't load ora-lsp~ (dropped lsp-mode)
-   - ~init.el: Load ora-flycheck~, ~ora-vterm~ (still uses
-     flycheck, still uses vterm)
-   - Still uses ~ora-ivy.el~, ~ora-company.el~ — so he hasn't
-     migrated off his own stack, but the LSP world has moved on
-     around him.
-
-   *Takeaway:* the ivy author uses eglot. That's the story.
-   Ivy is not dead, but depending on it for LSP UX is no longer
-   where the maintenance is.
-
-*** munen-emacs.d — 2019-07 → 2026-04, 336 commits
-
-   Another AI-heavy evolution, but a different flavor than
-   jwiegley: munen has built an extensive set of /gptel tools/
-   (custom functions exposed to the LLM as tools):
-   ~read_file~, ~edit_file~, ~edit_file_non_interactive~,
-   ~apply_diff~, ~replace_buffer~, ~list_directory~,
-   ~file_lint_with_flycheck~, ~run_clojure_in_repl~. Uses
-   ~agent-shell~ with ~opencode~ as default agent; uses the
-   ~mcp~ package. Packages managed via Guix.
-
-   *Takeaway:* if the goal is "make emacs an agentic coding
-   environment driven by an LLM I trust," munen's pattern (gptel
-   + custom tools + MCP) is one viable shape. Less polished than
-   jwiegley but more compact.
-
-*** sacha-chua-dotemacs — 2019-09 → 2026-04, 262 commits (gh-pages branch)
-
-   Organic evolution rather than a clean migration; Sacha's use
-   of Emacs is heavily blogging + life-admin + transcript work
-   (whisperx for audio, ox-11ty for static site). Relevant
-   signals: she adopted marginalia, ~minibuffer-regexp-mode~,
-   ~goto-chg~, ~substitute~. Explicit "more tips from bbatsov"
-   commits show cross-pollination. Still on vertico/marginalia
-   stack; not on the AI bandwagon as deeply as jwiegley/munen.
-
-** Low signal (dormant or not useful)
-
-- *howardabrams-dot-files*: no commits since 2019. Howard moved
-  to DoomEmacs and blogs there. His /old/ config remains the
-  literate-style model Jeff's config is built on, but it's not
-  evolving.
-- *danielmai-dotemacs*: last activity 2023-02; the config Jeff
-  cloned is current.
-- *andreyorst-dotfiles*, *ebzzry-dotfiles*: unchanged.
-- *sirpscl-emacs.d*: only activity was 2020.
-- *editorconfig-emacs*, *smartparens*: these are package repos,
-  not configs. Relevant if we revisit those packages.
-- *greendog-gtd*: no remote configured; can't fetch.
+This landscape document consumes that synthesis into roadmap decisions:
+the section-by-section map, shipped work, pending backlog, and open
+questions below. When a reference repo changes in a way that affects the
+roadmap, update the detailed note in ~reference-configs.md~ first, then
+revise the relevant backlog item here.
 
 * Section-by-section mapping of Jeff's config
 
@@ -640,13 +520,11 @@ Package repos and primary docs:
 - [[https://github.com/renzmann/treesit-auto][treesit-auto]]
 - [[https://github.com/mickeynp/expreg][expreg]]
 
-Reference configs (re-fetched for this survey):
-- [[https://github.com/jwiegley/dot-emacs][jwiegley]] — AI-heavy ceiling
-- [[https://github.com/purcell/emacs.d][steve-purcell]] — cleanest migration reference
-- [[https://github.com/bbatsov/emacs.d][bbatsov]] — pragmatic small upgrades
-- [[https://github.com/abo-abo/oremacs][abo-abo]] — ivy author on eglot
-- [[https://github.com/munen/emacs.d][munen]] — gptel + custom tools + MCP pattern
-- [[https://github.com/sachac/.emacs.d][sacha-chua]] — organic evolution
+Reference config synthesis:
+- [[../../reference-configs.md][reference-configs.md]] — canonical repo-by-repo analysis,
+  current tiers, and extracted patterns
+- [[../../reference-repos.list][reference-repos.list]] — registered reference repos and
+  last analyzed SHAs
 
 Community context:
 - [[https://protesilaos.com/codelog/][Prot's codelog]]
