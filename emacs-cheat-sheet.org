@@ -6,6 +6,9 @@
    | C-;       | avy character timer; jump to 3-char pattern |
    | C-c C-r   | crux rename file and buffer                 |
    | C-c & C-s | choose a snippet to insert                  |
+   | C-c g g   | start or switch to a gptel chat buffer      |
+   | C-c g s   | send region/buffer text to gptel            |
+   | C-c g m   | open the gptel transient menu               |
    | s-x       | create an auto-snippet                      |
    | s-y       | expand auto-snippet                         |
 
