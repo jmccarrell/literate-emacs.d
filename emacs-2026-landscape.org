@@ -189,20 +189,87 @@ The rough order the sub-goals landed in:
 
 *** AI / LLM integration
 
-    New section in the config. Start narrow: gptel with a Claude
-    backend for general chat. Optionally add one of: copilot.el
-    for inline completion, aidermacs for agentic refactoring,
-    local-via-ollama for offline use. Keep the first landing
-    small.
+    This area is moving quickly and can sprawl. Keep the first
+    landing boring: one general chat client, one cloud backend,
+    one local backend, no custom tools, no autonomous editing, and
+    no inline code completion yet.
 
-    *Effort:* Low for basic chat (30 min). Medium if you want
-    custom tools / MCP / local models — that's a rabbit hole.
-    jwiegley's and munen's configs are the two extremes to
-    calibrate against.
+    The current package signal points to =gptel= as the first
+    layer. It is lightweight, buffer-native, supports cloud
+    providers and local runners (=Ollama=, =llama.cpp= /
+    OpenAI-compatible proxies), and has room to grow into tools
+    and MCP later. jwiegley's config shows the ambitious shape:
+    =gptel= presets switching between Claude/OpenAI/LiteLLM/local
+    model backends. Munen's config shows a compact shape:
+    =gptel= + Ollama + custom tools, with =agent-shell=,
+    =aidermacs=, and MCP kept as later layers.
 
-    *Caveat:* this area moves monthly. Whatever we pick in week
-    1 may have a better alternative in week 12. The plan should
-    bias toward reversibility.
+    Proposed sub-goals:
+
+    1. *AI chat foundation* — add a small =gptel= section with
+       =org-mode= chat buffers, conservative keybindings, and an
+       auth-source-backed cloud backend. Do not add tools yet.
+       Verify that a plain chat buffer works and can be saved as
+       an ordinary org/markdown/text buffer.
+
+    2. *Local model backend* — add one local backend, probably
+       Ollama first because it is the lowest-friction local runner
+       and both =gptel= and =ellama= document it directly. Keep the
+       model name configurable and document the shell precondition
+       (=ollama serve= plus one pulled model). This proves the
+       cloud/local switch without introducing a model gateway.
+
+    3. *Backend switching ergonomics* — decide whether Jeff wants
+       =gptel-menu= / per-buffer settings only, named =gptel=
+       presets, or a small =jwm/gptel-use-local= /
+       =jwm/gptel-use-cloud= wrapper. Prefer built-in =gptel=
+       affordances first; wrappers only if the native UI feels
+       fussy.
+
+    4. *Completion boundary* — keep LSP completion and LLM
+       completion separate. LSP/corfu/cape owns symbol-aware,
+       low-latency completion and diagnostics. LLM inline
+       completion is a later experiment with =copilot.el=,
+       =minuet-ai.el=, or another package. Do not mix this into
+       the first chat landing.
+
+    5. *Agentic editing* — evaluate =aidermacs= and =agent-shell=
+       only after chat is useful. These packages imply stronger
+       file-editing permissions, external CLIs, and more workflow
+       decisions. Treat them as separate opt-in work, not part of
+       "install an LLM client."
+
+    6. *Tool use / MCP* — evaluate =gptel= tools and =mcp.el=
+       after Jeff has a feel for basic chat and local/cloud model
+       switching. Start with read-only tools if we go there:
+       describe symbol, read buffer, read file, or list project
+       files. Editing tools should come last.
+
+    Non-goals for the first implementation:
+
+    - no autonomous repository editing;
+    - no MCP servers;
+    - no global inline completion mode;
+    - no local model orchestration gateway such as LiteLLM or
+      llama-swap unless Ollama is insufficient;
+    - no prompt libraries beyond one default system directive.
+
+    *Effort:* First chat landing: low. Local backend and switching:
+    low-to-medium, depending on local model setup. Tools, MCP,
+    and agentic editing: medium-to-high and deliberately deferred.
+
+    *Reference grounding:* =reference-configs.md= identifies
+    jwiegley and munen as the two AI references. Current upstream
+    docs checked during planning: [[https://gptel.org/][gptel]],
+    [[https://github.com/s-kostyaev/ellama][ellama]],
+    [[https://github.com/milanglacier/minuet-ai.el][minuet-ai.el]],
+    [[https://github.com/copilot-emacs/copilot.el][copilot.el]],
+    [[https://github.com/MatthewZMD/aidermacs][aidermacs]],
+    [[https://github.com/xenodium/agent-shell][agent-shell]], and
+    the [[https://modelcontextprotocol.io/docs/concepts/tools][MCP tools overview]]. =info-dir.txt= currently has
+    no local Info manual for these AI packages, so package-specific
+    grounding comes from upstream docs until a package is installed
+    and =just info-dir-update= is run.
 
 *** Terraform LSP + format-on-save
 
@@ -508,9 +575,14 @@ Package repos and primary docs:
 - [[https://www.gnu.org/software/emacs/manual/html_mono/eglot.html][Eglot manual]]
 - [[https://www.gnu.org/software/emacs/manual/html_mono/use-package.html][use-package manual]]
 - [[https://github.com/protesilaos/modus-themes][Modus themes]] (Prot)
-- [[https://github.com/karthink/gptel][gptel]]
+- [[https://gptel.org/][gptel]]
+- [[https://github.com/s-kostyaev/ellama][ellama]]
+- [[https://github.com/milanglacier/minuet-ai.el][minuet-ai.el]]
 - [[https://github.com/MatthewZMD/aidermacs][aidermacs]]
-- [[https://github.com/detsikas/copilot.el][copilot.el]]
+- [[https://github.com/copilot-emacs/copilot.el][copilot.el]]
+- [[https://github.com/xenodium/agent-shell][agent-shell]]
+- [[https://github.com/lizqwerscott/mcp.el][mcp.el]]
+- [[https://modelcontextprotocol.io/docs/concepts/tools][MCP tools overview]]
 - [[https://github.com/DetachHead/basedpyright][basedpyright]]
 - [[https://github.com/astral-sh/ruff][ruff]]
 - [[https://github.com/renzmann/treesit-auto][treesit-auto]]

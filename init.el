@@ -498,6 +498,37 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 
 (use-package edit-indirect)
 
+(use-package gptel
+  :commands (gptel gptel-send gptel-menu)
+  :bind (("C-c g g" . gptel)
+         ("C-c g s" . gptel-send)
+         ("C-c g m" . gptel-menu))
+  :init
+  (defvar jwm/gptel-anthropic-host "api.anthropic.com"
+    "Auth-source host for the Anthropic API key.")
+
+  (defvar jwm/gptel-claude-model 'claude-sonnet-4-5-20250929
+    "Default Claude model for gptel.")
+
+  (defun jwm/gptel-auth-source-password (host)
+    "Return the first auth-source password for HOST."
+    (require 'auth-source)
+    (or (auth-source-pick-first-password :host host)
+        (user-error "No auth-source password found for %s" host)))
+
+  :config
+  (setq gptel-default-mode 'org-mode)
+  (setq gptel-model jwm/gptel-claude-model)
+  (setq gptel-backend
+        (gptel-make-anthropic "Claude"
+          :stream t
+          :key (lambda ()
+                 (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
+          :models (list jwm/gptel-claude-model)))
+
+  (with-eval-after-load 'which-key
+    (which-key-add-key-based-replacements "C-c g" "gptel")))
+
 (use-package yasnippet
   :config
   (use-package yasnippet-snippets)
