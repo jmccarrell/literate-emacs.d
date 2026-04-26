@@ -217,17 +217,21 @@ The rough order the sub-goals landed in:
       backend using auth-source. Keybindings are documented in
       =emacs-cheat-sheet.org=. Jeff verified the live behavior and
       =just verify-tangle= passed on =main=.
-    - *Next likely slice:* add one local backend, probably Ollama,
-      and decide whether native =gptel-menu= selection is sufficient
-      or if small cloud/local wrapper commands would help.
+    - *This slice:* add an Ollama backend for =gemma4:26b= while
+      keeping Claude as the default. Use the existing =gptel-menu=
+      binding (=C-c g m=) to select the local backend/model.
+    - *Next likely slice:* after using Gemma 4 locally, decide
+      whether native =gptel-menu= selection is sufficient or if small
+      cloud/local wrapper commands would help.
 
     Proposed remaining sub-goals:
 
-    1. *Local model backend* — add one local backend, probably
-       Ollama first because it is the lowest-friction local runner
-       and both =gptel= and =ellama= document it directly. Keep the
-       model name configurable and document the shell precondition
-       (=ollama serve= plus one pulled model). This proves the
+    1. *Local model backend* — start with Ollama because it is the
+       lowest-friction local runner and both =gptel= and =ellama=
+       document it directly. The first implementation registers
+       =gemma4:26b= as a selectable =gptel= backend, keeps the model
+       name configurable, and documents the shell precondition
+       (=ollama serve= plus the pulled model). This proves the
        cloud/local switch without introducing a model gateway.
 
     2. *Backend switching ergonomics* — decide whether Jeff wants

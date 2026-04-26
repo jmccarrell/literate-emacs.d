@@ -1112,14 +1112,23 @@
 * AI / LLM Integration
 ** gptel
 
-   First landing: a plain chat client with one cloud backend.  Keep
-   local models, tools, MCP, agentic editing, and inline completion as
-   separate follow-up sub-goals.
+   First landing: a plain chat client with one cloud backend.  The
+   first local follow-up registers a single Ollama-backed Gemma 4
+   model, while keeping tools, MCP, agentic editing, and inline
+   completion as separate follow-up sub-goals.
 
    Store the Anthropic API key in auth-source, for example:
 
    #+begin_example
      machine api.anthropic.com login apikey password sk-ant-...
+   #+end_example
+
+   For the local backend, keep Ollama running with =gemma4:26b=
+   available:
+
+   #+begin_example
+     ollama pull gemma4:26b
+     ollama run gemma4:26b
    #+end_example
 
    #+BEGIN_SRC emacs-lisp
@@ -1134,6 +1143,12 @@
 
        (defvar jwm/gptel-claude-model 'claude-sonnet-4-5-20250929
          "Default Claude model for gptel.")
+
+       (defvar jwm/gptel-ollama-host "localhost:11434"
+         "Host for the local Ollama gptel backend.")
+
+       (defvar jwm/gptel-gemma4-model 'gemma4:26b
+         "Default local Gemma 4 model for gptel.")
 
        (defun jwm/gptel-auth-source-password (host)
          "Return the first auth-source password for HOST."
@@ -1150,6 +1165,10 @@
                :key (lambda ()
                       (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
                :models (list jwm/gptel-claude-model)))
+       (gptel-make-ollama "Ollama"
+         :host jwm/gptel-ollama-host
+         :stream t
+         :models (list jwm/gptel-gemma4-model))
 
        (with-eval-after-load 'which-key
          (which-key-add-key-based-replacements "C-c g" "gptel")))
