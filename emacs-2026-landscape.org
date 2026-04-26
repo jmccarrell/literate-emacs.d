@@ -217,9 +217,10 @@ The rough order the sub-goals landed in:
       backend using auth-source. Keybindings are documented in
       =emacs-cheat-sheet.org=. Jeff verified the live behavior and
       =just verify-tangle= passed on =main=.
-    - *This slice:* add an Ollama backend for =gemma4:26b= while
-      keeping Claude as the default. Use the existing =gptel-menu=
-      binding (=C-c g m=) to select the local backend/model.
+    - *This slice:* add an Ollama backend for =gemma4:26b= and make
+      it the default, while keeping Claude selectable. Use the
+      existing =gptel-menu= binding (=C-c g m=) to select the cloud
+      backend/model when needed.
     - *Next likely slice:* after using Gemma 4 locally, decide
       whether native =gptel-menu= selection is sufficient or if small
       cloud/local wrapper commands would help.
