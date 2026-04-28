@@ -1,31 +1,87 @@
-* Jeffs Frequently Used Bindings
-** Recent bindings to get used to
+#+TITLE: Jeffs Frequently Used Emacs Bindings
+#+AUTHOR: Jeff McCarrell
+#+DATE: 2026-04-23
+#+STARTUP: showall
+#+OPTIONS: toc:2 num:nil
+
+* Completion and Navigation
+
+  The vertico + consult + embark stack replaced ivy / counsel / swiper.
+  Projectile keeps its =C-c p ...= command map.
+
+** Consult  (search, navigate, jump)
+
+   | key   | command                                         |
+   |-------+-------------------------------------------------|
+   | C-x b | consult-buffer (buffers, recents, bookmarks)    |
+   | M-y   | consult-yank-pop                                |
+   | M-g g | consult-goto-line                               |
+   | M-g i | consult-imenu                                   |
+   | M-s j | consult-git-grep                                |
+   | M-s l | consult-line (lines in current buffer)          |
+   | M-s r | consult-ripgrep (project-wide)                  |
+   | M-s f | consult-find                                    |
+   | C-s   | consult-line (swiper-style muscle memory)       |
+   | M-?   | jwm/consult-ripgrep-at-point (seeded w/ symbol) |
+   | M-.   | toggle preview (inside any consult prompt)      |
+
+** Embark  (act on candidate)
+
+   In the minibuffer, =C-.= pops a menu of actions on the current
+   candidate. Outside the minibuffer, acts on the symbol / link /
+   file at point.
+
+   | key   | command         |
+   |-------+-----------------|
+   | C-.   | embark-act      |
+   | C-h B | embark-bindings |
+
+   Useful patterns:
+   - =C-.= during =consult-ripgrep= → export matches to a buffer
+   - =C-.= on a file candidate → rename, copy, open other window
+   - =C-.= on a symbol in code → xref, occur, rename-symbol
+
+** Avy  (jump to visible text)
+
+   | key | command             |
+   |-----+---------------------|
+   | C-; | avy-goto-char-timer |
+
+
+* Recent bindings to get used to
 
    | key       | description                                 |
    |-----------+---------------------------------------------|
    | C-;       | avy character timer; jump to 3-char pattern |
    | C-c C-r   | crux rename file and buffer                 |
    | C-c & C-s | choose a snippet to insert                  |
-   | C-c g g   | start or switch to a gptel chat buffer      |
-   | C-c g s   | send region/buffer text to gptel            |
-   | C-c g m   | open the gptel transient menu               |
+   | M-s r     | ripgrep in the buffer                       |
+   | C-h C-q   | quick menu                                  |
    | s-x       | create an auto-snippet                      |
    | s-y       | expand auto-snippet                         |
 
-*** occur
+** AI / gptel
+
+   | key     | description                            |
+   |---------+----------------------------------------|
+   | C-c g g | start or switch to a gptel chat buffer |
+   | C-c g s | send region/buffer text to gptel       |
+   | C-c g m | open the gptel transient menu          |
+
+** occur
 
     | key          | description                           |
     |--------------+---------------------------------------|
     | M-s o        | start occur, aka list-lines-matching  |
     | prefix M-s o | show prefix lines of matching context |
 
-*** counsel projectile
+** counsel projectile
     - =C-c p SPC= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-command][counsel projectile keymap]]
     - =C-c p p= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-switch-project-command][counsel projectile switch project keymap]]
     - =C-c p f= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-find-file-command][counsel projectile find file keymap]]
     - =C-c p d= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-find-dir-command][counsel projectile find dir keymap]]
 
-*** projectile
+** projectile
 
     Recall that I have bound the projectile command map prefix to =s-p= as well as the usual =C-c p=.  Thus
     =s-p= works everywhere =C-c p= does in these tables.
@@ -37,7 +93,7 @@
     | C-c p S | save all buffers across project.                                |
     | C-c p D | run dired in project                                            |
 
-*** ivy swiper
+** ivy swiper
 
    | key     | description                                           |
    |---------+-------------------------------------------------------|
@@ -45,7 +101,7 @@
    | C-o     | ivy-hydra/body                                        |
    | C-c C-o | ivy-occur save current candidate list to a new buffer |
 
-*** wrap-region and insert-pair
+** wrap-region and insert-pair
 
     wrap-region select a region, then any of these:
 
@@ -86,7 +142,8 @@
       (global-set-key (kbd "M-\"") 'insert-pair)
    #+END_SRC
 
-** Global bindings
+
+* Global bindings
 
    | key         | description                                              |
    |-------------+----------------------------------------------------------|
@@ -95,17 +152,19 @@
    | C-c C-l     | create or edit an org mode link                          |
    | C-c C-x C-s | archive a subtree                                        |
 
-** Projectile bindings
+
+* Projectile bindings
 
    bbatsov's [[https://github.com/bbatsov/projectile/blob/master/doc/usage.md#interactive-commands][key bindings table]]
 
-   | key       | description             |
-   |-----------+-------------------------|
-   | C-c p f   | list files in project   |
-   | C-c p s s | grep project for string |
-   | C-c p k   | kill project buffers    |
+   | key       | description                 |
+   |-----------+-----------------------------|
+   | C-c p f   | projectile find file        |
+   | C-c p s s | grep project for string: ag |
+   | C-c p s r | ripgrep project for string |
+   | C-c p k   | kill project buffers        |
 
-** Org mode bindings
+* Org mode bindings
 
    | key         | description                                  |
    |-------------+----------------------------------------------|
@@ -113,7 +172,7 @@
    | C-c C-v d   | demarcate a block (select region first)      |
    | C-c C-x C-s | move subtree to archive file                 |
 
-** Register, Bookmark & Mark bindings
+* Register, Bookmark & Mark bindings
 
    | key binding | description                                  |
    |-------------+----------------------------------------------|
@@ -129,7 +188,7 @@
    | C-SPC       | set the mark                                 |
    | C-u C-SPC   | jump to mark; repeat to go back in mark ring |
 
-** Agenda view bindings
+* Agenda view bindings
 
    | key    | description                    |
    |--------+--------------------------------|
@@ -587,50 +646,6 @@
    | C-c C-c | make current heading line invisibile  (not in org mode; use TAB) |
    | C-c C-e | ... visible (not in org mode; use TAB)                           |
    | ...     | many others that are not terribly releveant in org mode          |
-
-* Completion and Navigation
-
-  The vertico + consult + embark stack replaced ivy / counsel / swiper.
-  Projectile keeps its =C-c p ...= command map.
-
-** Consult  (search, navigate, jump)
-
-   | key   | command                                         |
-   |-------+-------------------------------------------------|
-   | C-x b | consult-buffer (buffers, recents, bookmarks)    |
-   | M-y   | consult-yank-pop                                |
-   | M-g g | consult-goto-line                               |
-   | M-g i | consult-imenu                                   |
-   | M-s l | consult-line (lines in current buffer)          |
-   | M-s r | consult-ripgrep (project-wide)                  |
-   | M-s f | consult-find                                    |
-   | C-s   | consult-line (swiper-style muscle memory)       |
-   | C-c j | consult-git-grep                                |
-   | C-c k | consult-ripgrep                                 |
-   | M-?   | jwm/consult-ripgrep-at-point (seeded w/ symbol) |
-   | M-.   | toggle preview (inside any consult prompt)      |
-
-** Embark  (act on candidate)
-
-   In the minibuffer, =C-.= pops a menu of actions on the current
-   candidate. Outside the minibuffer, acts on the symbol / link /
-   file at point.
-
-   | key   | command         |
-   |-------+-----------------|
-   | C-.   | embark-act      |
-   | C-h B | embark-bindings |
-
-   Useful patterns:
-   - =C-.= during =consult-ripgrep= → export matches to a buffer
-   - =C-.= on a file candidate → rename, copy, open other window
-   - =C-.= on a symbol in code → xref, occur, rename-symbol
-
-** Avy  (jump to visible text)
-
-   | key | command             |
-   |-----+---------------------|
-   | C-; | avy-goto-char-timer |
 
 * Markdown mode
 

@@ -352,14 +352,12 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
          ([remap goto-line] . consult-goto-line)
          ("M-g i"           . consult-imenu)
          ;; search (M-s) map
+         ("M-s j" . consult-git-grep)
          ("M-s l" . consult-line)
          ("M-s r" . consult-ripgrep)
          ("M-s f" . consult-find)
          ;; swiper muscle memory
-         ("C-s"   . consult-line)
-         ;; preserved from old counsel bindings
-         ("C-c j" . consult-git-grep)
-         ("C-c k" . consult-ripgrep))
+         ("C-s"   . consult-line))
   :config
   ;; defer previews until asked; avoids opening many large files
   ;; as you arrow through candidates.
