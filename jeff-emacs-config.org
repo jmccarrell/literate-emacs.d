@@ -39,18 +39,6 @@
 
    I have drawn inspiration to adopt new ways of doing some very old tricks from these fine folks.
 
-   In this refactor, I have the following major goals:
-
-   - create a more functional emacs leveraging recent innovation
-   - KISS: smaller is better; only add where there is significant reason to
-   - use the literate programming style
-     - learn babel and tangle in the process
-   - learn more emacs-lisp; even become competent?
-   - add ivy, swiper and counsel in addition to -- or perhaps replace? -- helm
-     - it turns out I have chosen to replace helm with ivy, avy, swiper and counsel.
-
-   as well as a host of smaller, clean-up type goals.
-
 ** Which emacs on Mac OS X?
 
    Since at least the summer of 2019, I have preferred [[https://emacsformacosx.com/][GNU Emacs for Mac OS X]] installed by homebrew.
@@ -120,31 +108,6 @@
             (file-exists-p (concat (getenv "HOME") "/jdocs"))))
    #+END_SRC
 
-** Modernizing Emacs
-
-   Another section I lifted [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#modernizing-emacs][straight from Howard]].  The description is his text.
-
-   #+begin_quote
-     With a long history of working on small machines without gigabytes
-     of RAM, we might as well let Emacs be the beast it has always
-     dreamed.
-
-     First, let’s increase the cache before starting garbage collection:
-   #+end_quote
-
-   #+BEGIN_SRC elisp
-     (setq gc-cons-threshold 50000000)
-   #+END_SRC
-
-   #+begin_quote
-     Found [[https://github.com/wasamasa/dotemacs/blob/master/init.org#init][here]] how to remove the warnings from the GnuTLS library when
-     using HTTPS... increase the minimum prime bits size:
-   #+end_quote
-
-   #+BEGIN_SRC elisp
-     (setq gnutls-min-prime-bits 4096)
-   #+END_SRC
-
 ** Personal Information
 
    #+BEGIN_SRC emacs-lisp
@@ -210,10 +173,6 @@
 
    Prefer [[https://github.com/jwiegley/use-package][use-package]] more or less as a more convenient way of customizing emacs. It does a whole lot more
    than that. My usage is fairly shallow.
-
-   =use-package= is built in to Emacs since 29, so the bootstrap install
-   is gone. We still set the two defaults and =require= it so the macro
-   is fully loaded at config-parse time.
 
    #+BEGIN_SRC emacs-lisp
      (setq use-package-verbose t)
@@ -341,13 +300,11 @@
 
 *** Themes I have experimented with
 
-    First of all, [[https://peach-melpa.org/][peach melba]] is a convenient way to preview themes to try out.
-
     Mostly to keep myself from repeating work, here is a partial list of themes I have tried and found
     inferior to zenburn, mostly due to their handling of =org-mode=.
 
-    - [[https://peach-melpa.org/themes/monokai-pro-theme][monokai pro]]
-    - [[https://peach-melpa.org/themes/gruvbox-theme?lang=el&variant=gruvbox-dark-medium][gruvbox dark medium]]
+    - monokai pro
+    - gruvbox dark medium
 
 ** Font
 
@@ -376,7 +333,6 @@
          (message "setting Jeff preferred font %s" preferred-font)
          (set-frame-font preferred-font t t)))
    #+END_SRC
-
 
 ** Adjust font size to display resolution
 
@@ -665,9 +621,6 @@
 ** which-key
 
    I have come to appreciate the exploration of the key maps that [[https://github.com/justbur/emacs-which-key][which-key]] enables.
-
-   Howard extensively [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#displaying-command-sequences][customizes the display of which-key]]. I find that interesting, and maybe something to
-   pursue one day.
 
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
