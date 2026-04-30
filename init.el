@@ -381,6 +381,9 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 (when (executable-find "rg")
   (global-set-key (kbd "M-?") #'jwm/consult-ripgrep-at-point))
 
+(use-package wgrep
+  :after grep)
+
 (use-package embark
   :bind (("C-."   . embark-act)
          ("C-h B" . embark-bindings))  ; inspect bindings for a prefix

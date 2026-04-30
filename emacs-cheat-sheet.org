@@ -37,9 +37,20 @@
    | C-h B | embark-bindings |
 
    Useful patterns:
-   - =C-.= during =consult-ripgrep= → export matches to a buffer
+   - =C-. E= during =consult-ripgrep= → export matches to a buffer
    - =C-.= on a file candidate → rename, copy, open other window
    - =C-.= on a symbol in code → xref, occur, rename-symbol
+
+** Project search and replace
+
+   Use this for project-wide replacements with review before saving:
+
+   1. =M-s r= search with =consult-ripgrep=.
+   2. =C-. E= export matches to a grep buffer.
+   3. =C-c C-p= enter =wgrep= edit mode.
+   4. Replace text with =M-%= or normal editing.
+   5. =C-c C-e= apply edits to file buffers.
+   6. Review and save explicitly, e.g. =C-x s=.
 
 ** Avy  (jump to visible text)
 

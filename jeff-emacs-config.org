@@ -831,6 +831,18 @@
        (global-set-key (kbd "M-?") #'jwm/consult-ripgrep-at-point))
    #+END_SRC
 
+** Wgrep
+
+   =wgrep= makes grep buffers writable. With =embark-consult=,
+   exporting =consult-ripgrep= matches via =C-. E= creates a
+   =grep-mode= buffer where =C-c C-p= enables editing and =C-c C-e=
+   applies the changes back to file buffers.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package wgrep
+       :after grep)
+   #+END_SRC
+
 ** Embark
 
    Act on the candidate at point. In the minibuffer, =C-.= pops a menu
