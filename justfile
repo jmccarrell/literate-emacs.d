@@ -43,6 +43,42 @@ info-dir-update:
            --eval '(let ((out (expand-file-name "info-dir.txt"))) (condition-case err (progn (info "(dir)") (write-region (point-min) (point-max) out)) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1))))'
     @echo "info-dir-update: wrote info-dir.txt ($(wc -l < info-dir.txt) lines)"
 
+# Make a fixup commit for already-staged changes. Picks fixup target
+# interactively via fzf from the last 50 commits on this branch.
+#
+# Pick a commit ON YOUR FEATURE BRANCH (typically the first commit of
+# this sub-goal). Picking a commit from main works syntactically but
+# `just squash` will then fail because main's commit can't be both
+# the rebase base and the autosquash target.
+#
+# Workflow: edit jeff-emacs-config.org -> just verify-tangle ->
+# git add (org + init.el) -> just fixup. The recipe deliberately
+# doesn't stage on your behalf.
+#
+# It does bail if jeff-emacs-config.org is staged but init.el is
+# not — staged drift between the two would otherwise produce a
+# squashed final commit whose org changes don't match init.el.
+fixup:
+    @if git diff --cached --name-only | grep -q '^jeff-emacs-config.org$' && \
+        ! git diff --cached --name-only | grep -q '^init.el$'; then \
+       echo "ERROR: jeff-emacs-config.org is staged but init.el is not."; \
+       echo "Run 'just verify-tangle' to regenerate init.el, then 'git add init.el', then retry."; \
+       exit 1; \
+     fi; \
+     target=$(git log -n 50 --pretty=format:'%h %s' --no-merges | fzf --prompt='fixup target: ' | cut -c -7) && \
+     git commit --fixup="$target"
+
+# Squash all fixup commits in this branch via autosquash rebase
+# against main. Run at sub-goal close, then push (with
+# --force-with-lease, since the rebase rewrites history).
+squash:
+    git rebase --interactive --autosquash main
+
+# List unsquashed fixup commits ahead of main. Empty output means
+# the branch is clean and ready to push without squashing.
+fixups-pending:
+    @git log --oneline main..HEAD | grep ' fixup!' || echo "(no pending fixups)"
+
 # Dump a specific Info node to info-node.txt for attachment to a session.
 # Use after consulting info-dir.txt to find the right node.
 # Usage: just info-node "(magit) Worktree"
