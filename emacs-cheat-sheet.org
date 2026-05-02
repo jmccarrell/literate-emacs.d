@@ -81,6 +81,14 @@ To search the current directory tree -- not project: M-x rg-dwim-project-dir
    | C-c g s | send region/buffer text to gptel       |
    | C-c g m | open the gptel transient menu          |
 
+** Eshell
+
+   | key         | description                                              |
+   |-------------+----------------------------------------------------------|
+   | C-x C-z     | show Eshell; from Eshell, restore previous window layout |
+   | C-u C-x C-z | show Eshell and cd to this buffer's directory            |
+   | C-c p x e   | open Projectile Eshell at the project root               |
+
 ** occur
 
     | key          | description                           |

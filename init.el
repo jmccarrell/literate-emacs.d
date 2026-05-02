@@ -83,6 +83,115 @@
 (auto-fill-mode)
 (global-visual-line-mode)
 
+(use-package eshell
+  :ensure nil
+  :commands eshell
+  :bind ("C-x C-z" . jwm/eshell-toggle)
+  :preface
+  (defvar jwm/eshell-toggle-window-configuration nil
+    "Window configuration before toggling to Eshell.")
+
+  (defun jwm/eshell-prompt-path ()
+    "Return a compact current directory for the Eshell prompt."
+    (let* ((path (directory-file-name (abbreviate-file-name (eshell/pwd))))
+           (parts (split-string path "/" t))
+           (last-part (car (last parts)))
+           (parent-part (cadr (reverse parts)))
+           (tail (if (and last-part parent-part (string= last-part "main"))
+                     (format "%s/%s" parent-part last-part)
+                   last-part)))
+      (cond
+       ((<= (length path) 32) path)
+       ((and parent-part (string= last-part "main")) tail)
+       ((string-prefix-p "~/" path)
+        tail)
+       ((> (length parts) 2)
+        (format "/.../%s" tail))
+       (t path))))
+
+  (defun jwm/eshell-prompt ()
+    "Return a compact Eshell prompt."
+    (concat (jwm/eshell-prompt-path)
+            (unless (eshell-exit-success-p)
+              (format " [%d]" eshell-last-command-status))
+            (if (= (file-user-uid) 0) " # " " $ ")))
+
+  (defun jwm/eshell-toggle (&optional make-cd)
+    "Toggle Eshell.
+With a prefix argument, cd Eshell to the current buffer's directory."
+    (interactive "P")
+    (if (eq major-mode 'eshell-mode)
+        (jwm/eshell-toggle-return)
+      (jwm/eshell-toggle-goto make-cd)))
+
+  (defun jwm/eshell-toggle-return ()
+    "Return from Eshell to the saved window configuration."
+    (interactive)
+    (if (window-configuration-p jwm/eshell-toggle-window-configuration)
+        (progn
+          (set-window-configuration jwm/eshell-toggle-window-configuration)
+          (setq jwm/eshell-toggle-window-configuration nil)
+          (bury-buffer "*eshell*"))
+      (bury-buffer)))
+
+  (defun jwm/eshell-toggle-goto (make-cd)
+    "Switch to Eshell, optionally changing to the current buffer directory."
+    (let* ((origin-directory (file-name-as-directory
+                              (expand-file-name
+                               (or default-directory
+                                   (bound-and-true-p list-buffers-directory)))))
+           (eshell-buffer (get-buffer "*eshell*"))
+           (cd-command (and make-cd
+                            (format "cd %s" (shell-quote-argument origin-directory)))))
+      (setq jwm/eshell-toggle-window-configuration (current-window-configuration))
+      (if eshell-buffer
+          (switch-to-buffer-other-window eshell-buffer)
+        (let ((default-directory origin-directory))
+          (eshell)))
+      (when (or cd-command make-cd)
+        (goto-char (point-max)))
+      (when cd-command
+        (insert cd-command)
+        (eshell-send-input))))
+  :config
+  (setq eshell-prompt-function #'jwm/eshell-prompt)
+
+  (defun eshell/ll (&rest args)
+    "List files in long form, preserving shell muscle memory."
+    (apply #'eshell/ls "-lF" args))
+
+  (defun eshell/la (&rest args)
+    "List all files in long form, preserving shell muscle memory."
+    (apply #'eshell/ls "-laF" args))
+
+  (defun eshell/lt (&rest args)
+    "List all files in long time order, preserving shell muscle memory."
+    (apply #'eshell/ls "-laFtr" args))
+
+  (defun eshell/lsd (&rest args)
+    "List directories in long form."
+    (let ((targets args))
+      (unless targets
+        (dolist (file (directory-files default-directory nil directory-files-no-dot-files-regexp))
+          (when (file-directory-p file)
+            (push file targets)))
+        (setq targets (nreverse targets)))
+      (when targets
+        (apply #'eshell/ls "-ldF" targets))))
+
+  (defun eshell/path (&rest args)
+    "Print PATH entries one per line.
+ The -l option is accepted for shell muscle memory."
+    (dolist (arg args)
+      (unless (string= arg "-l")
+        (user-error "Unsupported path option: %s" arg)))
+    (dolist (entry (split-string (or (getenv "PATH") "") path-separator t))
+      (eshell-print (concat entry "\n"))))
+
+  (dolist (command '(eshell/ll eshell/la eshell/lt eshell/lsd))
+    (put command 'eshell-no-numeric-conversions t)
+    (put command 'eshell-filename-arguments t)))
+
 ;; always end a file with a newline
 (setq require-final-newline t)
 
