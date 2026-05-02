@@ -202,6 +202,14 @@ The rough order the sub-goals landed in:
   =~/.emacs.d/emacs-mcp-stdio.sh= is currently absent; recreating it
   via =M-x mcp-server-lib-install= is legitimate but must be tracked
   as non-routine global Emacs state.
+- *Read-only MCP introspection tools* — expanded the Emacs-hosted
+  MCP server with two more read-only tools: =emacs_key_binding= for
+  active key sequence lookup and =emacs_library_status= for feature
+  loaded status plus =locate-library= path. Verified with
+  =just verify-tangle=, direct =mcp-server-lib-process-jsonrpc=
+  calls, and an external stdio check against a temporary Emacs
+  daemon using the package-local helper. The global helper
+  =~/.emacs.d/emacs-mcp-stdio.sh= remained absent.
 
 ** Pending
 
@@ -231,12 +239,12 @@ The rough order the sub-goals landed in:
     - *Shipped:* local Ollama backends, with Qwen MLX as the current
       default and Gemma 4 remaining selectable.
     - *This slice:* read-only external-process introspection through
-      an Emacs-hosted MCP server. The spike proves the loop without
-      adding editing tools, gptel tool integration, or HTTP transport.
-    - *Next likely slice:* add one more read-only introspection tool
-      only after using the spike. The best candidates are keybinding
-      lookup, loaded library/package status, or package-local stdio
-      ergonomics. Keep HTTP transport as a separate decision.
+      an Emacs-hosted MCP server. The first two introspection tools
+      beyond session summary are keybinding lookup and loaded
+      library/package status.
+    - *Next likely slice:* use the read-only tools before expanding
+      the surface further. The likely follow-ups are package-local
+      stdio ergonomics, Info/doc lookup, or HTTP transport evaluation.
 
     Proposed remaining sub-goals:
 
@@ -270,10 +278,11 @@ The rough order the sub-goals landed in:
 
     5. *Tool use / MCP* — first MCP spike shipped as an Emacs-hosted,
        read-only server tool callable by external processes. Future
-       slices should stay independently verifiable: keybinding lookup,
-       loaded library/package status, package-local stdio ergonomics,
-       then maybe HTTP transport. gptel tool integration and editing
-       tools remain later opt-in layers.
+       slices should stay independently verifiable. Keybinding lookup
+       and loaded library/package status have shipped; likely next
+       layers are package-local stdio ergonomics, Info/doc lookup, then
+       maybe HTTP transport. gptel tool integration and editing tools
+       remain later opt-in layers.
 
     Non-goals for the first implementation:
 

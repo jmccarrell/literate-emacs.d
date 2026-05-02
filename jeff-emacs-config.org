@@ -1282,7 +1282,28 @@
          "MCP server identifier for Jeff's read-only Emacs tools.")
 
        (defvar jwm/emacs-mcp-tools-registered nil
-         "Non-nil when Jeff's read-only Emacs MCP tools have been registered.")
+         "List of Jeff read-only Emacs MCP tool IDs registered in this session.")
+
+       (defun jwm/emacs-mcp--json-false (value)
+         "Return VALUE as a JSON boolean value."
+         (if value t :json-false))
+
+       (defun jwm/emacs-mcp--first-doc-line (symbol)
+         "Return the first documentation line for SYMBOL, or nil."
+         (when (symbolp symbol)
+           (let ((doc (documentation symbol t)))
+             (when (stringp doc)
+               (car (split-string doc "\n" t))))))
+
+       (defun jwm/emacs-mcp--register-tool (handler &rest properties)
+         "Register HANDLER with PROPERTIES once for this Emacs session."
+         (require 'mcp-server-lib)
+         (when (eq jwm/emacs-mcp-tools-registered t)
+           (setq jwm/emacs-mcp-tools-registered '("emacs_state_summary")))
+         (let ((id (plist-get properties :id)))
+           (unless (member id jwm/emacs-mcp-tools-registered)
+             (apply #'mcp-server-lib-register-tool handler properties)
+             (add-to-list 'jwm/emacs-mcp-tools-registered id))))
 
        (defun jwm/emacs-mcp-state-summary ()
          "Return read-only JSON metadata about the current Emacs session."
@@ -1308,19 +1329,80 @@
                 ("emacs_version" . ,emacs-version)
                 ("read_only" . t))))))
 
+       (defun jwm/emacs-mcp-key-binding (key)
+         "Return read-only JSON metadata about KEY's active binding.
+
+     MCP Parameters:
+       key - Emacs key sequence accepted by `kbd', for example C-c g g"
+         (require 'json)
+         (condition-case err
+             (let* ((key-vector (kbd key))
+                    (command (key-binding key-vector t))
+                    (command-symbol (and (symbolp command) command))
+                    (command-name
+                     (cond
+                      ((symbolp command) (symbol-name command))
+                      ((null command) nil)
+                      (t (prin1-to-string command))))
+                    (command-type
+                     (cond
+                      ((symbolp command) "symbol")
+                      ((null command) "unbound")
+                      (t "function"))))
+               (json-encode
+                `(("key" . ,key)
+                  ("normalized_key" . ,(key-description key-vector))
+                  ("command" . ,command-name)
+                  ("command_type" . ,command-type)
+                  ("command_doc_summary" . ,(jwm/emacs-mcp--first-doc-line command-symbol))
+                  ("read_only" . t))))
+           (error
+            (json-encode
+             `(("key" . ,key)
+               ("error" . ,(error-message-string err))
+               ("read_only" . t))))))
+
+       (defun jwm/emacs-mcp-library-status (library)
+         "Return read-only JSON metadata about LIBRARY or feature name.
+
+     MCP Parameters:
+       library - feature or library name, for example gptel or json"
+         (require 'json)
+         (let* ((feature (intern-soft library))
+                (loaded (and feature (featurep feature)))
+                (path (locate-library library)))
+           (json-encode
+            `(("library" . ,library)
+              ("feature_known" . ,(jwm/emacs-mcp--json-false feature))
+              ("feature_loaded" . ,(jwm/emacs-mcp--json-false loaded))
+              ("library_path" . ,path)
+              ("read_only" . t)))))
+
        (defun jwm/emacs-mcp-register-tools ()
          "Register Jeff's read-only Emacs MCP tools."
          (interactive)
          (require 'mcp-server-lib)
-         (unless jwm/emacs-mcp-tools-registered
-           (mcp-server-lib-register-tool
-            #'jwm/emacs-mcp-state-summary
-            :id "emacs_state_summary"
-            :description "Return read-only metadata about the current Emacs session."
-            :title "Emacs State Summary"
-            :read-only t
-            :server-id jwm/emacs-mcp-server-id)
-           (setq jwm/emacs-mcp-tools-registered t)))
+         (jwm/emacs-mcp--register-tool
+          #'jwm/emacs-mcp-state-summary
+          :id "emacs_state_summary"
+          :description "Return read-only metadata about the current Emacs session."
+          :title "Emacs State Summary"
+          :read-only t
+          :server-id jwm/emacs-mcp-server-id)
+         (jwm/emacs-mcp--register-tool
+          #'jwm/emacs-mcp-key-binding
+          :id "emacs_key_binding"
+          :description "Return the active command bound to an Emacs key sequence."
+          :title "Emacs Key Binding"
+          :read-only t
+          :server-id jwm/emacs-mcp-server-id)
+         (jwm/emacs-mcp--register-tool
+          #'jwm/emacs-mcp-library-status
+          :id "emacs_library_status"
+          :description "Return loaded feature status and library path for an Emacs library name."
+          :title "Emacs Library Status"
+          :read-only t
+          :server-id jwm/emacs-mcp-server-id))
 
        (defun jwm/emacs-mcp-start ()
          "Start Jeff's read-only Emacs MCP server."
