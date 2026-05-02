@@ -25,6 +25,8 @@
    | M-?   | jwm/consult-ripgrep-at-point (seeded w/ symbol) |
    | M-.   | toggle preview (inside any consult prompt)      |
 
+To search the current directory tree -- not project: M-x rg-dwim-project-dir
+
 ** Embark  (act on candidate)
 
    In the minibuffer, =C-.= pops a menu of actions on the current
