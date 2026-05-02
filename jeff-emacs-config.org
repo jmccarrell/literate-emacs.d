@@ -1271,9 +1271,22 @@
    Emacs defines the commands and tool, but does not start an MCP
    server.
 
+   Stdio transport uses the =mcp-server-lib= package helper
+   =emacs-mcp-stdio.sh=. The package keeps its source copy inside the
+   installed package directory; =M-x mcp-server-lib-install= copies
+   that package-provided helper to
+   =~/.emacs.d/emacs-mcp-stdio.sh= and marks it executable. That
+   global helper is acceptable package state when this package is part
+   of the config, but its provenance and lifecycle should be explicit:
+   run =just mcp-stdio-helper-status= to compare the global target to
+   the package source, use =M-x mcp-server-lib-uninstall= to remove it,
+   and repeat the install step on other machines if this MCP stdio
+   path becomes part of the durable setup.
+
    #+BEGIN_SRC emacs-lisp
      (use-package mcp-server-lib
        :commands (mcp-server-lib-install
+                  mcp-server-lib-uninstall
                   mcp-server-lib-start
                   mcp-server-lib-stop
                   mcp-server-lib-register-tool)

@@ -213,6 +213,20 @@ The rough order the sub-goals landed in:
   calls, and an external stdio check against a temporary Emacs
   daemon using the package-local helper. The global helper
   =~/.emacs.d/emacs-mcp-stdio.sh= remained absent.
+- *MCP stdio helper provenance/lifecycle* — documented
+  =emacs-mcp-stdio.sh= as a package-provided =mcp-server-lib=
+  helper, not a Claude-authored artifact. Added
+  =just mcp-stdio-helper-status= to report the package source,
+  global install target, target presence, and whether an installed
+  helper matches the package source without creating or removing the
+  global helper. Lifecycle is now explicit: install with
+  =M-x mcp-server-lib-install=, remove with
+  =M-x mcp-server-lib-uninstall=, and repeat the install on other
+  machines if this stdio path becomes durable. On this machine, Jeff
+  approved installing the package helper to
+  =~/.emacs.d/emacs-mcp-stdio.sh=; the status recipe confirmed it
+  matches the package source, and an external =tools/list= call
+  through the installed helper returned the three read-only tools.
 
 ** Pending
 
@@ -246,9 +260,8 @@ The rough order the sub-goals landed in:
       beyond session summary are keybinding lookup and loaded
       library/package status.
     - *Next likely slice:* use the read-only tools before expanding
-      the surface further. The likely follow-ups are package-local
-      stdio helper provenance/lifecycle, Info/doc lookup, or HTTP
-      transport evaluation.
+      the surface further. The likely follow-ups are Info/doc lookup
+      or HTTP transport evaluation.
 
     Proposed remaining sub-goals:
 
@@ -283,10 +296,11 @@ The rough order the sub-goals landed in:
     5. *Tool use / MCP* — first MCP spike shipped as an Emacs-hosted,
        read-only server tool callable by external processes. Future
        slices should stay independently verifiable. Keybinding lookup
-       and loaded library/package status have shipped; likely next
-       layers are stdio helper provenance/lifecycle, Info/doc lookup,
-       then maybe HTTP transport. gptel tool integration and editing
-       tools remain later opt-in layers.
+       and loaded library/package status have shipped. Stdio helper
+       provenance/lifecycle is now documented with a read-only status
+       recipe; likely next layers are Info/doc lookup, then maybe
+       HTTP transport. gptel tool integration and editing tools remain
+       later opt-in layers.
 
     Non-goals for the first implementation:
 

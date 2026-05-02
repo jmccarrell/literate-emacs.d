@@ -659,6 +659,7 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 
 (use-package mcp-server-lib
   :commands (mcp-server-lib-install
+             mcp-server-lib-uninstall
              mcp-server-lib-start
              mcp-server-lib-stop
              mcp-server-lib-register-tool)
