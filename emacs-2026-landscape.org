@@ -199,9 +199,12 @@ The rough order the sub-goals landed in:
   =tools/list= / =tools/call= checks, and an external stdio check
   against a temporary Emacs daemon using the package-local
   =emacs-mcp-stdio.sh=. The global helper
-  =~/.emacs.d/emacs-mcp-stdio.sh= is currently absent; recreating it
-  via =M-x mcp-server-lib-install= is legitimate but must be tracked
-  as non-routine global Emacs state.
+  =~/.emacs.d/emacs-mcp-stdio.sh= is package-provided
+  =mcp-server-lib= state when installed via
+  =M-x mcp-server-lib-install=. It is acceptable if this package is
+  part of Jeff's config; before invoking that command, Claude should
+  still make the path, package provenance, purpose, teardown path, and
+  cross-machine replication implication visible.
 - *Read-only MCP introspection tools* — expanded the Emacs-hosted
   MCP server with two more read-only tools: =emacs_key_binding= for
   active key sequence lookup and =emacs_library_status= for feature
@@ -244,7 +247,8 @@ The rough order the sub-goals landed in:
       library/package status.
     - *Next likely slice:* use the read-only tools before expanding
       the surface further. The likely follow-ups are package-local
-      stdio ergonomics, Info/doc lookup, or HTTP transport evaluation.
+      stdio helper provenance/lifecycle, Info/doc lookup, or HTTP
+      transport evaluation.
 
     Proposed remaining sub-goals:
 
@@ -280,9 +284,9 @@ The rough order the sub-goals landed in:
        read-only server tool callable by external processes. Future
        slices should stay independently verifiable. Keybinding lookup
        and loaded library/package status have shipped; likely next
-       layers are package-local stdio ergonomics, Info/doc lookup, then
-       maybe HTTP transport. gptel tool integration and editing tools
-       remain later opt-in layers.
+       layers are stdio helper provenance/lifecycle, Info/doc lookup,
+       then maybe HTTP transport. gptel tool integration and editing
+       tools remain later opt-in layers.
 
     Non-goals for the first implementation:
 
