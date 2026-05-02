@@ -515,7 +515,10 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
     "Host for the local Ollama gptel backend.")
 
   (defvar jwm/gptel-gemma4-model 'gemma4:26b
-    "Default local Gemma 4 model for gptel.")
+    "Fallback local Gemma 4 model for gptel.")
+
+  (defvar jwm/gptel-qwen-mlx-model 'qwen3.5:35b-a3b-coding-nvfp4
+    "Default local Qwen MLX model for gptel.")
 
   (defun jwm/gptel-auth-source-password (host)
     "Return the first auth-source password for HOST."
@@ -524,18 +527,23 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
         (user-error "No auth-source password found for %s" host)))
 
   :config
-  (setq gptel-default-mode 'org-mode)
+  (setq gptel-default-mode 'org-mode
+        gptel-include-reasoning nil)
   (gptel-make-anthropic "Claude"
     :stream t
     :key (lambda ()
            (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
     :models (list jwm/gptel-claude-model))
-  (setq gptel-model jwm/gptel-gemma4-model)
+  (gptel-make-ollama "Ollama Gemma 4"
+    :host jwm/gptel-ollama-host
+    :stream t
+    :models (list jwm/gptel-gemma4-model))
+  (setq gptel-model jwm/gptel-qwen-mlx-model)
   (setq gptel-backend
-        (gptel-make-ollama "Ollama"
+        (gptel-make-ollama "Ollama Qwen MLX"
           :host jwm/gptel-ollama-host
           :stream t
-          :models (list jwm/gptel-gemma4-model)))
+          :models (list jwm/gptel-qwen-mlx-model)))
 
   (with-eval-after-load 'which-key
     (which-key-add-key-based-replacements "C-c g" "gptel")))
