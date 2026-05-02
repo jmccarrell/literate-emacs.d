@@ -1264,6 +1264,84 @@
          (which-key-add-key-based-replacements "C-c g" "gptel")))
    #+END_SRC
 
+** Emacs MCP read-only introspection
+
+   This is the first tiny spike for letting an external process ask
+   the live Emacs session read-only questions.  It is opt-in: loading
+   Emacs defines the commands and tool, but does not start an MCP
+   server.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package mcp-server-lib
+       :commands (mcp-server-lib-install
+                  mcp-server-lib-start
+                  mcp-server-lib-stop
+                  mcp-server-lib-register-tool)
+       :init
+       (defvar jwm/emacs-mcp-server-id "jwm-emacs"
+         "MCP server identifier for Jeff's read-only Emacs tools.")
+
+       (defvar jwm/emacs-mcp-tools-registered nil
+         "Non-nil when Jeff's read-only Emacs MCP tools have been registered.")
+
+       (defun jwm/emacs-mcp-state-summary ()
+         "Return read-only JSON metadata about the current Emacs session."
+         (require 'json)
+         (let* ((window (selected-window))
+                (buffer (and (window-live-p window)
+                             (window-buffer window)))
+                (project-root
+                 (when (and buffer
+                            (fboundp 'project-current)
+                            (fboundp 'project-root))
+                   (with-current-buffer buffer
+                     (let ((project (project-current nil)))
+                       (when project
+                         (expand-file-name (project-root project))))))))
+           (with-current-buffer (or buffer (current-buffer))
+             (json-encode
+              `(("buffer" . ,(buffer-name))
+                ("major_mode" . ,(symbol-name major-mode))
+                ("file" . ,buffer-file-name)
+                ("default_directory" . ,default-directory)
+                ("project_root" . ,project-root)
+                ("emacs_version" . ,emacs-version)
+                ("read_only" . t))))))
+
+       (defun jwm/emacs-mcp-register-tools ()
+         "Register Jeff's read-only Emacs MCP tools."
+         (interactive)
+         (require 'mcp-server-lib)
+         (unless jwm/emacs-mcp-tools-registered
+           (mcp-server-lib-register-tool
+            #'jwm/emacs-mcp-state-summary
+            :id "emacs_state_summary"
+            :description "Return read-only metadata about the current Emacs session."
+            :title "Emacs State Summary"
+            :read-only t
+            :server-id jwm/emacs-mcp-server-id)
+           (setq jwm/emacs-mcp-tools-registered t)))
+
+       (defun jwm/emacs-mcp-start ()
+         "Start Jeff's read-only Emacs MCP server."
+         (interactive)
+         (require 'mcp-server-lib)
+         (jwm/emacs-mcp-register-tools)
+         (unless (and (boundp 'mcp-server-lib--running)
+                      mcp-server-lib--running)
+           (mcp-server-lib-start))
+         (message "Emacs MCP server %s is running" jwm/emacs-mcp-server-id))
+
+       (defun jwm/emacs-mcp-stop ()
+         "Stop Jeff's read-only Emacs MCP server."
+         (interactive)
+         (require 'mcp-server-lib)
+         (when (and (boundp 'mcp-server-lib--running)
+                    mcp-server-lib--running)
+           (mcp-server-lib-stop))
+         (message "Emacs MCP server %s is stopped" jwm/emacs-mcp-server-id)))
+   #+END_SRC
+
 * Programming Support
 ** yasnippets
 

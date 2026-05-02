@@ -191,6 +191,17 @@ The rough order the sub-goals landed in:
   =emacs-cheat-sheet.org=. Verified with =just verify-tangle=.
   Deliberately did not add local models, tools, MCP, agentic
   editing, or inline completion yet.
+- *Read-only Emacs MCP spike* — added =mcp-server-lib= as the
+  first tiny live-Emacs introspection slice. It defines opt-in
+  =jwm/emacs-mcp-start= / =jwm/emacs-mcp-stop= commands and exposes
+  exactly one read-only MCP tool, =emacs_state_summary=. Verified
+  with =just verify-tangle=, direct =mcp-server-lib-process-jsonrpc=
+  =tools/list= / =tools/call= checks, and an external stdio check
+  against a temporary Emacs daemon using the package-local
+  =emacs-mcp-stdio.sh=. The global helper
+  =~/.emacs.d/emacs-mcp-stdio.sh= is currently absent; recreating it
+  via =M-x mcp-server-lib-install= is legitimate but must be tracked
+  as non-routine global Emacs state.
 
 ** Pending
 
@@ -217,13 +228,15 @@ The rough order the sub-goals landed in:
       backend using auth-source. Keybindings are documented in
       =emacs-cheat-sheet.org=. Jeff verified the live behavior and
       =just verify-tangle= passed on =main=.
-    - *This slice:* add an Ollama backend for =gemma4:26b= and make
-      it the default, while keeping Claude selectable. Use the
-      existing =gptel-menu= binding (=C-c g m=) to select the cloud
-      backend/model when needed.
-    - *Next likely slice:* after using Gemma 4 locally, decide
-      whether native =gptel-menu= selection is sufficient or if small
-      cloud/local wrapper commands would help.
+    - *Shipped:* local Ollama backends, with Qwen MLX as the current
+      default and Gemma 4 remaining selectable.
+    - *This slice:* read-only external-process introspection through
+      an Emacs-hosted MCP server. The spike proves the loop without
+      adding editing tools, gptel tool integration, or HTTP transport.
+    - *Next likely slice:* add one more read-only introspection tool
+      only after using the spike. The best candidates are keybinding
+      lookup, loaded library/package status, or package-local stdio
+      ergonomics. Keep HTTP transport as a separate decision.
 
     Proposed remaining sub-goals:
 
@@ -255,16 +268,17 @@ The rough order the sub-goals landed in:
        decisions. Treat them as separate opt-in work, not part of
        "install an LLM client."
 
-    5. *Tool use / MCP* — evaluate =gptel= tools and =mcp.el=
-       after Jeff has a feel for basic chat and local/cloud model
-       switching. Start with read-only tools if we go there:
-       describe symbol, read buffer, read file, or list project
-       files. Editing tools should come last.
+    5. *Tool use / MCP* — first MCP spike shipped as an Emacs-hosted,
+       read-only server tool callable by external processes. Future
+       slices should stay independently verifiable: keybinding lookup,
+       loaded library/package status, package-local stdio ergonomics,
+       then maybe HTTP transport. gptel tool integration and editing
+       tools remain later opt-in layers.
 
     Non-goals for the first implementation:
 
     - no autonomous repository editing;
-    - no MCP servers;
+    - no MCP editing tools or agentic tool loops;
     - no global inline completion mode;
     - no local model orchestration gateway such as LiteLLM or
       llama-swap unless Ollama is insufficient;
