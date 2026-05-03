@@ -1,9 +1,10 @@
 # Recipes for the literate Emacs config.
-#
-# Run `just --list` to see all recipes.
-# Run `just tangle` after editing jeff-emacs-config.org.
-# Run `just verify-tangle` to tangle and then load the result in batch
-# emacs (-Q) to catch syntax/load errors fast.
+# Worktree mechanics live in the shared git-worktree-flow recipes,
+# wired in below. Use `just wt::new`, `just wt::status`, `just wt::close`,
+# etc. The project-specific `fixup` recipe below is a thin wrapper
+# around `wt::fixup` that adds the literate-config sanity check.
+
+mod wt '~/.config/just/worktree.just'
 
 # Default: show the recipe list. Underscore-prefixed name marks
 # this as a "private" recipe; `@` makes its commands silent so
@@ -43,41 +44,26 @@ info-dir-update:
            --eval '(let ((out (expand-file-name "info-dir.txt"))) (condition-case err (progn (info "(dir)") (write-region (point-min) (point-max) out)) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1))))'
     @echo "info-dir-update: wrote info-dir.txt ($(wc -l < info-dir.txt) lines)"
 
-# Make a fixup commit for already-staged changes. Picks fixup target
-# interactively via fzf from the last 50 commits on this branch.
-#
-# Pick a commit ON YOUR FEATURE BRANCH (typically the first commit of
-# this sub-goal). Picking a commit from main works syntactically but
-# `just squash` will then fail because main's commit can't be both
-# the rebase base and the autosquash target.
+# Project wrapper around `just wt::fixup` that enforces the literate-config
+# invariant: jeff-emacs-config.org and init.el must commit together.
+# `wt::fixup` itself targets the first commit on this branch automatically;
+# this wrapper only adds the org/init.el sanity check before delegating.
 #
 # Workflow: edit jeff-emacs-config.org -> just verify-tangle ->
 # git add (org + init.el) -> just fixup. The recipe deliberately
 # doesn't stage on your behalf.
 #
-# It does bail if jeff-emacs-config.org is staged but init.el is
-# not — staged drift between the two would otherwise produce a
-# squashed final commit whose org changes don't match init.el.
+# It bails if jeff-emacs-config.org is staged but init.el is not —
+# staged drift between the two would otherwise produce a squashed
+# final commit whose org changes don't match init.el.
 fixup:
     @if git diff --cached --name-only | grep -q '^jeff-emacs-config.org$' && \
         ! git diff --cached --name-only | grep -q '^init.el$'; then \
        echo "ERROR: jeff-emacs-config.org is staged but init.el is not."; \
        echo "Run 'just verify-tangle' to regenerate init.el, then 'git add init.el', then retry."; \
        exit 1; \
-     fi; \
-     target=$(git log -n 50 --pretty=format:'%h %s' --no-merges | fzf --prompt='fixup target: ' | cut -c -7) && \
-     git commit --fixup="$target"
-
-# Squash all fixup commits in this branch via autosquash rebase
-# against main. Run at sub-goal close, then push (with
-# --force-with-lease, since the rebase rewrites history).
-squash:
-    git rebase --interactive --autosquash main
-
-# List unsquashed fixup commits ahead of main. Empty output means
-# the branch is clean and ready to push without squashing.
-fixups-pending:
-    @git log --oneline main..HEAD | grep ' fixup!' || echo "(no pending fixups)"
+     fi
+    @just wt::fixup
 
 # Dump a specific Info node to info-node.txt for attachment to a session.
 # Use after consulting info-dir.txt to find the right node.
