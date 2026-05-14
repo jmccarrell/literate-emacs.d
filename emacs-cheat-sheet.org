@@ -11,21 +11,20 @@
 
 ** Consult  (search, navigate, jump)
 
-   | key   | command                                         |
-   |-------+-------------------------------------------------|
-   | C-x b | consult-buffer (buffers, recents, bookmarks)    |
-   | M-y   | consult-yank-pop                                |
-   | M-g g | consult-goto-line                               |
-   | M-g i | consult-imenu                                   |
-   | M-s j | consult-git-grep                                |
-   | M-s l | consult-line (lines in current buffer)          |
-   | M-s r | consult-ripgrep (project-wide)                  |
-   | M-s f | consult-find                                    |
-   | C-s   | consult-line (swiper-style muscle memory)       |
-   | M-?   | jwm/consult-ripgrep-at-point (seeded w/ symbol) |
-   | M-.   | toggle preview (inside any consult prompt)      |
-
-To search the current directory tree -- not project: M-x rg-dwim-project-dir
+   | key       | command                                         |
+   |-----------+-------------------------------------------------|
+   | C-x b     | consult-buffer (buffers, recents, bookmarks)    |
+   | M-y       | consult-yank-pop                                |
+   | M-g g     | consult-goto-line                               |
+   | M-g i     | consult-imenu                                   |
+   | M-s j     | consult-git-grep                                |
+   | M-s l     | consult-line (lines in current buffer)          |
+   | M-s r     | consult-ripgrep (project-wide)                  |
+   | C-u M-s r | consult-ripgrep (from named directory)          |
+   | M-s f     | consult-find                                    |
+   | C-s       | consult-line (swiper-style muscle memory)       |
+   | M-?       | jwm/consult-ripgrep-at-point (seeded w/ symbol) |
+   | M-.       | toggle preview (inside any consult prompt)      |
 
 ** Embark  (act on candidate)
 
