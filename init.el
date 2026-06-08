@@ -843,6 +843,17 @@ MCP Parameters:
 (use-package yaml-mode
   :mode ("\\.ya?ml\\'" . yaml-mode))
 
+(use-package outline-indent
+  :hook
+  ((yaml-mode yaml-ts-mode) . outline-indent-minor-mode)
+  :bind
+  (:map outline-indent-minor-mode-map
+        ("C-c o t" . outline-indent-toggle-fold)
+        ("C-c o c" . outline-indent-close-fold)
+        ("C-c o o" . outline-indent-open-fold)
+        ("C-c o m" . outline-indent-close-folds)
+        ("C-c o r" . outline-indent-open-folds)))
+
 (use-package jsonnet-mode)
 
 (use-package go-mode

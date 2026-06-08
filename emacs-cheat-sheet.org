@@ -53,6 +53,20 @@
    5. =C-c C-e= apply edits to file buffers.
    6. Review and save explicitly, e.g. =C-x s=.
 
+** YAML folding
+
+   =outline-indent-minor-mode= is enabled in =yaml-mode= and =yaml-ts-mode=.
+
+   | key     | command                    |
+   |---------+----------------------------|
+   | C-c o t | toggle fold at point       |
+   | C-c o c | close fold at point        |
+   | C-c o o | open fold at point         |
+   | C-c o m | close all folds            |
+   | C-c o r | open all folds             |
+
+   Bare =TAB= still indents with =indent-for-tab-command=.
+
 ** Avy  (jump to visible text)
 
    | key | command             |
