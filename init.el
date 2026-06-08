@@ -845,7 +845,7 @@ MCP Parameters:
 
 (use-package outline-indent
   :hook
-  ((yaml-mode yaml-ts-mode) . outline-indent-minor-mode)
+  ((yaml-mode yaml-ts-mode python-mode python-ts-mode) . outline-indent-minor-mode)
   :bind
   (:map outline-indent-minor-mode-map
         ("C-c o t" . outline-indent-toggle-fold)

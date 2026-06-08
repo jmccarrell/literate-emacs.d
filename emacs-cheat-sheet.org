@@ -53,9 +53,10 @@
    5. =C-c C-e= apply edits to file buffers.
    6. Review and save explicitly, e.g. =C-x s=.
 
-** YAML folding
+** YAML and Python folding
 
-   =outline-indent-minor-mode= is enabled in =yaml-mode= and =yaml-ts-mode=.
+   =outline-indent-minor-mode= is enabled in =yaml-mode=, =yaml-ts-mode=,
+   =python-mode=, and =python-ts-mode=.
 
    | key     | command                    |
    |---------+----------------------------|

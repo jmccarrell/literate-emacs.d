@@ -1509,10 +1509,16 @@
 #+begin_src emacs-lisp
   (use-package yaml-mode
     :mode ("\\.ya?ml\\'" . yaml-mode))
+#+end_src
 
+** outline-indent
+
+   =outline-indent= provides subtree folding for indentation-structured modes.
+
+#+begin_src emacs-lisp
   (use-package outline-indent
     :hook
-    ((yaml-mode yaml-ts-mode) . outline-indent-minor-mode)
+    ((yaml-mode yaml-ts-mode python-mode python-ts-mode) . outline-indent-minor-mode)
     :bind
     (:map outline-indent-minor-mode-map
           ("C-c o t" . outline-indent-toggle-fold)
