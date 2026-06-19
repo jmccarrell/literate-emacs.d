@@ -450,6 +450,30 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
 (use-package marginalia
   :init (marginalia-mode))
 
+(use-package corfu
+  :init
+  (global-corfu-mode)
+  :custom
+  (corfu-auto t)            ; popup appears automatically as you type
+  (corfu-auto-delay 0.6)    ; ...after this idle delay
+  (corfu-auto-prefix 2)     ; ...once 2 chars are typed
+  (corfu-cycle t)           ; wrap around the candidate list
+  :config
+  (corfu-popupinfo-mode))   ; show docstring beside the candidate
+
+(use-package cape
+  :custom
+  (cape-dabbrev-min-length 5)
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file))
+
+(use-package dabbrev
+  :ensure nil  ; built-in
+  :custom
+  (dabbrev-case-fold-search nil)
+  (dabbrev-case-replace nil))
+
 (use-package consult
   :bind (;; C-x bindings (buffer list, remapped)
          ([remap switch-to-buffer]              . consult-buffer)
