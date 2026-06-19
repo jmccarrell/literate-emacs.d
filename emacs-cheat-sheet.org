@@ -42,6 +42,26 @@
    - =C-.= on a file candidate → rename, copy, open other window
    - =C-.= on a symbol in code → xref, occur, rename-symbol
 
+** Corfu  (in-buffer completion popup)
+
+   Popup appears automatically as you type (=corfu-auto=). For an
+   explicit trigger use =C-M-i= (=completion-at-point=) — it works
+   regardless of indentation. =TAB= completes only when the line is
+   already correctly indented; in Python the indent command cycles
+   indent levels and usually consumes =TAB= first, so don't rely on
+   it there. In Python/Eglot buffers the candidates come from the
+   language server (ty).
+
+   The keys below apply while the popup is open:
+
+   | key         | command                                   |
+   |-------------+-------------------------------------------|
+   | TAB / RET   | insert the highlighted candidate          |
+   | M-n / M-p   | next / previous candidate                 |
+   | C-g         | dismiss the popup                         |
+   | M-SPC       | insert separator (orderless multi-token)  |
+   | M-PgDn/PgUp | scroll the doc popup (corfu-popupinfo)    |
+
 ** Project search and replace
 
    Use this for project-wide replacements with review before saving:

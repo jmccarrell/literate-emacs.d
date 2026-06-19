@@ -898,6 +898,82 @@
        :init (marginalia-mode))
    #+END_SRC
 
+** Corfu
+
+   In-buffer completion popup. The minibuffer side of the stack
+   (vertico/orderless/consult) had no in-buffer counterpart, so
+   =completion-at-point= used to dump candidates into a =*Completions*=
+   buffer. Corfu renders them as a popup at point instead.
+
+   =corfu-auto= pops the completion popup on its own as I type. For an
+   explicit trigger, =C-M-i= (=completion-at-point=) always works.
+   =tab-always-indent= is =complete=, so TAB /can/ complete too — but
+   only when the line is already correctly indented. In Python the
+   indentation command cycles indent levels and usually consumes TAB
+   first, so TAB-to-complete is unreliable there; use =C-M-i=.
+
+   =orderless= is already in =completion-styles=, so its fuzzy matching
+   works inside the popup for free. In Python (and other Eglot) buffers
+   the language server's candidates flow through the same popup.
+
+   =corfu-popupinfo-mode= shows the highlighted candidate's docstring /
+   signature (from Eglot/ty) in a side popup.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package corfu
+       :init
+       (global-corfu-mode)
+       :custom
+       (corfu-auto t)            ; popup appears automatically as you type
+       (corfu-auto-delay 0.6)    ; ...after this idle delay
+       (corfu-auto-prefix 2)     ; ...once 2 chars are typed
+       (corfu-cycle t)           ; wrap around the candidate list
+       :config
+       (corfu-popupinfo-mode))   ; show docstring beside the candidate
+   #+END_SRC
+
+** Cape
+
+   Extra =completion-at-point= sources. Eglot installs its own
+   buffer-local capf in LSP buffers (taking precedence there); these
+   are global fallbacks so completion still works elsewhere:
+   =cape-dabbrev= completes words from open buffers, =cape-file=
+   completes file paths.
+
+   Following [[https://github.com/jwiegley/dot-emacs][jwiegley]],
+   =cape-dabbrev-min-length= is raised to 5 (the default is 4) so short
+   prefixes don't flood the auto-popup with buffer words.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package cape
+       :custom
+       (cape-dabbrev-min-length 5)
+       :init
+       (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+       (add-to-list 'completion-at-point-functions #'cape-file))
+   #+END_SRC
+
+** Dabbrev
+
+   Dynamic abbreviation: textual completion that scans open buffers for
+   a word matching the prefix at point. =M-/= (=dabbrev-expand=) cycles
+   expansions inline; =C-M-/= (=dabbrev-completion=) shows the full set
+   to choose from. It's the universal fallback that works even where no
+   language server runs, and =cape-dabbrev= (above) exposes the same
+   engine as a Corfu source.
+
+   Lifted from [[https://github.com/jwiegley/dot-emacs][jwiegley]]: keep
+   expansion case-sensitive so code identifiers keep their casing —
+   =myVar= expands to =myVar=, not =myvar=.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dabbrev
+       :ensure nil  ; built-in
+       :custom
+       (dabbrev-case-fold-search nil)
+       (dabbrev-case-replace nil))
+   #+END_SRC
+
 ** Consult
 
    Command family for searching, navigating, and jumping. Replaced
