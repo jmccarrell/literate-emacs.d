@@ -401,6 +401,58 @@
      (setq disabled-command-function nil)
    #+END_SRC
 
+** Buffer cleanup for removed worktrees
+
+   When a git worktree is removed, Emacs keeps any buffers that were
+   visiting files inside it — now pointing at paths that no longer
+   exist. =projectile-kill-buffers= is the wrong tool *after* removal:
+   the worktree directory is gone, so projectile walks up to the next
+   enclosing =.git= and scopes too broadly.
+
+   Two helpers cover the two moments:
+
+   - =jwm/kill-buffers-under-dir= — run on a worktree root *before*
+     =git worktree remove=, to close exactly that worktree's buffers
+     (projectile-independent, so it works even when point isn't in one
+     of them).
+   - =jwm/kill-buffers-of-missing-files= — the recovery path *after* a
+     removal, killing any buffer whose backing file is already gone.
+
+   Both skip modified buffers so unsaved edits are never lost silently,
+   and skip remote (TRAMP) files to avoid stat-ing over the network.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun jwm/kill-buffers-of-missing-files ()
+       "Kill unmodified file buffers whose backing file no longer exists.
+     Skips modified buffers and remote (TRAMP) files."
+       (interactive)
+       (let ((n 0))
+         (dolist (buf (buffer-list))
+           (let ((file (buffer-file-name buf)))
+             (when (and file
+                        (not (file-remote-p file))
+                        (not (file-exists-p file))
+                        (not (buffer-modified-p buf)))
+               (kill-buffer buf)
+               (setq n (1+ n)))))
+         (message "Killed %d buffer(s) visiting missing files" n)))
+
+     (defun jwm/kill-buffers-under-dir (dir)
+       "Kill unmodified file buffers whose file lives under DIR.
+     Use this on a worktree root *before* `git worktree remove'."
+       (interactive "DKill file buffers under directory: ")
+       (let ((root (file-name-as-directory (expand-file-name dir)))
+             (n 0))
+         (dolist (buf (buffer-list))
+           (let ((file (buffer-file-name buf)))
+             (when (and file
+                        (string-prefix-p root (expand-file-name file))
+                        (not (buffer-modified-p buf)))
+               (kill-buffer buf)
+               (setq n (1+ n)))))
+         (message "Killed %d buffer(s) under %s" n root)))
+   #+END_SRC
+
 * Display Settings
 ** Color Theme
 

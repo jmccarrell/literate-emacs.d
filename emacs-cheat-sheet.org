@@ -78,6 +78,21 @@
    | M-x projectile-clear-known-projects | wipe the project list entirely       |
    | C-h v recentf-list / projectile-known-projects | inspect either list raw  |
 
+** Worktree teardown  (kill buffers, then remove)
+
+   Kill the worktree's buffers *before* =git worktree remove= — once the
+   directory is gone, =projectile-kill-buffers= walks up to the next
+   enclosing =.git= and scopes too broadly.
+
+   | step | key / command                       | note                          |
+   |------+-------------------------------------+-------------------------------|
+   | 1    | C-c p k (projectile-kill-buffers)   | from a buffer in the worktree |
+   | 2    | git worktree remove <wt>            | shell / magit                 |
+   | 3    | M-x projectile-remove-known-project | or auto-cleanup next session  |
+
+   Recovery, if you already removed the worktree and have buffers on
+   now-missing files: =M-x jwm/kill-buffers-of-missing-files=.
+
 ** Project search and replace
 
    Use this for project-wide replacements with review before saving:

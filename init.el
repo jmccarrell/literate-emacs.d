@@ -210,6 +210,36 @@ With a prefix argument, cd Eshell to the current buffer's directory."
 ;; no disabled functions
 (setq disabled-command-function nil)
 
+(defun jwm/kill-buffers-of-missing-files ()
+  "Kill unmodified file buffers whose backing file no longer exists.
+Skips modified buffers and remote (TRAMP) files."
+  (interactive)
+  (let ((n 0))
+    (dolist (buf (buffer-list))
+      (let ((file (buffer-file-name buf)))
+        (when (and file
+                   (not (file-remote-p file))
+                   (not (file-exists-p file))
+                   (not (buffer-modified-p buf)))
+          (kill-buffer buf)
+          (setq n (1+ n)))))
+    (message "Killed %d buffer(s) visiting missing files" n)))
+
+(defun jwm/kill-buffers-under-dir (dir)
+  "Kill unmodified file buffers whose file lives under DIR.
+Use this on a worktree root *before* `git worktree remove'."
+  (interactive "DKill file buffers under directory: ")
+  (let ((root (file-name-as-directory (expand-file-name dir)))
+        (n 0))
+    (dolist (buf (buffer-list))
+      (let ((file (buffer-file-name buf)))
+        (when (and file
+                   (string-prefix-p root (expand-file-name file))
+                   (not (buffer-modified-p buf)))
+          (kill-buffer buf)
+          (setq n (1+ n)))))
+    (message "Killed %d buffer(s) under %s" n root)))
+
 (use-package zenburn-theme
   :init (load-theme 'zenburn t))
 
