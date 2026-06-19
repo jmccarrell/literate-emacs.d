@@ -138,7 +138,7 @@ a feature worktree (a config change), not something already wired.
   Ranked by daily payoff. Each is a config change, so each would be a
   feature worktree (and probably a short spec) — none are wired today.
 
-** 1. No in-buffer completion popup (highest payoff)
+** 1. DONE No in-buffer completion popup (highest payoff)
 
    *Gap:* ty offers rich completions, but with no UI they land in a
    =*Completions*= buffer. Day-to-day this is the biggest friction.
@@ -190,10 +190,10 @@ a feature worktree (a config change), not something already wired.
 
   Before any of Part 1 works on a new machine:
 
-  - [ ] =M-x jwm/ensure-treesit-grammars= — installs the Python
+  - [X] =M-x jwm/ensure-treesit-grammars= — installs the Python
     grammar (and the others).
-  - [ ] =ty= on =PATH= — =which ty= in a shell with your env active.
-  - [ ] =ruff= on =PATH= — =which ruff=.
+  - [X] =ty= on =PATH= — =which ty= in a shell with your env active.
+  - [X] =ruff= on =PATH= — =which ruff=.
   - [ ] Project =.envrc= authorized — =M-x envrc-allow= once per repo.
 
 * A 30-minute practice path
