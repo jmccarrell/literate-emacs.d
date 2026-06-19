@@ -1,8 +1,4 @@
 # Recipes for the literate Emacs config.
-# Worktree mechanics live in the shared git-worktree-flow recipes,
-# wired in below. Use `just wt::new`, `just wt::status`, `just wt::close`,
-# etc. The project-specific `fixup` recipe below is a thin wrapper
-# around `wt::fixup` that adds the literate-config sanity check.
 
 # Default: show the recipe list. Underscore-prefixed name marks
 # this as a "private" recipe; `@` makes its commands silent so
@@ -41,27 +37,6 @@ info-dir-update:
            --eval '(package-initialize)' \
            --eval '(let ((out (expand-file-name "info-dir.txt"))) (condition-case err (progn (info "(dir)") (write-region (point-min) (point-max) out)) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1))))'
     @echo "info-dir-update: wrote info-dir.txt ($(wc -l < info-dir.txt) lines)"
-
-# Project wrapper around `just wt::fixup` that enforces the literate-config
-# invariant: jeff-emacs-config.org and init.el must commit together.
-# `wt::fixup` itself targets the first commit on this branch automatically;
-# this wrapper only adds the org/init.el sanity check before delegating.
-#
-# Workflow: edit jeff-emacs-config.org -> just verify-tangle ->
-# git add (org + init.el) -> just fixup. The recipe deliberately
-# doesn't stage on your behalf.
-#
-# It bails if jeff-emacs-config.org is staged but init.el is not —
-# staged drift between the two would otherwise produce a squashed
-# final commit whose org changes don't match init.el.
-fixup:
-    @if git diff --cached --name-only | grep -q '^jeff-emacs-config.org$' && \
-        ! git diff --cached --name-only | grep -q '^init.el$'; then \
-       echo "ERROR: jeff-emacs-config.org is staged but init.el is not."; \
-       echo "Run 'just verify-tangle' to regenerate init.el, then 'git add init.el', then retry."; \
-       exit 1; \
-     fi
-    @just wt::fixup
 
 # Dump a specific Info node to info-node.txt for attachment to a session.
 # Use after consulting info-dir.txt to find the right node.

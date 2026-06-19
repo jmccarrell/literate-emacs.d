@@ -165,10 +165,10 @@ The rough order the sub-goals landed in:
   =emacs --batch -l org --eval '(org-babel-tangle-file ...)'=
   produces byte-identical output to interactive
   =M-x org-babel-tangle= (empty diff against
-  =main/init.el=, ~480ms wall-clock cold). Recommended a
+  =init.el=, ~480ms wall-clock cold). Recommended a
   =justfile= recipe; implementation shipped below.
 - *Add justfile with tangle and verify-tangle recipes* — added
-  =literate-emacs.d/main/justfile= with =tangle= (regenerates
+  =literate-emacs.d/justfile= with =tangle= (regenerates
   =init.el=), =verify-tangle= (tangles + loads in batch =-Q= to
   catch load errors), and a private =@_= recipe that prints the
   list. Workspace =CLAUDE.md= updated to document the commands.
