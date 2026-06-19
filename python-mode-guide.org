@@ -1,0 +1,223 @@
+#+TITLE: Driving the Python Mode — A Learning Guide
+#+AUTHOR: Jeff
+#+STARTUP: showall
+
+A task-oriented guide to the Python setup in =jeff-emacs-config.org=.
+Part 1 is how to drive what you already have. Part 2 is where the
+config has gaps and how to close them. Everything in Part 1 works
+today; everything in Part 2 is a recommendation that would go through
+a feature worktree (a config change), not something already wired.
+
+* Your stack at a glance
+
+  One sentence per moving part, in the order they fire when you open
+  a =.py= file:
+
+  - =python-ts-mode= — the major mode (tree-sitter variant of built-in
+    =python.el=; the legacy =python-mode= is remapped to it when the
+    grammar is installed).
+  - =eglot= — the LSP client. =eglot-ensure= starts the server on open.
+  - =ty= — Astral's Rust type checker, run as the language server
+    (=ty server=). Provides hover, completion, go-to-definition,
+    references, rename, signature help, and type errors.
+  - =flymake= — surfaces diagnostics inline. Gets type errors from ty
+    *and* lint warnings from Ruff.
+  - =flymake-ruff= — feeds Ruff's lint results into Flymake.
+  - =ruff format= — reformats the buffer on every save
+    (=ruff-format-on-save-mode=).
+  - =outline-indent= — fold Python by indentation.
+  - =envrc= / direnv — picks up the project's virtualenv automatically.
+
+  Mental model: *ty tells you what's wrong with your types and lets you
+  navigate; Ruff keeps you stylistically clean and formatted; Flymake
+  is the single window onto both.*
+
+* Part 1 — Daily-driver workflows
+
+** Opening a file: confirm the machinery started
+
+   Open any =.py= file, then:
+
+   - =C-h m= — confirm the major mode is =python-ts-mode= (not plain
+     =python-mode=). If it says =python-mode=, the grammar isn't
+     installed — run =M-x jwm/ensure-treesit-grammars= once.
+   - Watch the mode line / echo area for Eglot to connect. =M-x
+     eglot= status, or look for the =[eglot]= server indicator.
+   - If Eglot didn't start, the =ty= binary probably isn't on =PATH=
+     for this buffer's environment (see Virtualenvs below).
+
+** Moving around
+
+   These come from =python.el= and =xref= — no extra config needed:
+
+   - =C-M-a= / =C-M-e= — jump to start / end of the current =def= or
+     =class=.
+   - =M-.= — go to definition (xref, powered by ty). =M-,= jumps back.
+   - =M-?= — find references to the symbol at point (ty).
+   - =M-g i= — jump to any def/class in the file via =consult-imenu=
+     (your config remaps imenu to consult).
+   - =C-s= — =consult-line= (your config), great for in-file hopping.
+
+** Understanding code without leaving the buffer
+
+   - ElDoc shows the signature / type of the symbol at point in the
+     echo area automatically (fed by ty). No keystroke needed.
+   - =C-h .= — pop the ElDoc help for point into a window when the
+     echo area is too small.
+   - =C-c C-d= — =python-describe-at-point= (Python's own help).
+
+** Completion (the weak spot — see Part 2)
+
+   - =C-M-i= (= =M-TAB=) — =completion-at-point=. With Eglot active
+     this queries ty and offers real, type-aware candidates including
+     auto-import.
+   - Today there is *no popup UI*, so candidates open in a
+     =*Completions*= buffer you navigate with the mouse or
+     =M-v= / arrows. It works but it's clunky — Part 2 fixes this.
+
+** Diagnostics: type errors + lint in one place
+
+   Flymake runs in every =prog-mode= buffer. Your bindings:
+
+   - =C-c ! n= — next diagnostic.
+   - =C-c ! p= — previous diagnostic.
+   - =C-c ! l= — list all diagnostics for the buffer in a window.
+
+   Type errors come from ty; style/lint warnings (unused import,
+   shadowing, etc.) come from Ruff via =flymake-ruff=. You don't need
+   to know which engine flagged a line — the list shows both.
+
+** Formatting: automatic on save
+
+   - Just save (=C-x C-s=). =ruff-format-on-save-mode= reformats the
+     whole buffer first. Nothing to invoke.
+   - =M-x ruff-format-buffer= — reformat on demand without saving.
+   - =M-x ruff-format-region= — reformat just the region.
+
+   Note: this is Ruff's *formatter* (Black-compatible). It is separate
+   from Ruff's *linter*, which surfaces through Flymake above.
+
+** Running code: the inferior REPL
+
+   These are =python.el= defaults (confirm with =C-h m= in a Python
+   buffer):
+
+   - =C-c C-p= — start / switch to the Python REPL (=run-python=).
+   - =C-c C-c= — send the whole buffer to the REPL.
+   - =C-c C-r= — send the selected region.
+   - =C-c C-e= — send the current statement.
+   - =C-M-x= — send the current =def= / =class=.
+   - =C-c C-z= — jump to the REPL window.
+
+   The REPL uses =python3= (your =python-shell-interpreter=), resolved
+   through pyenv shims and whatever venv direnv has activated.
+
+** Folding by indentation
+
+   From =outline-indent=, on Python buffers:
+
+   - =C-c o t= — toggle fold at point.
+   - =C-c o c= / =C-c o o= — close / open the fold at point.
+   - =C-c o m= / =C-c o r= — close all / open all folds.
+
+** Virtualenvs: let direnv do it
+
+   - With an =.envrc= in the project root (e.g. =layout python= or a
+     =uv=/=venv= activation), =envrc-global-mode= switches =PATH= and
+     the venv per buffer automatically.
+   - First time in a project: =M-x envrc-allow= to authorize the
+     =.envrc= (direnv's security gate). =M-x envrc-reload= after
+     editing it.
+   - Why it matters here: Eglot launches =ty= from the buffer's
+     environment. If the wrong interpreter is active, ty resolves the
+     wrong site-packages and you get phantom import errors. Getting
+     direnv right *is* getting your diagnostics right.
+
+* Part 2 — Gaps & improvement opportunities
+
+  Ranked by daily payoff. Each is a config change, so each would be a
+  feature worktree (and probably a short spec) — none are wired today.
+
+** 1. No in-buffer completion popup (highest payoff)
+
+   *Gap:* ty offers rich completions, but with no UI they land in a
+   =*Completions*= buffer. Day-to-day this is the biggest friction.
+
+   *Fix:* add =corfu= (=global-corfu-mode=) for a popup at point, plus
+   =cape= for extra completion sources and =corfu-terminal= if you ever
+   use =-nw=. Consider =(setq tab-always-indent 'complete)= so TAB
+   completes when already indented. This turns ty's existing
+   capability into a modern IDE feel with ~15 lines of config.
+
+** 2. Eglot's best commands aren't bound
+
+   *Gap:* rename, code actions, and explicit format are =M-x=-only
+   today, so they're easy to forget.
+
+   *Fix:* bind the high-value ones on a memorable prefix, e.g.
+   =eglot-rename=, =eglot-code-actions=, =eglot-find-implementation=,
+   =eglot-format-buffer=. Code actions in particular (auto-import,
+   quick-fixes) are underused when unbound.
+
+** 3. REPL ergonomics / project test running
+
+   *Gap:* you can send code to the REPL but there's no quick
+   "run the tests" or "run this file" path.
+
+   *Fix:* consider =python-pytest= (run tests by file/def/last-failed
+   with a transient menu) and/or wire a =just= recipe. Lightweight and
+   high-value if you do TDD.
+
+** 4. Surface ty's code folding through LSP
+
+   *Gap:* folding today is purely indentation-based (=outline-indent=).
+   ty's LSP also exposes semantic folding ranges that aren't used.
+
+   *Fix:* optional — Eglot can consume LSP folding. Only worth it if
+   the indentation folding ever feels coarse; otherwise leave it.
+
+** 5. Make ty / ruff presence explicit at startup
+
+   *Gap:* if =ty=, =ruff=, or a grammar is missing on a machine, the
+   failure mode is silent (Eglot just doesn't start, or format does
+   nothing).
+
+   *Fix:* a small startup check (analogous to
+   =jwm/ensure-treesit-grammars=) that warns when =ty= or =ruff= isn't
+   on =PATH=, so a fresh machine fails loudly instead of quietly.
+
+* One-time per-machine setup checklist
+
+  Before any of Part 1 works on a new machine:
+
+  - [ ] =M-x jwm/ensure-treesit-grammars= — installs the Python
+    grammar (and the others).
+  - [ ] =ty= on =PATH= — =which ty= in a shell with your env active.
+  - [ ] =ruff= on =PATH= — =which ruff=.
+  - [ ] Project =.envrc= authorized — =M-x envrc-allow= once per repo.
+
+* A 30-minute practice path
+
+  Do these in order on a real project file to build muscle memory:
+
+  1. Open a =.py= file; =C-h m= to confirm =python-ts-mode=; watch
+     Eglot connect.
+  2. Put point on an imported symbol; read the ElDoc line; =M-.= to
+     its definition; =M-,= back.
+  3. =M-?= on a function you wrote; see who calls it.
+  4. Introduce a type error on purpose (assign a str to an int);
+     =C-c ! n= to land on it; =C-c ! l= to list all diagnostics.
+  5. Add an unused import; save; watch Ruff format and Flymake flag it.
+  6. =C-c C-p= to start the REPL; =C-c C-c= to send the buffer;
+     =C-c C-r= on a region.
+  7. =C-c o m= to fold everything, =C-c o r= to unfold.
+  8. =C-M-i= on a half-typed name to feel today's completion — then
+     decide whether Part 2 #1 (corfu) is worth a worktree.
+
+* Notes on accuracy
+
+  REPL and navigation bindings above are =python.el= / =xref= defaults;
+  confirm any you doubt with =C-h m= (mode bindings) or =C-h k <keys>=.
+  The =C-c !=, =C-c o=, =M-g i=, and =C-s= bindings are your config's
+  own (Flymake, outline-indent, consult sections of
+  =jeff-emacs-config.org=).
