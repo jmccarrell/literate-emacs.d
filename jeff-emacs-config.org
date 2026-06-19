@@ -1839,6 +1839,42 @@
      (add-hook 'python-ts-mode-hook #'ruff-format-on-save-mode)
    #+END_SRC
 
+** Python environment (pet)
+
+   [[https://github.com/wyuenho/emacs-pet][PET]] (Python Executable Tracker) discovers the project's
+   virtualenv and rebinds the executables that Eglot and the inferior
+   Python shell use, per buffer. With uv that means =ty= and =python3=
+   resolve to the project's =.venv= instead of whatever happens to be
+   on =PATH=.
+
+   =pet-mode= is hooked on =python-base-mode-hook= (parent of both
+   =python-mode= and =python-ts-mode=) at depth =-10= so it runs
+   /before/ =eglot-ensure= on the same buffer; the executables must be
+   set buffer-local before Eglot starts. pet advises Eglot's command
+   resolution, so the =("ty" "server")= entry in the Eglot section
+   picks up the venv's =ty= automatically.
+
+   Ruff is intentionally left out of pet's reach: a single global
+   =ruff= (e.g. =uv tool install ruff=) handles both =ruff-format= and
+   =flymake-ruff= for every project. Formatting and lint style stay
+   consistent across projects rather than tracking each venv, so
+   neither the =ruff-format= reformatter nor =flymake-ruff-program=
+   are rerouted.
+
+   This is complementary to =envrc= (direnv) below: envrc applies a
+   project's =.envrc= exports, while pet discovers the venv for
+   projects that don't have one.
+
+   pet works with a pure-Elisp parser out of the box, and runs faster
+   when =dasel= and =sqlite3= are on =PATH=. Use =M-x pet-verify-setup=
+   in a Python buffer to confirm what it resolved.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package pet
+       :config
+       (add-hook 'python-base-mode-hook #'pet-mode -10))
+   #+END_SRC
+
 ** Eglot
 
    Built-in LSP client since Emacs 29. Natively integrates with

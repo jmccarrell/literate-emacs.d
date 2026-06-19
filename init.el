@@ -1018,6 +1018,10 @@ Idempotent; safe to run on every machine after config clone."
 (add-hook 'python-mode-hook    #'ruff-format-on-save-mode)
 (add-hook 'python-ts-mode-hook #'ruff-format-on-save-mode)
 
+(use-package pet
+  :config
+  (add-hook 'python-base-mode-hook #'pet-mode -10))
+
 (use-package eglot
   :ensure nil  ; built-in
   :custom
