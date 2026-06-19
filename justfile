@@ -4,9 +4,6 @@
 # etc. The project-specific `fixup` recipe below is a thin wrapper
 # around `wt::fixup` that adds the literate-config sanity check.
 
-# Shared worktree recipes (optional).
-mod? wt '~/.config/just/worktree.just'
-
 # Default: show the recipe list. Underscore-prefixed name marks
 # this as a "private" recipe; `@` makes its commands silent so
 # the user sees only the listing.
