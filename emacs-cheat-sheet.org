@@ -62,6 +62,22 @@
    | M-SPC       | insert separator (orderless multi-token)  |
    | M-PgDn/PgUp | scroll the doc popup (corfu-popupinfo)    |
 
+** Recent files & known projects  (manage the lists)
+
+   Two separate lists: =recentf= tracks recent /files/; projectile's
+   =projectile-known-projects= is what =C-c p p= offers. Most pruning
+   now happens automatically (recentf on mode start, projectile on
+   load), but to manage by hand:
+
+   | command                            | what it does                          |
+   |------------------------------------+---------------------------------------|
+   | M-x recentf-edit-list              | mark recent /files/ to remove         |
+   | M-x recentf-cleanup                | drop non-existent / excluded files    |
+   | M-x projectile-remove-known-project | drop one project from C-c p p        |
+   | M-x projectile-cleanup-known-projects | drop projects whose dir is gone    |
+   | M-x projectile-clear-known-projects | wipe the project list entirely       |
+   | C-h v recentf-list / projectile-known-projects | inspect either list raw  |
+
 ** Project search and replace
 
    Use this for project-wide replacements with review before saving:

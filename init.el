@@ -421,11 +421,28 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq projectile-keymap-prefix (kbd "C-c p"))
-  (projectile-global-mode t))
+  (projectile-global-mode t)
+  ;; Prune known projects whose directories no longer exist, once
+  ;; per session when projectile first loads, so the
+  ;; `projectile-switch-project' list stays free of dead paths.
+  (projectile-cleanup-known-projects))
 
 (use-package savehist
   :ensure nil
   :init (savehist-mode))
+
+(use-package recentf
+  :ensure nil  ; built-in
+  :custom
+  (recentf-max-saved-items 200)
+  (recentf-max-menu-items 25)
+  (recentf-auto-cleanup 'mode)
+  (recentf-exclude
+   '("/\\.git/" "/elpa/" "/tmp/" "\\.gz\\'"
+     "COMMIT_EDITMSG\\'" "-autoloads\\.el\\'"
+     "/\\(?:ssh\\|sudo\\):"))
+  :init
+  (recentf-mode 1))
 
 (use-package vertico
   :init (vertico-mode)

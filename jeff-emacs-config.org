@@ -834,7 +834,11 @@
        (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
        (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
        (setq projectile-keymap-prefix (kbd "C-c p"))
-       (projectile-global-mode t))
+       (projectile-global-mode t)
+       ;; Prune known projects whose directories no longer exist, once
+       ;; per session when projectile first loads, so the
+       ;; `projectile-switch-project' list stays free of dead paths.
+       (projectile-cleanup-known-projects))
    #+END_SRC
 
 ** Savehist
@@ -846,6 +850,33 @@
      (use-package savehist
        :ensure nil
        :init (savehist-mode))
+   #+END_SRC
+
+** Recentf
+
+   Built-in tracker of recently opened files; it feeds
+   =consult-recent-file= and the recent-files section of
+   =consult-buffer= (which had nothing to show before, since the mode
+   wasn't enabled). =recentf-max-saved-items= is raised from the default
+   20, and =recentf-exclude= keeps transient / generated / remote paths
+   out of the list. =recentf-auto-cleanup 'mode= prunes entries whose
+   files no longer exist whenever the mode starts; =M-x recentf-cleanup=
+   does it on demand and =M-x recentf-edit-list= removes entries
+   interactively.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package recentf
+       :ensure nil  ; built-in
+       :custom
+       (recentf-max-saved-items 200)
+       (recentf-max-menu-items 25)
+       (recentf-auto-cleanup 'mode)
+       (recentf-exclude
+        '("/\\.git/" "/elpa/" "/tmp/" "\\.gz\\'"
+          "COMMIT_EDITMSG\\'" "-autoloads\\.el\\'"
+          "/\\(?:ssh\\|sudo\\):"))
+       :init
+       (recentf-mode 1))
    #+END_SRC
 
 ** Vertico
