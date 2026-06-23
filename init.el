@@ -36,15 +36,38 @@
 
 (require 'package)
 
+;; Use the UK MirrorService mirror for GNU ELPA; keep the archive
+;; named "gnu" so package priorities and dependencies still work.
+;; package.el can refresh this mirror over HTTP; the HTTPS endpoint
+;; currently fails in Emacs even though curl can fetch it.
+(setq package-archives
+      (cons '("gnu" . "http://www.mirrorservice.org/sites/elpa.gnu.org/packages/")
+            (assoc-delete-all "gnu" package-archives)))
+;; Use MELPA's official MirrorService mirror too; the direct
+;; melpa.org HTTPS endpoint fails from Emacs on this network.
+(setq package-archives
+      (cons '("melpa" . "http://www.mirrorservice.org/sites/melpa.org/packages/")
+            (assoc-delete-all "melpa" package-archives)))
+;; Drop the built-in NonGNU archive: elpa.nongnu.org has the same
+;; GnuTLS pull failure here, and the configured non-built-ins are
+;; available from MELPA/GNU/Org.
+(setq package-archives (assoc-delete-all "nongnu" package-archives))
 (unless (assoc-default "org" package-archives)
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
-(unless (assoc-default "melpa" package-archives)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
+
+;; Prefer MELPA when a package appears in multiple archives; keep
+;; Org and GNU available as lower-priority fallbacks.
+(setq package-archive-priorities
+      '(("melpa" . 30)
+        ("org" . 20)
+        ("gnu" . 5)))
 
 (package-initialize)
 
 (setq use-package-verbose t)
-(setq use-package-always-ensure t)
+;; Startup should never block on package archive network access.
+;; Install missing packages explicitly with package.el commands.
+(setq use-package-always-ensure nil)
 (require 'use-package)
 
 (setq inhibit-startup-message t)
@@ -498,17 +521,18 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :init (marginalia-mode))
 
 (use-package corfu
-  :init
-  (global-corfu-mode)
+  :if (package-installed-p 'corfu)
   :custom
   (corfu-auto t)            ; popup appears automatically as you type
   (corfu-auto-delay 0.6)    ; ...after this idle delay
   (corfu-auto-prefix 2)     ; ...once 2 chars are typed
   (corfu-cycle t)           ; wrap around the candidate list
   :config
+  (global-corfu-mode)
   (corfu-popupinfo-mode))   ; show docstring beside the candidate
 
 (use-package cape
+  :if (package-installed-p 'cape)
   :custom
   (cape-dabbrev-min-length 5)
   :init
