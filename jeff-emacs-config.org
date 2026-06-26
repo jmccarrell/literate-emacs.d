@@ -1912,6 +1912,10 @@
    For Python we use =ty= (astral's fast type-checker, same team as
    ruff). The =ty server= subcommand launches it in LSP stdio mode.
 
+   Dockerfile LSP is optional: start it only when =docker-langserver=
+   is installed on this machine, so opening Dockerfiles stays quiet on
+   machines without the npm package.
+
    #+BEGIN_SRC emacs-lisp
      (use-package eglot
        :ensure nil  ; built-in
@@ -1927,7 +1931,11 @@
        ;; is on PATH.
        (add-to-list 'eglot-server-programs
                     '((dockerfile-mode dockerfile-ts-mode)
-                      . ("docker-langserver" "--stdio"))))
+                      . ("docker-langserver" "--stdio")))
+       (defun jwm/dockerfile-eglot-ensure ()
+         "Start Eglot for Dockerfiles when docker-langserver is available."
+         (when (executable-find "docker-langserver")
+           (eglot-ensure))))
    #+END_SRC
 
 ** Flymake
@@ -2009,7 +2017,7 @@ Lifted directly from jwiegley.
      (use-package dockerfile-mode
        :mode "Dockerfile[a-zA-Z.-]*\\'"
        :hook
-       ((dockerfile-mode dockerfile-ts-mode) . eglot-ensure))
+       ((dockerfile-mode dockerfile-ts-mode) . jwm/dockerfile-eglot-ensure))
    #+end_src
 * Report Startup Timing
 

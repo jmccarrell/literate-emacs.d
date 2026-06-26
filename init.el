@@ -1060,7 +1060,11 @@ Idempotent; safe to run on every machine after config clone."
   ;; is on PATH.
   (add-to-list 'eglot-server-programs
                '((dockerfile-mode dockerfile-ts-mode)
-                 . ("docker-langserver" "--stdio"))))
+                 . ("docker-langserver" "--stdio")))
+  (defun jwm/dockerfile-eglot-ensure ()
+    "Start Eglot for Dockerfiles when docker-langserver is available."
+    (when (executable-find "docker-langserver")
+      (eglot-ensure))))
 
 (use-package flymake
   :ensure nil  ; built-in
@@ -1091,7 +1095,7 @@ Idempotent; safe to run on every machine after config clone."
 (use-package dockerfile-mode
   :mode "Dockerfile[a-zA-Z.-]*\\'"
   :hook
-  ((dockerfile-mode dockerfile-ts-mode) . eglot-ensure))
+  ((dockerfile-mode dockerfile-ts-mode) . jwm/dockerfile-eglot-ensure))
 
 ;;; Post initialization
 
