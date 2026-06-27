@@ -152,6 +152,11 @@
    | C-c g a | add selected/current context           |
    | C-c g A | clear gptel context                    |
 
+   Tool use is on (=gptel-use-tools=): read-only tools (read buffer/file,
+   list project files, ripgrep search, read documentation) plus
+   =replace_buffer= (asks for confirmation). Toggle/select them in the
+   =C-c g m= menu.
+
 ** Eshell
 
    | key         | description                                              |
