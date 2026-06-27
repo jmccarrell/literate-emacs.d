@@ -712,17 +712,17 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   (defvar jwm/gptel-anthropic-host "api.anthropic.com"
     "Auth-source host for the Anthropic API key.")
 
+  (defvar jwm/gptel-groq-host "api.groq.com"
+    "Auth-source host for the Groq API key.")
+
   (defvar jwm/gptel-claude-model 'claude-sonnet-4-5-20250929
     "Selectable Claude model for gptel.")
 
-  (defvar jwm/gptel-ollama-host "localhost:11434"
-    "Host for the local Ollama gptel backend.")
+  (defvar jwm/gptel-groq-default-model 'openai/gpt-oss-120b
+    "Default Groq coding model for gptel.")
 
-  (defvar jwm/gptel-gemma4-model 'gemma4:26b
-    "Fallback local Gemma 4 model for gptel.")
-
-  (defvar jwm/gptel-qwen-mlx-model 'qwen3.5:35b-a3b-coding-nvfp4
-    "Default local Qwen MLX model for gptel.")
+  (defvar jwm/gptel-groq-alt-model 'qwen/qwen3.6-27b
+    "Alternate (lighter) Groq model for gptel.")
 
   (defun jwm/gptel-auth-source-password (host)
     "Return the first auth-source password for HOST."
@@ -733,21 +733,23 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :config
   (setq gptel-default-mode 'org-mode
         gptel-include-reasoning nil)
-  (gptel-make-anthropic "Claude"
-    :stream t
-    :key (lambda ()
-           (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
-    :models (list jwm/gptel-claude-model))
-  (gptel-make-ollama "Ollama Gemma 4"
-    :host jwm/gptel-ollama-host
-    :stream t
-    :models (list jwm/gptel-gemma4-model))
-  (setq gptel-model jwm/gptel-qwen-mlx-model)
-  (setq gptel-backend
-        (gptel-make-ollama "Ollama Qwen MLX"
-          :host jwm/gptel-ollama-host
-          :stream t
-          :models (list jwm/gptel-qwen-mlx-model)))
+  ;; Cloud backends are only reachable on the personal machine.
+  (when (jwm/personal-mac-p)
+    (gptel-make-anthropic "Claude"
+      :stream t
+      :key (lambda ()
+             (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
+      :models (list jwm/gptel-claude-model))
+    (setq gptel-model jwm/gptel-groq-default-model)
+    (setq gptel-backend
+          (gptel-make-openai "Groq"
+            :host jwm/gptel-groq-host
+            :endpoint "/openai/v1/chat/completions"
+            :stream t
+            :key (lambda ()
+                   (jwm/gptel-auth-source-password jwm/gptel-groq-host))
+            :models (list jwm/gptel-groq-default-model
+                          jwm/gptel-groq-alt-model))))
 
   (with-eval-after-load 'which-key
     (which-key-add-key-based-replacements "C-c g" "gptel")))

@@ -1378,25 +1378,24 @@
 * AI / LLM Integration
 ** gptel
 
-   First landing: a plain chat client with one cloud backend.  The
-   current local default is an Ollama-backed Qwen MLX model, while
-   Claude and Gemma 4 remain selectable. Tools, MCP, agentic editing,
+   gptel is a plain chat client for talking to a capable cloud model
+   while writing code.  The default backend is Groq
+   (=openai/gpt-oss-120b=, with =qwen/qwen3.6-27b= selectable) and
+   Anthropic Claude is also selectable.  Tools, MCP, agentic editing,
    and inline completion stay as separate follow-up sub-goals.
 
-   Store the Anthropic API key in auth-source, for example:
+   Both providers are cloud-only and reachable just from the personal
+   machine, so the backends are created only when =jwm/personal-mac-p=
+   is true.  On the work machine gptel still loads, but no cloud
+   backend is configured.
+
+   Store API keys in auth-source, using a dedicated Groq key for this
+   use case so usage is tracked separately, for example in
+   =~/.authinfo.gpg=:
 
    #+begin_example
+     machine api.groq.com login apikey password gsk_...
      machine api.anthropic.com login apikey password sk-ant-...
-   #+end_example
-
-   For the local backends, keep Ollama running with the Qwen MLX
-   default and Gemma 4 fallback available:
-
-   #+begin_example
-     ollama pull qwen3.5:35b-a3b-coding-nvfp4
-     ollama run qwen3.5:35b-a3b-coding-nvfp4
-     ollama pull gemma4:26b
-     ollama run gemma4:26b
    #+end_example
 
    #+BEGIN_SRC emacs-lisp
@@ -1409,17 +1408,17 @@
        (defvar jwm/gptel-anthropic-host "api.anthropic.com"
          "Auth-source host for the Anthropic API key.")
 
+       (defvar jwm/gptel-groq-host "api.groq.com"
+         "Auth-source host for the Groq API key.")
+
        (defvar jwm/gptel-claude-model 'claude-sonnet-4-5-20250929
          "Selectable Claude model for gptel.")
 
-       (defvar jwm/gptel-ollama-host "localhost:11434"
-         "Host for the local Ollama gptel backend.")
+       (defvar jwm/gptel-groq-default-model 'openai/gpt-oss-120b
+         "Default Groq coding model for gptel.")
 
-       (defvar jwm/gptel-gemma4-model 'gemma4:26b
-         "Fallback local Gemma 4 model for gptel.")
-
-       (defvar jwm/gptel-qwen-mlx-model 'qwen3.5:35b-a3b-coding-nvfp4
-         "Default local Qwen MLX model for gptel.")
+       (defvar jwm/gptel-groq-alt-model 'qwen/qwen3.6-27b
+         "Alternate (lighter) Groq model for gptel.")
 
        (defun jwm/gptel-auth-source-password (host)
          "Return the first auth-source password for HOST."
@@ -1430,21 +1429,23 @@
        :config
        (setq gptel-default-mode 'org-mode
              gptel-include-reasoning nil)
-       (gptel-make-anthropic "Claude"
-         :stream t
-         :key (lambda ()
-                (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
-         :models (list jwm/gptel-claude-model))
-       (gptel-make-ollama "Ollama Gemma 4"
-         :host jwm/gptel-ollama-host
-         :stream t
-         :models (list jwm/gptel-gemma4-model))
-       (setq gptel-model jwm/gptel-qwen-mlx-model)
-       (setq gptel-backend
-             (gptel-make-ollama "Ollama Qwen MLX"
-               :host jwm/gptel-ollama-host
-               :stream t
-               :models (list jwm/gptel-qwen-mlx-model)))
+       ;; Cloud backends are only reachable on the personal machine.
+       (when (jwm/personal-mac-p)
+         (gptel-make-anthropic "Claude"
+           :stream t
+           :key (lambda ()
+                  (jwm/gptel-auth-source-password jwm/gptel-anthropic-host))
+           :models (list jwm/gptel-claude-model))
+         (setq gptel-model jwm/gptel-groq-default-model)
+         (setq gptel-backend
+               (gptel-make-openai "Groq"
+                 :host jwm/gptel-groq-host
+                 :endpoint "/openai/v1/chat/completions"
+                 :stream t
+                 :key (lambda ()
+                        (jwm/gptel-auth-source-password jwm/gptel-groq-host))
+                 :models (list jwm/gptel-groq-default-model
+                               jwm/gptel-groq-alt-model))))
 
        (with-eval-after-load 'which-key
          (which-key-add-key-based-replacements "C-c g" "gptel")))
