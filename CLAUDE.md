@@ -41,6 +41,19 @@ The loop:
 
 If a `TASK.md` file exists in the repo root (or a feature worktree's root), read it before starting any work. It describes what's currently being worked on — the goal, approach, and relevant notes. It is branch-tracked and should be removed before the branch is merged, so it never reaches `main`.
 
+## GitHub issue workflow
+
+When work starts from a GitHub issue, honor the `agent:*` label as the workflow
+state pointer. The state machine and execution spec template live in
+[`docs/workflow/agent-workflow.md`](docs/workflow/agent-workflow.md) and
+[`docs/workflow/execution-spec-template.md`](docs/workflow/execution-spec-template.md).
+
+GitHub issues are the public backlog/spec surface when an issue exists. The
+parent workspace's `specs/` directory remains the durable home for local briefs
+that start outside GitHub, and `TASK.md` remains branch-local execution context.
+If both exist, link the branch `TASK.md` back to the issue or workspace spec that
+it implements.
+
 ## Workspace context
 
 This repo lives inside the `emacs-config` workspace folder alongside reference configurations. For the full workspace layout, see `../CLAUDE.md` (one level up, at `emacs-config/CLAUDE.md`).
