@@ -1,0 +1,30 @@
+name: agent-label-lifecycle
+
+# The `agent:*` axis is the workflow-state pointer: what happens next and who
+# owns it. A closed issue has no next action, so it must carry zero `agent:*`
+# labels. This runs on every close path, including PR auto-close, manual close,
+# and `gh issue close`.
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+
+jobs:
+  strip-agent-state:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove agent:* labels on close
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue view "$ISSUE" --repo "$REPO" --json labels \
+            --jq '.labels[].name | select(startswith("agent:"))' \
+          | while read -r label; do
+              echo "Removing $label from #$ISSUE"
+              gh issue edit "$ISSUE" --repo "$REPO" --remove-label "$label"
+            done
