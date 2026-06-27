@@ -110,7 +110,7 @@ looks like → effort.
 | editorconfig                       | editorconfig                | Built-in 30   | On Emacs 30, can drop the package.                         | Trivial | Cleanup |
 | envrc                              | envrc                       | Still current | Keep. Upstream now checks direnv availability (Purcell note). | —    | —        |
 | docker / dockerfile-mode           | docker + dockerfile-mode    | Still current | Keep. Consider ~dockerfile-ts-mode~.                        | Trivial | Low     |
-| *AI / LLM integration*             | =gptel= chat foundation     | *New domain*  | Next: add local backend + switching ergonomics.            | Medium | *High (if you want it)* |
+| *AI / LLM integration*             | =gptel= cloud chat (Groq + Claude) | *Active* | Next: backend switching ergonomics; tools/MCP later.        | Medium | *High* |
 | Tree-sitter usage overall          | not configured              | Built-in 29+  | Turn on ~major-mode-remap-alist~ for Python/JS/YAML/etc.   | Low    | Cleanup  |
 | In-buffer completion               | default (none configured)   | Corfu era     | Add corfu + cape; pair with eglot.                         | Low    | Medium (part of LSP) |
 | use-package ~:vc~                  | n/a                         | New in 30     | Use when you want a package straight from a git repo.      | —      | Reference only |
@@ -186,11 +186,14 @@ The rough order the sub-goals landed in:
   investigations start by reading =info-dir.txt=.
 - *AI chat foundation* — added =gptel= as the first AI/LLM
   integration slice. It opens Org-mode chat buffers, binds
-  =C-c g g= / =C-c g s= / =C-c g m=, uses an auth-source-backed
-  Anthropic backend, and documents the keys in
-  =emacs-cheat-sheet.org=. Verified with =just verify-tangle=.
-  Deliberately did not add local models, tools, MCP, agentic
-  editing, or inline completion yet.
+  =C-c g g= / =C-c g s= / =C-c g m=, and uses cloud backends on the
+  personal machine only (gated by =jwm/personal-mac-p=): Groq
+  =openai/gpt-oss-120b= as the default coding model with
+  =qwen/qwen3.6-27b= selectable, and Anthropic Claude selectable.
+  Keys are documented in =emacs-cheat-sheet.org=. Verified with
+  =just verify-tangle=. The earlier local Ollama backends were
+  retired in this pivot; tools, MCP, agentic editing, and inline
+  completion remain later slices.
 - *Read-only Emacs MCP spike* — added =mcp-server-lib= as the
   first tiny live-Emacs introspection slice. It defines opt-in
   =jwm/emacs-mcp-start= / =jwm/emacs-mcp-stop= commands and exposes
@@ -232,29 +235,29 @@ The rough order the sub-goals landed in:
 
 *** AI / LLM integration
 
-    This area is moving quickly and can sprawl. Keep the first
-    landing boring: one general chat client, one cloud backend,
-    one local backend, no custom tools, no autonomous editing, and
-    no inline code completion yet.
+    This area is moving quickly and can sprawl. Keep it boring:
+    one general chat client, cloud backends (Groq + Claude), no
+    custom tools, no autonomous editing, and no inline code
+    completion yet. The direction is cloud-only — local models are
+    out of scope (this supersedes the local-model direction of
+    workspace specs 006 and 007).
 
     The current package signal points to =gptel= as the first
-    layer. It is lightweight, buffer-native, supports cloud
-    providers and local runners (=Ollama=, =llama.cpp= /
-    OpenAI-compatible proxies), and has room to grow into tools
+    layer. It is lightweight, buffer-native, and talks to Groq
+    through its OpenAI-compatible API, with room to grow into tools
     and MCP later. jwiegley's config shows the ambitious shape:
-    =gptel= presets switching between Claude/OpenAI/LiteLLM/local
-    model backends. Munen's config shows a compact shape:
-    =gptel= + Ollama + custom tools, with =agent-shell=,
-    =aidermacs=, and MCP kept as later layers.
+    =gptel= presets switching between multiple cloud backends.
+    Munen's config shows a compact shape: =gptel= + custom tools,
+    with =agent-shell=, =aidermacs=, and MCP kept as later layers.
 
     Current state:
 
-    - *Shipped:* =gptel= chat foundation with an Anthropic Claude
-      backend using auth-source. Keybindings are documented in
-      =emacs-cheat-sheet.org=. Jeff verified the live behavior and
+    - *Shipped:* =gptel= cloud chat — Groq =openai/gpt-oss-120b=
+      default (=qwen/qwen3.6-27b= selectable) plus Anthropic Claude,
+      both gated to the personal machine via =jwm/personal-mac-p=,
+      keys in auth-source. The earlier local Ollama backends were
+      removed. Keybindings are documented in =emacs-cheat-sheet.org=;
       =just verify-tangle= passed on =main=.
-    - *Shipped:* local Ollama backends, with Qwen MLX as the current
-      default and Gemma 4 remaining selectable.
     - *This slice:* read-only external-process introspection through
       an Emacs-hosted MCP server. The first two introspection tools
       beyond session summary are keybinding lookup and loaded
@@ -265,35 +268,26 @@ The rough order the sub-goals landed in:
 
     Proposed remaining sub-goals:
 
-    1. *Local model backend* — start with Ollama because it is the
-       lowest-friction local runner and both =gptel= and =ellama=
-       document it directly. The first implementation registers
-       =gemma4:26b= as a selectable =gptel= backend, keeps the model
-       name configurable, and documents the shell precondition
-       (=ollama serve= plus the pulled model). This proves the
-       cloud/local switch without introducing a model gateway.
+    1. *Backend switching ergonomics* — decide whether Jeff wants
+       =gptel-menu= / per-buffer settings only or named =gptel=
+       presets for switching between Groq and Claude (and between
+       the Groq models). Prefer built-in =gptel= affordances first;
+       wrappers only if the native UI feels fussy.
 
-    2. *Backend switching ergonomics* — decide whether Jeff wants
-       =gptel-menu= / per-buffer settings only, named =gptel=
-       presets, or a small =jwm/gptel-use-local= /
-       =jwm/gptel-use-cloud= wrapper. Prefer built-in =gptel=
-       affordances first; wrappers only if the native UI feels
-       fussy.
-
-    3. *Completion boundary* — keep LSP completion and LLM
+    2. *Completion boundary* — keep LSP completion and LLM
        completion separate. LSP/corfu/cape owns symbol-aware,
        low-latency completion and diagnostics. LLM inline
        completion is a later experiment with =copilot.el=,
        =minuet-ai.el=, or another package. Do not mix this into
        the first chat landing.
 
-    4. *Agentic editing* — evaluate =aidermacs= and =agent-shell=
+    3. *Agentic editing* — evaluate =aidermacs= and =agent-shell=
        only after chat is useful. These packages imply stronger
        file-editing permissions, external CLIs, and more workflow
        decisions. Treat them as separate opt-in work, not part of
        "install an LLM client."
 
-    5. *Tool use / MCP* — first MCP spike shipped as an Emacs-hosted,
+    4. *Tool use / MCP* — first MCP spike shipped as an Emacs-hosted,
        read-only server tool callable by external processes. Future
        slices should stay independently verifiable. Keybinding lookup
        and loaded library/package status have shipped. Stdio helper
@@ -307,13 +301,13 @@ The rough order the sub-goals landed in:
     - no autonomous repository editing;
     - no MCP editing tools or agentic tool loops;
     - no global inline completion mode;
-    - no local model orchestration gateway such as LiteLLM or
-      llama-swap unless Ollama is insufficient;
+    - no local models or model-orchestration gateways (LiteLLM,
+      llama-swap, Ollama) — the direction is cloud-only;
     - no prompt libraries beyond one default system directive.
 
-    *Effort:* First chat landing: low. Local backend and switching:
-    low-to-medium, depending on local model setup. Tools, MCP,
-    and agentic editing: medium-to-high and deliberately deferred.
+    *Effort:* Cloud chat landing: low. Backend switching ergonomics:
+    low-to-medium. Tools, MCP, and agentic editing: medium-to-high
+    and deliberately deferred.
 
     *Reference grounding:* =reference-configs.md= identifies
     jwiegley and munen as the two AI references. Current upstream
