@@ -140,6 +140,9 @@
 
 ** AI / gptel
 
+   Cloud backends on the personal machine only: Groq =openai/gpt-oss-120b=
+   (default) with =qwen/qwen3.6-27b=, and Anthropic Claude selectable.
+
    | key     | description                            |
    |---------+----------------------------------------|
    | C-c g g | start or switch to a gptel chat buffer |
