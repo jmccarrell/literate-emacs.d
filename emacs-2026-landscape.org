@@ -258,7 +258,14 @@ The rough order the sub-goals landed in:
       keys in auth-source. The earlier local Ollama backends were
       removed. Keybindings are documented in =emacs-cheat-sheet.org=;
       =just verify-tangle= passed on =main=.
-    - *This slice:* read-only external-process introspection through
+    - *Shipped:* gptel tool use — five read-only tools (read
+      buffer/file, list project files, ripgrep search, read Emacs
+      documentation) plus =replace_buffer=, the one whole-buffer write
+      tool, gated by =:confirm t=. =gptel-use-tools= is on; tools are
+      selected from =gptel-menu=. This grounds the model in the actual
+      buffers/files/project; region edits stay review-first via
+      =gptel-rewrite=.
+    - *Earlier slice:* read-only external-process introspection through
       an Emacs-hosted MCP server. The first two introspection tools
       beyond session summary are keybinding lookup and loaded
       library/package status.
@@ -287,14 +294,14 @@ The rough order the sub-goals landed in:
        decisions. Treat them as separate opt-in work, not part of
        "install an LLM client."
 
-    4. *Tool use / MCP* — first MCP spike shipped as an Emacs-hosted,
-       read-only server tool callable by external processes. Future
-       slices should stay independently verifiable. Keybinding lookup
-       and loaded library/package status have shipped. Stdio helper
-       provenance/lifecycle is now documented with a read-only status
-       recipe; likely next layers are Info/doc lookup, then maybe
-       HTTP transport. gptel tool integration and editing tools remain
-       later opt-in layers.
+    4. *Tool use / MCP* — gptel tool use has shipped: five read-only
+       tools plus a confirmation-gated =replace_buffer=. The
+       Emacs-hosted MCP server (keybinding lookup, loaded
+       library/package status, stdio helper provenance recipe) remains
+       read-only. Likely next layers are more gptel tools (other
+       confirmation-gated edits) and, on the MCP side, Info/doc lookup
+       then maybe HTTP transport. Keep each slice independently
+       verifiable.
 
     Non-goals for the first implementation:
 
