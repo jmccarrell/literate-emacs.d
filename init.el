@@ -752,6 +752,38 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   (with-eval-after-load 'which-key
     (which-key-add-key-based-replacements "C-c g" "gptel")))
 
+(use-package gptel-rewrite
+  :ensure nil  ; ships with gptel
+  :commands (gptel-rewrite)
+  :bind (("C-c g r" . gptel-rewrite))
+  :custom
+  (gptel-rewrite-default-action nil)
+  :config
+  (defun jwm/gptel-python-rewrite-directive ()
+    "Return a Python-specific directive for `gptel-rewrite'."
+    (when (derived-mode-p 'python-mode 'python-ts-mode)
+      (concat
+       "You are editing Python code in an Emacs buffer. "
+       "Make the smallest focused change that satisfies the request. "
+       "Preserve behavior unless the user explicitly asks for a behavior change. "
+       "Do not introduce new dependencies unless the user asks for them. "
+       "Return only the replacement code for the selected region.")))
+
+  (add-hook 'gptel-rewrite-directives-hook
+            #'jwm/gptel-python-rewrite-directive))
+
+(use-package gptel-context
+  :ensure nil  ; ships with gptel
+  :commands (gptel-context-add gptel-context-remove-all)
+  :bind (("C-c g a" . gptel-context-add)
+         ("C-c g A" . gptel-context-remove-all))
+  :config
+  (with-eval-after-load 'which-key
+    (which-key-add-key-based-replacements
+      "C-c g a" "add gptel context"
+      "C-c g A" "clear gptel context"
+      "C-c g r" "rewrite region")))
+
 (use-package mcp-server-lib
   :commands (mcp-server-lib-install
              mcp-server-lib-uninstall

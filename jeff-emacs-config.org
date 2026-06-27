@@ -1450,6 +1450,63 @@
          (which-key-add-key-based-replacements "C-c g" "gptel")))
    #+END_SRC
 
+** gptel rewrite
+
+   =gptel-rewrite= rewrites, refactors, or fills in the active
+   region using the current =gptel= backend.  This is the first
+   code-editing workflow: select code, request a change, then review
+   the proposed rewrite before accepting it.  Keeping
+   =gptel-rewrite-default-action= nil makes the review step explicit;
+   generated code is not accepted into the buffer automatically.
+
+   Python buffers get a small directive that biases the model toward
+   surgical edits that preserve behavior unless the prompt asks for a
+   behavior change.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package gptel-rewrite
+       :ensure nil  ; ships with gptel
+       :commands (gptel-rewrite)
+       :bind (("C-c g r" . gptel-rewrite))
+       :custom
+       (gptel-rewrite-default-action nil)
+       :config
+       (defun jwm/gptel-python-rewrite-directive ()
+         "Return a Python-specific directive for `gptel-rewrite'."
+         (when (derived-mode-p 'python-mode 'python-ts-mode)
+           (concat
+            "You are editing Python code in an Emacs buffer. "
+            "Make the smallest focused change that satisfies the request. "
+            "Preserve behavior unless the user explicitly asks for a behavior change. "
+            "Do not introduce new dependencies unless the user asks for them. "
+            "Return only the replacement code for the selected region.")))
+
+       (add-hook 'gptel-rewrite-directives-hook
+                 #'jwm/gptel-python-rewrite-directive))
+   #+END_SRC
+
+** gptel context
+
+   =gptel-context-add= adds the active region, current buffer, or
+   context-at-point to the next request.  It is optional and explicit:
+   use it when the rewrite needs surrounding code or another buffer,
+   then clear it when the extra context should not leak into the next
+   prompt.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package gptel-context
+       :ensure nil  ; ships with gptel
+       :commands (gptel-context-add gptel-context-remove-all)
+       :bind (("C-c g a" . gptel-context-add)
+              ("C-c g A" . gptel-context-remove-all))
+       :config
+       (with-eval-after-load 'which-key
+         (which-key-add-key-based-replacements
+           "C-c g a" "add gptel context"
+           "C-c g A" "clear gptel context"
+           "C-c g r" "rewrite region")))
+   #+END_SRC
+
 ** Emacs MCP read-only introspection
 
    This is the first tiny spike for letting an external process ask

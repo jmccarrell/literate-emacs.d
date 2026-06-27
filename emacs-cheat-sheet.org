@@ -145,6 +145,9 @@
    | C-c g g | start or switch to a gptel chat buffer |
    | C-c g s | send region/buffer text to gptel       |
    | C-c g m | open the gptel transient menu          |
+   | C-c g r | rewrite selected region with review    |
+   | C-c g a | add selected/current context           |
+   | C-c g A | clear gptel context                    |
 
 ** Eshell
 
