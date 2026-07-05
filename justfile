@@ -23,6 +23,21 @@ verify-tangle: tangle
           --eval '(kill-emacs 0)'
     @echo "verify-tangle: PASS"
 
+# Point ~/.emacs.d/init.el at THIS checkout's init.el.
+#
+# Idempotent and imperative: run it from whichever checkout you want
+# live, and it repoints the symlink there regardless of prior state.
+#   main checkout:      just link   -> ~/.emacs.d/init.el -> main/init.el
+#   a feature worktree: just link   -> ~/.emacs.d/init.el -> worktree/init.el
+# Revert after a merge by running `just link` again from the main checkout.
+# Also covers cold start on a new machine (creates ~/.emacs.d if absent).
+emacs-d := join(home_directory(), ".emacs.d")
+
+link:
+    mkdir -p {{emacs-d}}
+    ln -sfn {{justfile_directory()}}/init.el {{emacs-d}}/init.el
+    @echo "linked {{emacs-d}}/init.el -> {{justfile_directory()}}/init.el"
+
 # Refresh info-dir.txt — a snapshot of all Info manuals visible to
 # this Emacs install. Run when packages change. The file is tracked
 # in git; commit after running.
