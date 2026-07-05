@@ -203,6 +203,23 @@
      ;; Startup should never block on package archive network access.
      ;; Install missing packages explicitly with package.el commands.
      (setq use-package-always-ensure nil)
+
+     ;; Explicit install manifest. Because always-ensure is nil, loading this
+     ;; config never installs anything — packages are installed out-of-band with
+     ;; `just install-packages', e.g. when provisioning a fresh machine. A plain
+     ;; defvar (not `package-selected-packages') on purpose: that variable is a
+     ;; delayed-init custom var, so a stale value in the custom-file (settings.el)
+     ;; is applied after init and would clobber it. External archive packages only
+     ;; (no built-ins); keep in sync with the use-package forms below.
+     (defvar jwm/required-packages
+       '(ace-window auto-yasnippet avy cape consult corfu crux diminish
+         docker dockerfile-mode edit-indirect embark embark-consult envrc
+         expand-region flymake-ruff go-mode gptel js2-mode json-mode
+         jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
+         mcp-server-lib ob-restclient orderless outline-indent pet projectile
+         reformatter terraform-mode textsize vertico wgrep which-key
+         wrap-region yaml-mode yasnippet zenburn-theme)
+       "External packages this config expects; installed by `just install-packages'.")
      (require 'use-package)
    #+END_SRC
 

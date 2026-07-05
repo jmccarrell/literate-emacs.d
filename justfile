@@ -23,6 +23,18 @@ verify-tangle: tangle
           --eval '(kill-emacs 0)'
     @echo "verify-tangle: PASS"
 
+# Install the packages this config expects (the jwm/required-packages manifest).
+#
+# Because init.el sets use-package-always-ensure nil, loading the config never
+# installs anything — so on a fresh machine (e.g. a provisioned VM) run this once
+# to populate ~/.emacs.d/elpa, then the first interactive Emacs is package-ready.
+# Idempotent: already-installed packages are skipped.
+install-packages:
+    emacs --batch -l init.el \
+          --eval '(package-refresh-contents)' \
+          --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))'
+    @echo "install-packages: done"
+
 # Point ~/.emacs.d/init.el at THIS checkout's init.el.
 #
 # Idempotent and imperative: run it from whichever checkout you want
