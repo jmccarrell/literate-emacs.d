@@ -34,11 +34,19 @@ verify-tangle: tangle
 # partway (e.g. org-babel hard-requires ob-restclient before it's installed). That's
 # fine here — the package archives + `jwm/required-packages' are defined near the top,
 # before any such failure, which is all `package-install' below needs.
+#
+# Then WARM THE NATIVE-COMP CACHE: native-compile every installed package now, so the
+# first interactive Emacs has nothing left to JIT-compile. Without this, the first
+# launch async-compiles ~half the packages, and during that window some deps resolve
+# inconsistently — e.g. marginalia's compat-shimmed `seconds-to-string' briefly hits
+# the 1-arg native and errors ("wrong-number-of-arguments (1 . 1) 3"). Self-heals on
+# the 2nd launch; warming here makes the 1st launch clean too.
 install-packages:
     emacs --batch \
           --eval '(condition-case e (load-file "init.el") (error (princ (format "init.el partial load (bootstrap, expected pre-install): %S\n" e))))' \
           --eval '(package-refresh-contents)' \
-          --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))'
+          --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))' \
+          --eval '(when (native-comp-available-p) (native-compile-async package-user-dir (quote recursively)) (while (or comp-files-queue (and (fboundp (quote comp-async-runnings)) (> (comp-async-runnings) 0))) (sleep-for 1)))'
     @echo "install-packages: done"
 
 # Point ~/.emacs.d/init.el at THIS checkout's init.el.
