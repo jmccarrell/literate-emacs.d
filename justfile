@@ -29,8 +29,14 @@ verify-tangle: tangle
 # installs anything — so on a fresh machine (e.g. a provisioned VM) run this once
 # to populate ~/.emacs.d/elpa, then the first interactive Emacs is package-ready.
 # Idempotent: already-installed packages are skipped.
+#
+# Load init.el inside a condition-case: on a bare box, loading the full config aborts
+# partway (e.g. org-babel hard-requires ob-restclient before it's installed). That's
+# fine here — the package archives + `jwm/required-packages' are defined near the top,
+# before any such failure, which is all `package-install' below needs.
 install-packages:
-    emacs --batch -l init.el \
+    emacs --batch \
+          --eval '(condition-case e (load-file "init.el") (error (princ (format "init.el partial load (bootstrap, expected pre-install): %S\n" e))))' \
           --eval '(package-refresh-contents)' \
           --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))'
     @echo "install-packages: done"
