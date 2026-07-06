@@ -46,7 +46,7 @@ install-packages:
           --eval '(condition-case e (load-file "init.el") (error (princ (format "init.el partial load (bootstrap, expected pre-install): %S\n" e))))' \
           --eval '(package-refresh-contents)' \
           --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))' \
-          --eval '(when (native-comp-available-p) (native-compile-async package-user-dir (quote recursively)) (while (or comp-files-queue (and (fboundp (quote comp-async-runnings)) (> (comp-async-runnings) 0))) (sleep-for 1)))'
+          --eval '(when (native-comp-available-p) (native-compile-async package-user-dir (quote recursively)) (sleep-for 3) (while (or comp-files-queue (and (fboundp (quote comp-async-runnings)) (> (or (comp-async-runnings) 0) 0))) (sleep-for 1)))'
     @echo "install-packages: done"
 
 # Point ~/.emacs.d/init.el at THIS checkout's init.el.
