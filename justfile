@@ -42,10 +42,18 @@ verify-tangle: tangle
 # the 1-arg native and errors ("wrong-number-of-arguments (1 . 1) 3"). Self-heals on
 # the 2nd launch; warming here makes the 1st launch clean too.
 install-packages:
+    # 1. Install. init.el is loaded in a condition-case because on a bare box the
+    #    full config aborts partway (org-babel hard-requires ob-restclient before
+    #    it's installed) — fine, the archives + manifest are defined before that.
     emacs --batch \
           --eval '(condition-case e (load-file "init.el") (error (princ (format "init.el partial load (bootstrap, expected pre-install): %S\n" e))))' \
           --eval '(package-refresh-contents)' \
-          --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))' \
+          --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))'
+    # 2. Warm the native-comp cache in a SECOND, fresh Emacs — packages are now
+    #    installed so init.el loads fully. (Doing this in the install session above
+    #    races with the async compilation package-install itself queues.) Blocks
+    #    until compilation finishes so provisioning returns with a warm cache.
+    emacs --batch -l init.el \
           --eval '(when (native-comp-available-p) (native-compile-async package-user-dir (quote recursively)) (sleep-for 3) (while (or comp-files-queue (and (fboundp (quote comp-async-runnings)) (> (or (comp-async-runnings) 0) 0))) (sleep-for 1)))'
     @echo "install-packages: done"
 
