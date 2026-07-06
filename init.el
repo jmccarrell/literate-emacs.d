@@ -75,7 +75,9 @@
 ;; defvar (not `package-selected-packages') on purpose: that variable is a
 ;; delayed-init custom var, so a stale value in the custom-file (settings.el)
 ;; is applied after init and would clobber it. External archive packages only
-;; (no built-ins); keep in sync with the use-package forms below.
+;; (no built-ins); keep in sync with the use-package forms below. Packages
+;; loaded via `require' or a nested use-package (e.g. yasnippet-snippets, inside
+;; yasnippet's :config) aren't auto-derived — add them here by hand.
 (defvar jwm/required-packages
   '(ace-window auto-yasnippet avy cape consult corfu crux diminish
     docker dockerfile-mode edit-indirect embark embark-consult envrc
@@ -83,7 +85,7 @@
     jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
     mcp-server-lib ob-restclient orderless outline-indent pet projectile
     reformatter terraform-mode textsize vertico wgrep which-key
-    wrap-region yaml-mode yasnippet zenburn-theme)
+    wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
   "External packages this config expects; installed by `just install-packages'.")
 (require 'use-package)
 
@@ -418,7 +420,12 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
  ;; ("A-C--" . ha/text-scale-frame-decrease)
  )
 
-(global-set-key (kbd "M-[") 'insert-pair)
+;; M-[ is ESC[ — the terminal CSI introducer that every escape sequence
+;; starts with — so binding it shadows focus/bracketed-paste/etc. in a
+;; terminal (garbage like "[I]" and "[200~foo[201~"). Only bind it in
+;; graphical frames; the others below aren't escape-sequence introducers.
+(when (display-graphic-p)
+  (global-set-key (kbd "M-[") 'insert-pair))
 (global-set-key (kbd "M-{") 'insert-pair)
 ;; (global-set-key (kbd "M-<") 'insert-pair)
 (global-set-key (kbd "M-'") 'insert-pair)
