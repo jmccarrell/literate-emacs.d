@@ -225,6 +225,43 @@
      (require 'use-package)
    #+END_SRC
 
+** Native-compilation warming
+
+   There is no standard "pre-compile everything I'll use" command, so here's a
+   small helper. Run it headlessly during provisioning so a fresh machine's first
+   interactive Emacs has little left to JIT-compile (which is otherwise noisy and,
+   before packages are compiled, can trip transient errors):
+
+   : emacs --batch -l init.el --eval '(jwm/warm-native-comp)'
+
+   It compiles all installed packages plus the core/bundled lisp this config has
+   actually loaded (eglot, editorconfig, …) that =package-user-dir= doesn't cover,
+   then BLOCKS until the async compilation finishes. A small residual — modules
+   loaded only on specific interactive actions (e.g. checkdoc) — still JIT-compiles
+   on first use; a batch init can't walk those paths.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun jwm/warm-native-comp ()
+       "Native-compile installed packages + the lisp this config has loaded.
+     Intended for headless provisioning; blocks until compilation completes."
+       (when (native-comp-available-p)
+         (let ((files (directory-files-recursively package-user-dir "\\.el\\'")))
+           (dolist (entry load-history)
+             (let* ((f (car entry))
+                    (base (and (stringp f) (file-name-sans-extension f)))
+                    (src (and base (seq-find #'file-exists-p
+                                             (list (concat base ".el")
+                                                   (concat base ".el.gz"))))))
+               (when src (push src files))))
+           (native-compile-async (delete-dups files))
+           ;; native-compile-async doesn't fill its queue instantly — settle first.
+           (sleep-for 3)
+           (while (or comp-files-queue
+                      (and (fboundp 'comp-async-runnings)
+                           (> (or (comp-async-runnings) 0) 0)))
+             (sleep-for 1)))))
+   #+END_SRC
+
 * Variables
 ** Prefer Minimal Emacs
 

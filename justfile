@@ -50,11 +50,11 @@ install-packages:
           --eval '(package-refresh-contents)' \
           --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))'
     # 2. Warm the native-comp cache in a SECOND, fresh Emacs — packages are now
-    #    installed so init.el loads fully. (Doing this in the install session above
-    #    races with the async compilation package-install itself queues.) Blocks
-    #    until compilation finishes so provisioning returns with a warm cache.
-    emacs --batch -l init.el \
-          --eval '(when (native-comp-available-p) (native-compile-async package-user-dir (quote recursively)) (sleep-for 3) (while (or comp-files-queue (and (fboundp (quote comp-async-runnings)) (> (or (comp-async-runnings) 0) 0))) (sleep-for 1)))'
+    #    installed so init.el loads fully (jwm/warm-native-comp compiles packages +
+    #    the core lisp the config loaded). A second Emacs on purpose: doing it in the
+    #    install session above races with the async compile package-install queues.
+    #    Blocks until compilation finishes so provisioning returns with a warm cache.
+    emacs --batch -l init.el --eval '(jwm/warm-native-comp)'
     @echo "install-packages: done"
 
 # Point ~/.emacs.d/init.el at THIS checkout's init.el.

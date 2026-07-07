@@ -89,6 +89,26 @@
   "External packages this config expects; installed by `just install-packages'.")
 (require 'use-package)
 
+(defun jwm/warm-native-comp ()
+  "Native-compile installed packages + the lisp this config has loaded.
+Intended for headless provisioning; blocks until compilation completes."
+  (when (native-comp-available-p)
+    (let ((files (directory-files-recursively package-user-dir "\\.el\\'")))
+      (dolist (entry load-history)
+        (let* ((f (car entry))
+               (base (and (stringp f) (file-name-sans-extension f)))
+               (src (and base (seq-find #'file-exists-p
+                                        (list (concat base ".el")
+                                              (concat base ".el.gz"))))))
+          (when src (push src files))))
+      (native-compile-async (delete-dups files))
+      ;; native-compile-async doesn't fill its queue instantly — settle first.
+      (sleep-for 3)
+      (while (or comp-files-queue
+                 (and (fboundp 'comp-async-runnings)
+                      (> (or (comp-async-runnings) 0) 0)))
+        (sleep-for 1)))))
+
 (setq inhibit-startup-message t)
 ;; needed for emacs23
 (setq inhibit-splash-screen t)
