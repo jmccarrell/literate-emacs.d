@@ -534,45 +534,6 @@
                (setq n (1+ n)))))
          (message "Killed %d buffer(s) under %s" n root)))
 
-     (defun jwm/worktree-container-directory (primary-worktree)
-       "Return the `.worktrees' sibling directory for PRIMARY-WORKTREE."
-       (let* ((worktree (directory-file-name
-                         (expand-file-name primary-worktree)))
-              (parent (file-name-directory worktree))
-              (name (file-name-nondirectory worktree)))
-         (expand-file-name (concat name ".worktrees/") parent)))
-
-     (defun jwm/git-worktree-paths-from-porcelain (output)
-       "Return registered worktree paths from Git porcelain OUTPUT."
-       (let (paths)
-         (dolist (line (split-string output "\n" t))
-           (when (string-prefix-p "worktree " line)
-             (push (file-name-as-directory (substring line 9)) paths)))
-         (nreverse paths)))
-
-     (defun jwm/git-worktree-paths ()
-       "Return the worktrees registered for the current Git repository."
-       (with-temp-buffer
-         (unless (zerop (process-file "git" nil t nil "worktree" "list" "--porcelain"))
-           (user-error "Could not list Git worktrees"))
-         (jwm/git-worktree-paths-from-porcelain (buffer-string))))
-
-     (defun jwm/magit-read-worktree-directory (prompt branch)
-       "Read a new worktree directory using Jeff's sibling convention.
-     BRANCH supplies the slash-safe default leaf name."
-       (let* ((primary-worktree (caar (magit-list-worktrees)))
-              (container (jwm/worktree-container-directory primary-worktree))
-              (leaf (and branch (string-replace "/" "-" branch))))
-         (make-directory container t)
-         (read-directory-name prompt container nil nil leaf)))
-
-     (defun jwm/magit-switch-worktree ()
-       "Select a Git-registered worktree and show its Magit status buffer."
-       (interactive)
-       (require 'magit)
-       (let ((worktree (completing-read "Visit worktree: "
-                                        (jwm/git-worktree-paths) nil t)))
-         (magit-status-setup-buffer worktree)))
    #+END_SRC
 
 * Display Settings
@@ -1291,7 +1252,84 @@
 
    Howard does [[file:/t/emacs-configs/howardabrams-dot-files/emacs.org::*Magit][additional customization]] that I should consider someday.
 
-   My usage is considerably simpler.
+*** Worktrees should preserve context, not create more of it
+
+    A branch in its own checkout is valuable because it lets me keep two
+    pieces of work genuinely separate.  The practical failure mode is then
+    remembering where I put each checkout.  The convention
+    =<repo>.worktrees/<branch-slug>= makes that location predictable from the
+    primary repo, so creation should begin there instead of asking me to
+    reconstruct a path every time.
+
+    Magit already owns the Git operation.  This reader only gives Magit the
+    convention's starting point; the minibuffer is deliberately left editable
+    for the exceptional case.  Starting from the primary worktree matters when
+    I create a second branch while already visiting an existing worktree.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun jwm/worktree-container-directory (primary-worktree)
+        "Return the `.worktrees' sibling directory for PRIMARY-WORKTREE."
+        (let* ((worktree (directory-file-name
+                          (expand-file-name primary-worktree)))
+               (parent (file-name-directory worktree))
+               (name (file-name-nondirectory worktree)))
+          (expand-file-name (concat name ".worktrees/") parent)))
+
+      (defun jwm/magit-read-worktree-directory (prompt branch)
+        "Read a new worktree directory using Jeff's sibling convention.
+      BRANCH supplies the slash-safe default leaf name."
+        (let* ((primary-worktree (caar (magit-list-worktrees)))
+               (container (jwm/worktree-container-directory primary-worktree))
+               (leaf (and branch (string-replace "/" "-" branch))))
+          (make-directory container t)
+          (read-directory-name prompt container nil nil leaf)))
+    #+END_SRC
+
+*** Git, rather than the filesystem, decides what is a worktree
+
+    A directory under =.worktrees= is not necessarily a usable worktree: it
+    may have been removed, moved, or simply left behind.  Git's worktree
+    registry is the authority.  Using it keeps the chooser honest and means
+    this workflow still works if the storage convention changes later.
+
+    =jwm/magit-switch-worktree= is the fast return path when I know I want to
+    resume another branch but do not want to navigate there file by file.  It
+    opens Magit status, preserving the same Git-centered starting point as
+    =C-x g= then =Z g=.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun jwm/git-worktree-paths-from-porcelain (output)
+        "Return registered worktree paths from Git porcelain OUTPUT."
+        (let (paths)
+          (dolist (line (split-string output "\n" t))
+            (when (string-prefix-p "worktree " line)
+              (push (file-name-as-directory (substring line 9)) paths)))
+          (nreverse paths)))
+
+      (defun jwm/git-worktree-paths ()
+        "Return the worktrees registered for the current Git repository."
+        (with-temp-buffer
+          (unless (zerop (process-file "git" nil t nil "worktree" "list" "--porcelain"))
+            (user-error "Could not list Git worktrees"))
+          (jwm/git-worktree-paths-from-porcelain (buffer-string))))
+
+      (defun jwm/magit-switch-worktree ()
+        "Select a Git-registered worktree and show its Magit status buffer."
+        (interactive)
+        (require 'magit)
+        (let ((worktree (completing-read "Visit worktree: "
+                                         (jwm/git-worktree-paths) nil t)))
+          (magit-status-setup-buffer worktree)))
+    #+END_SRC
+
+*** A diff should lead back to the file I can change
+
+    When I follow a diff while working on a branch, I usually want the file in
+    that branch's checkout, not a historical blob that cannot carry the edit
+    forward.  Prefer the worktree version so Magit keeps me in the normal
+    edit-test-commit loop.
+
+    My usage is otherwise deliberately simple.
 
    #+BEGIN_SRC emacs-lisp
      (use-package magit
