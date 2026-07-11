@@ -647,9 +647,53 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :config
   (avy-setup-default))
 
+(defun jwm/worktree-container-directory (primary-worktree)
+  "Return the `.worktrees' sibling directory for PRIMARY-WORKTREE."
+  (let* ((worktree (directory-file-name
+                    (expand-file-name primary-worktree)))
+         (parent (file-name-directory worktree))
+         (name (file-name-nondirectory worktree)))
+    (expand-file-name (concat name ".worktrees/") parent)))
+
+(defun jwm/magit-read-worktree-directory (prompt branch)
+  "Read a new worktree directory using Jeff's sibling convention.
+BRANCH supplies the slash-safe default leaf name."
+  (let* ((primary-worktree (caar (magit-list-worktrees)))
+         (container (jwm/worktree-container-directory primary-worktree))
+         (leaf (and branch (string-replace "/" "-" branch))))
+    (make-directory container t)
+    (read-directory-name prompt container nil nil leaf)))
+
+(defun jwm/git-worktree-paths-from-porcelain (output)
+  "Return registered worktree paths from Git porcelain OUTPUT."
+  (let (paths)
+    (dolist (line (split-string output "\n" t))
+      (when (string-prefix-p "worktree " line)
+        (push (file-name-as-directory (substring line 9)) paths)))
+    (nreverse paths)))
+
+(defun jwm/git-worktree-paths ()
+  "Return the worktrees registered for the current Git repository."
+  (with-temp-buffer
+    (unless (zerop (process-file "git" nil t nil "worktree" "list" "--porcelain"))
+      (user-error "Could not list Git worktrees"))
+    (jwm/git-worktree-paths-from-porcelain (buffer-string))))
+
+(defun jwm/magit-switch-worktree ()
+  "Select a Git-registered worktree and show its Magit status buffer."
+  (interactive)
+  (require 'magit)
+  (let ((worktree (completing-read "Visit worktree: "
+                                   (jwm/git-worktree-paths) nil t)))
+    (magit-status-setup-buffer worktree)))
+
 (use-package magit
   :defer t
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status)
+  :init
+  (setq magit-diff-visit-prefer-worktree t
+        magit-read-worktree-directory-function
+        #'jwm/magit-read-worktree-directory))
 
 (bind-keys
  ;; org mode wants these default global bindings set up.
