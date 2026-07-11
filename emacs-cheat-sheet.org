@@ -78,17 +78,37 @@
    | M-x projectile-clear-known-projects | wipe the project list entirely       |
    | C-h v recentf-list / projectile-known-projects | inspect either list raw  |
 
+** Worktree navigation  (Magit)
+
+   Worktrees live under =<repo>.worktrees/<branch-slug>=.  Use Magit as
+   the starting point: it asks Git for registered worktrees, so a stale
+   directory is never offered as a checkout.
+
+   | task                        | key / command                  | result                                  |
+   |-----------------------------+--------------------------------+-----------------------------------------|
+   | open the current repo       | C-x g                          | Magit status                            |
+   | open worktree actions       | Z                              | create, visit, or remove a worktree     |
+   | create branch + worktree    | C-x g, then Z c                | proposes <repo>.worktrees/<branch-slug> |
+   | add an existing branch      | C-x g, then Z b                | checks it out in a new worktree         |
+   | visit a registered worktree | C-x g, then Z g                | opens its Magit status                  |
+   | quick worktree selector     | M-x jwm/magit-switch-worktree | choose a registered tree and open Magit |
+   | move from status to files   | RET / C-x b / C-x C-j          | file, buffer, or Dired navigation       |
+
+   The location prompt stays editable for exceptions.  Magit proposes a
+   slash-safe branch name, so =RND-123/foo= becomes =RND-123-foo= in the
+   default directory name.
+
 ** Worktree teardown  (kill buffers, then remove)
 
-   Kill the worktree's buffers *before* =git worktree remove= — once the
-   directory is gone, =projectile-kill-buffers= walks up to the next
-   enclosing =.git= and scopes too broadly.
+   Kill the worktree's buffers *before* removal.  The dedicated helper works
+   from anywhere and protects modified buffers; after a worktree is gone,
+   projectile can walk up to the next enclosing =.git= and scope too broadly.
 
-   | step | key / command                       | note                          |
-   |------+-------------------------------------+-------------------------------|
-   | 1    | C-c p k (projectile-kill-buffers)   | from a buffer in the worktree |
-   | 2    | git worktree remove <wt>            | shell / magit                 |
-   | 3    | M-x projectile-remove-known-project | or auto-cleanup next session  |
+   | step | key / command                          | note                                      |
+   |------+----------------------------------------+-------------------------------------------|
+   | 1    | M-x jwm/kill-buffers-under-dir          | choose the worktree root; preserves edits |
+   | 2    | C-x g, then Z k                          | remove through Magit; shell also works    |
+   | 3    | M-x projectile-remove-known-project      | or let next-session cleanup remove it     |
 
    Recovery, if you already removed the worktree and have buffers on
    now-missing files: =M-x jwm/kill-buffers-of-missing-files=.
