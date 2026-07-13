@@ -139,7 +139,7 @@
 
    Bare =TAB= still indents with =indent-for-tab-command=.
 
-** Rust (tree-sitter, Eglot, and formatting)
+** Rust (daily feedback loop)
 
    One time on each machine, install the Rust language-server prerequisites in
    a shell, then install the grammar from Emacs:
@@ -152,13 +152,32 @@
    file should then show =rust-ts-mode= in the mode line and Eglot should start
    =rust-analyzer= for its Cargo project.
 
-   | key     | command             | result                                      |
-   |---------+---------------------+---------------------------------------------|
-   | C-c r f | eglot-format-buffer | format the current buffer through Rustfmt   |
+   | key / command | result |
+   |---------------+--------|
+   | C-x p c | run =project-compile= at the project root; enter =cargo check= for a single crate or =cargo check --workspace= for a workspace |
+   | M-x compile from Dired or a buffer at the Cargo root | run the same commands when the VCS project root is above the intended Cargo workspace |
+   | g in the Compilation buffer / M-x recompile | repeat the last Cargo command with the same root |
+   | C-x \` / M-g n | visit the next Cargo compiler location |
+   | M-g p | visit the previous Cargo compiler location |
+   | RET on a Compilation location | visit that exact compiler location |
+   | C-c C-k | stop a running Cargo compilation |
+   | C-c r f | format the current Rust buffer through Rustfmt via Eglot |
+   | C-c ! n / C-c ! p | move through current Flymake (including rust-analyzer) diagnostics |
+   | C-c ! l | show the Flymake diagnostic list |
 
    This is intentionally not format-on-save.  Keep formatting policy in the
-   Cargo project's =rustfmt.toml= / =.rustfmt.toml= and use =cargo fmt --
-   --check= for project-wide validation.
+   Cargo project's =rustfmt.toml= / =.rustfmt.toml=.  Use =cargo fmt --check=
+   for a single crate, or =cargo fmt --all --check= for a workspace.  Run
+   =cargo test= / =cargo test --workspace= through =C-x p c= when executing
+   tests is wanted; it is deliberately separate from the fast =cargo check=
+   loop.
+
+   Cargo's default human-readable output stays enabled: the configuration
+   recognizes its =--> file:line:column= locations in Compilation buffers.
+   =project-compile= is correct when the Emacs project root is the intended
+   Cargo root.  If a repository contains multiple Cargo workspaces, use
+   =cargo locate-project --workspace= to identify the desired manifest, open
+   its directory in Dired, and run =M-x compile= there.
 
 ** Avy  (jump to visible text)
 
