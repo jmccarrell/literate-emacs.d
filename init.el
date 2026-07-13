@@ -1179,6 +1179,14 @@ MCP Parameters:
 (add-hook 'go-mode-hook    #'goimports-format-on-save-mode)
 (add-hook 'go-ts-mode-hook #'goimports-format-on-save-mode)
 
+(use-package rust-ts-mode
+  :ensure nil  ; built-in
+  :hook
+  ((rust-mode rust-ts-mode) . eglot-ensure)
+  :bind
+  (:map rust-ts-mode-map
+        ("C-c r f" . eglot-format-buffer)))
+
 (setq treesit-font-lock-level 4)  ; maximum fontification
 
 ;; When a grammar is present, remap the legacy mode (for
@@ -1211,6 +1219,11 @@ MCP Parameters:
 (when (treesit-ready-p 'just t)
   (add-to-list 'major-mode-remap-alist '(just-mode . just-ts-mode)))
 
+;; Rust has no legacy mode configured here.  Associate its extension
+;; directly once the per-machine grammar is present.
+(when (treesit-ready-p 'rust t)
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode)))
+
 ;; Recipe for each grammar. treesit-install-language-grammar
 ;; looks these up when called non-interactively (e.g. from the
 ;; helper below). Without an entry, it errors with
@@ -1223,11 +1236,12 @@ MCP Parameters:
            (go         "https://github.com/tree-sitter/tree-sitter-go")
            (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
            (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-           (just       "https://github.com/IndianBoy42/tree-sitter-just")))
+           (just       "https://github.com/IndianBoy42/tree-sitter-just")
+           (rust       "https://github.com/tree-sitter/tree-sitter-rust")))
   (add-to-list 'treesit-language-source-alist source))
 
 (defvar jwm/required-treesit-grammars
-  '(python json toml yaml go dockerfile javascript just)
+  '(python json toml yaml go dockerfile javascript just rust)
   "Languages for which this config wants tree-sitter grammars.
 Add to this list as sub-goals add more -ts-mode remaps.")
 
