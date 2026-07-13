@@ -2056,6 +2056,28 @@
      (add-hook 'go-ts-mode-hook #'goimports-format-on-save-mode)
    #+end_src
 
+** Rust
+
+   Emacs 30's built-in =rust-ts-mode= is the Rust editing mode for this
+   configuration.  It becomes active for =.rs= files only after the Rust
+   tree-sitter grammar is installed (see the Tree-sitter bootstrap below).
+
+   Eglot already maps both =rust-mode= and =rust-ts-mode= to
+   =rust-analyzer=, so this needs no server-program override.  The initial
+   formatting interface is explicit rather than format-on-save: =C-c r f=
+   asks the language server to format the current buffer and therefore honors
+   the Cargo project's Rustfmt policy.
+
+   #+begin_src emacs-lisp
+     (use-package rust-ts-mode
+       :ensure nil  ; built-in
+       :hook
+       ((rust-mode rust-ts-mode) . eglot-ensure)
+       :bind
+       (:map rust-ts-mode-map
+             ("C-c r f" . eglot-format-buffer)))
+   #+end_src
+
 ** Tree-sitter
 
    Emacs 30 ships =treesit.el= and =-ts-mode= variants for most major
@@ -2096,6 +2118,11 @@
 
      (when (treesit-ready-p 'just t)
        (add-to-list 'major-mode-remap-alist '(just-mode . just-ts-mode)))
+
+     ;; Rust has no legacy mode configured here.  Associate its extension
+     ;; directly once the per-machine grammar is present.
+     (when (treesit-ready-p 'rust t)
+       (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode)))
    #+END_SRC
 
 *** Bootstrap on a new machine
@@ -2126,11 +2153,12 @@
                  (go         "https://github.com/tree-sitter/tree-sitter-go")
                  (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
                  (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-                 (just       "https://github.com/IndianBoy42/tree-sitter-just")))
+                 (just       "https://github.com/IndianBoy42/tree-sitter-just")
+                 (rust       "https://github.com/tree-sitter/tree-sitter-rust")))
         (add-to-list 'treesit-language-source-alist source))
 
       (defvar jwm/required-treesit-grammars
-        '(python json toml yaml go dockerfile javascript just)
+        '(python json toml yaml go dockerfile javascript just rust)
         "Languages for which this config wants tree-sitter grammars.
       Add to this list as sub-goals add more -ts-mode remaps.")
 

@@ -139,6 +139,27 @@
 
    Bare =TAB= still indents with =indent-for-tab-command=.
 
+** Rust (tree-sitter, Eglot, and formatting)
+
+   One time on each machine, install the Rust language-server prerequisites in
+   a shell, then install the grammar from Emacs:
+
+   #+begin_src shell
+     rustup component add rust-analyzer rust-src
+   #+end_src
+
+   Run =M-x jwm/ensure-treesit-grammars= and restart Emacs.  Opening a =.rs=
+   file should then show =rust-ts-mode= in the mode line and Eglot should start
+   =rust-analyzer= for its Cargo project.
+
+   | key     | command             | result                                      |
+   |---------+---------------------+---------------------------------------------|
+   | C-c r f | eglot-format-buffer | format the current buffer through Rustfmt   |
+
+   This is intentionally not format-on-save.  Keep formatting policy in the
+   Cargo project's =rustfmt.toml= / =.rustfmt.toml= and use =cargo fmt --
+   --check= for project-wide validation.
+
 ** Avy  (jump to visible text)
 
    | key | command             |
