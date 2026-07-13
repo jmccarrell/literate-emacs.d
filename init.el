@@ -1187,6 +1187,15 @@ MCP Parameters:
   (:map rust-ts-mode-map
         ("C-c r f" . eglot-format-buffer)))
 
+(use-package compile
+  :ensure nil  ; built-in
+  :config
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(jwm/cargo-rust
+                 "^[[:space:]]*-->[[:space:]]+\\([^:\\n]+\\):\\([0-9]+\\):\\([0-9]+\\)"
+                 1 2 3))
+  (add-to-list 'compilation-error-regexp-alist 'jwm/cargo-rust))
+
 (setq treesit-font-lock-level 4)  ; maximum fontification
 
 ;; When a grammar is present, remap the legacy mode (for

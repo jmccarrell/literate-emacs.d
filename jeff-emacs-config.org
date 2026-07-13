@@ -2078,6 +2078,30 @@
              ("C-c r f" . eglot-format-buffer)))
    #+end_src
 
+*** Cargo compilation diagnostics
+
+    Cargo's default human-readable compiler diagnostics name their source
+    locations on an indented =--> file:line:column= line.  Emacs 30.2's
+    built-in Compilation mode does not recognize that form yet, so register
+    the smallest missing parser rather than adding a Cargo package or changing
+    Cargo to JSON output.
+
+    This covers compiler errors from =cargo check= and compilation-time test
+    failures.  It complements, rather than replaces, the live diagnostics
+    Eglot sends to Flymake: use =C-x \`= in a Compilation buffer for explicit
+    Cargo runs and =C-c ! n= / =C-c ! p= for Flymake diagnostics.
+
+    #+begin_src emacs-lisp
+      (use-package compile
+        :ensure nil  ; built-in
+        :config
+        (add-to-list 'compilation-error-regexp-alist-alist
+                     '(jwm/cargo-rust
+                       "^[[:space:]]*-->[[:space:]]+\\([^:\\n]+\\):\\([0-9]+\\):\\([0-9]+\\)"
+                       1 2 3))
+        (add-to-list 'compilation-error-regexp-alist 'jwm/cargo-rust))
+    #+end_src
+
 ** Tree-sitter
 
    Emacs 30 ships =treesit.el= and =-ts-mode= variants for most major
