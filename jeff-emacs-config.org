@@ -2068,11 +2068,25 @@
    asks the language server to format the current buffer and therefore honors
    the Cargo project's Rustfmt policy.
 
+   Emacs's =project-compile= is build-tool-agnostic and otherwise defaults its
+   prompt to the global =make -k=.  A buffer-local =compile-command= set in Rust
+   buffers pre-fills =cargo check= instead, so =C-x p c= from a =.rs= buffer
+   starts from a Cargo command (still editable for =--workspace=, =cargo test=,
+   etc.).  Invoked from Dired or a non-Rust buffer it still shows =make -k=.
+
    #+begin_src emacs-lisp
      (use-package rust-ts-mode
        :ensure nil  ; built-in
+       :preface
+       (defun jwm/rust-set-compile-command ()
+         "Default `compile-command' to a Cargo check in Rust buffers.
+Makes `project-compile' (\\[project-compile]) pre-fill \"cargo check\"
+instead of the global \"make -k\".  Still editable at the prompt for
+--workspace, cargo test, etc."
+         (setq-local compile-command "cargo check "))
        :hook
-       ((rust-mode rust-ts-mode) . eglot-ensure)
+       (((rust-mode rust-ts-mode) . eglot-ensure)
+        ((rust-mode rust-ts-mode) . jwm/rust-set-compile-command))
        :bind
        (:map rust-ts-mode-map
              ("C-c r f" . eglot-format-buffer)))
