@@ -154,7 +154,7 @@
 
    | key / command | result |
    |---------------+--------|
-   | C-x p c | run =project-compile= at the project root; enter =cargo check= for a single crate or =cargo check --workspace= for a workspace |
+   | C-x p c | run =project-compile=; from a =.rs= buffer the prompt pre-fills =cargo check= (single crate) — edit to =cargo check --workspace= for a workspace, or =cargo test= to run tests |
    | M-x compile from Dired or a buffer at the Cargo root | run the same commands when the VCS project root is above the intended Cargo workspace |
    | g in the Compilation buffer / M-x recompile | repeat the last Cargo command with the same root |
    | C-x \` / M-g n | visit the next Cargo compiler location |
@@ -174,8 +174,11 @@
 
    Cargo's default human-readable output stays enabled: the configuration
    recognizes its =--> file:line:column= locations in Compilation buffers.
-   =project-compile= is correct when the Emacs project root is the intended
-   Cargo root.  If a repository contains multiple Cargo workspaces, use
+   The =cargo check= pre-fill is a buffer-local =compile-command= set in Rust
+   source buffers, so it appears only when =C-x p c= is invoked from a =.rs=
+   buffer; from Dired or a non-Rust buffer the prompt still defaults to
+   =make -k=.  =project-compile= is correct when the Emacs project root is the
+   intended Cargo root.  If a repository contains multiple Cargo workspaces, use
    =cargo locate-project --workspace= to identify the desired manifest, open
    its directory in Dired, and run =M-x compile= there.
 

@@ -1180,12 +1180,20 @@ MCP Parameters:
 (add-hook 'go-ts-mode-hook #'goimports-format-on-save-mode)
 
 (use-package rust-ts-mode
-  :ensure nil  ; built-in
-  :hook
-  ((rust-mode rust-ts-mode) . eglot-ensure)
-  :bind
-  (:map rust-ts-mode-map
-        ("C-c r f" . eglot-format-buffer)))
+       :ensure nil  ; built-in
+       :preface
+       (defun jwm/rust-set-compile-command ()
+         "Default `compile-command' to a Cargo check in Rust buffers.
+Makes `project-compile' (\\[project-compile]) pre-fill \"cargo check\"
+instead of the global \"make -k\".  Still editable at the prompt for
+--workspace, cargo test, etc."
+         (setq-local compile-command "cargo check "))
+       :hook
+       (((rust-mode rust-ts-mode) . eglot-ensure)
+        ((rust-mode rust-ts-mode) . jwm/rust-set-compile-command))
+       :bind
+       (:map rust-ts-mode-map
+             ("C-c r f" . eglot-format-buffer)))
 
 (use-package compile
   :ensure nil  ; built-in
