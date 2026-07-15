@@ -152,6 +152,19 @@
    file should then show =rust-ts-mode= in the mode line and Eglot should start
    =rust-analyzer= for its Cargo project.
 
+   Reading source via rust-analyzer (Eglot wires these into the standard
+   xref/eldoc keys — no Rust-specific bindings).  Jumping into stdlib source
+   such as =unwrap_or_else= requires the =rust-src= component installed above.
+
+   | key / command | result |
+   |---------------+--------|
+   | M-. | jump to the definition at point; on a stdlib symbol like =unwrap_or_else= this opens its source in =rust-src= |
+   | M-, | pop back to where =M-.= jumped from |
+   | M-? | find all references to the symbol at point |
+   | C-h . | show the eldoc signature / hover doc for the symbol at point in the echo area |
+   | M-x eldoc-doc-buffer | open the full rust-analyzer hover documentation in a dedicated buffer |
+   | C-. | Embark on the symbol: xref, occur, rename-symbol, … |
+
    | key / command | result |
    |---------------+--------|
    | C-x p c | run =project-compile=; from a =.rs= buffer the prompt pre-fills =cargo check= (single crate) — edit to =cargo check --workspace= for a workspace, or =cargo test= to run tests |
