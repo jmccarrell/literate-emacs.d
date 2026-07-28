@@ -218,7 +218,7 @@
          docker dockerfile-mode edit-indirect embark embark-consult envrc
          expand-region flymake-ruff go-mode gptel js2-mode json-mode
          jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
-         mcp-server-lib ob-restclient orderless outline-indent pet projectile
+         mcp-server-lib ob-restclient orderless outline-indent pet
          reformatter terraform-mode textsize vertico wgrep which-key
          wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
        "External packages this config expects; installed by `just install-packages'.")
@@ -487,15 +487,15 @@
 
    When a git worktree is removed, Emacs keeps any buffers that were
    visiting files inside it — now pointing at paths that no longer
-   exist. =projectile-kill-buffers= is the wrong tool *after* removal:
-   the worktree directory is gone, so projectile walks up to the next
+   exist. =project-kill-buffers= is the wrong tool *after* removal:
+   the worktree directory is gone, so project.el walks up to the next
    enclosing =.git= and scopes too broadly.
 
    Two helpers cover the two moments:
 
    - =jwm/kill-buffers-under-dir= — run on a worktree root *before*
      =git worktree remove=, to close exactly that worktree's buffers
-     (projectile-independent, so it works even when point isn't in one
+     (project-independent, so it works even when point isn't in one
      of them).
    - =jwm/kill-buffers-of-missing-files= — the recovery path *after* a
      removal, killing any buffer whose backing file is already gone.
@@ -884,9 +884,8 @@
        :ensure nil  ; built-in since Emacs 30
        :diminish which-key-mode
        :config
-       ;; prefer to show the entire command name with no truncation.
-       ;;  some of those projectile command names exceed the default value of 27, eg
-       ;;  projectile-toggle-between-implementation-and-test
+       ;; prefer to show the entire command name with no truncation;
+       ;;  some command names exceed the default value of 27.
        (setq which-key-max-description-length nil)
        (which-key-mode 1))
    #+END_SRC
@@ -953,32 +952,29 @@
 
 * Completion and Navigation
 
-** Projectile Config
+** Project.el Config
 
-   Projectile handles per-project commands; vertico handles the
-   completion UI. =projectile-completion-system= is =default=
-   (meaning: use =completing-read=, which vertico wraps).
+   Built-in =project.el= handles per-project commands on the standard
+   =C-x p= prefix (=project-prefix-map=) — no custom bindings, so the
+   muscle memory matches vanilla Emacs. It prompts with
+   =completing-read=, which vertico wraps. Replaced projectile, whose
+   2026 MELPA snapshot removed =projectile-global-mode= and broke
+   startup.
 
-   The old =projectile-ag= / =projectile-ripgrep= bindings are
-   dropped: =consult-ripgrep= (and =M-?= below) do the same job
-   with better UX.
+   The known-project list grows organically: project.el remembers each
+   project on first visit. Project-wide search is =consult-ripgrep=
+   (=M-s r=, and =M-?= below), which finds the root via project.el.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package projectile
-       :diminish projectile-mode
-       :commands (projectile-mode projectile-switch-project)
-       :bind (("C-c p p" . projectile-switch-project))
-       :init
-       (setq projectile-completion-system 'default)
+     (use-package project
+       :ensure nil  ; built-in
        :config
-       (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-       (setq projectile-keymap-prefix (kbd "C-c p"))
-       (projectile-global-mode t)
        ;; Prune known projects whose directories no longer exist, once
-       ;; per session when projectile first loads, so the
-       ;; `projectile-switch-project' list stays free of dead paths.
-       (projectile-cleanup-known-projects))
+       ;; per session at startup, so the `project-switch-project' list
+       ;; stays free of dead paths. Guarded so batch runs (e.g. `just
+       ;; verify-tangle') never touch the real project list on disk.
+       (unless noninteractive
+         (project-forget-zombie-projects)))
    #+END_SRC
 
 ** Savehist
@@ -1152,7 +1148,7 @@
    counsel and swiper.
 
    =consult-ripgrep= is the frontend for project-wide search; it needs
-   =rg= on PATH (already installed as a =projectile-ripgrep= dep).
+   =rg= on PATH.
 
    #+BEGIN_SRC emacs-lisp
      (use-package consult

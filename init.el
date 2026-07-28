@@ -83,7 +83,7 @@
     docker dockerfile-mode edit-indirect embark embark-consult envrc
     expand-region flymake-ruff go-mode gptel js2-mode json-mode
     jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
-    mcp-server-lib ob-restclient orderless outline-indent pet projectile
+    mcp-server-lib ob-restclient orderless outline-indent pet
     reformatter terraform-mode textsize vertico wgrep which-key
     wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
   "External packages this config expects; installed by `just install-packages'.")
@@ -485,9 +485,8 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   :ensure nil  ; built-in since Emacs 30
   :diminish which-key-mode
   :config
-  ;; prefer to show the entire command name with no truncation.
-  ;;  some of those projectile command names exceed the default value of 27, eg
-  ;;  projectile-toggle-between-implementation-and-test
+  ;; prefer to show the entire command name with no truncation;
+  ;;  some command names exceed the default value of 27.
   (setq which-key-max-description-length nil)
   (which-key-mode 1))
 
@@ -508,21 +507,15 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   ;; enable some really cool extensions like C-x C-j (dired-jump)
   (require 'dired-x))
 
-(use-package projectile
-  :diminish projectile-mode
-  :commands (projectile-mode projectile-switch-project)
-  :bind (("C-c p p" . projectile-switch-project))
-  :init
-  (setq projectile-completion-system 'default)
+(use-package project
+  :ensure nil  ; built-in
   :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (setq projectile-keymap-prefix (kbd "C-c p"))
-  (projectile-global-mode t)
   ;; Prune known projects whose directories no longer exist, once
-  ;; per session when projectile first loads, so the
-  ;; `projectile-switch-project' list stays free of dead paths.
-  (projectile-cleanup-known-projects))
+  ;; per session at startup, so the `project-switch-project' list
+  ;; stays free of dead paths. Guarded so batch runs (e.g. `just
+  ;; verify-tangle') never touch the real project list on disk.
+  (unless noninteractive
+    (project-forget-zombie-projects)))
 
 (use-package savehist
   :ensure nil

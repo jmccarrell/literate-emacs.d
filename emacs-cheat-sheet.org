@@ -7,7 +7,8 @@
 * Completion and Navigation
 
   The vertico + consult + embark stack replaced ivy / counsel / swiper.
-  Projectile keeps its =C-c p ...= command map.
+  Built-in =project.el= owns the =C-x p ...= command map (replaced
+  projectile).
 
 ** Consult  (search, navigate, jump)
 
@@ -64,19 +65,18 @@
 
 ** Recent files & known projects  (manage the lists)
 
-   Two separate lists: =recentf= tracks recent /files/; projectile's
-   =projectile-known-projects= is what =C-c p p= offers. Most pruning
-   now happens automatically (recentf on mode start, projectile on
-   load), but to manage by hand:
+   Two separate lists: =recentf= tracks recent /files/; project.el's
+   known-project list is what =C-x p p= offers. Most pruning now
+   happens automatically (recentf on mode start, project.el zombie
+   cleanup at startup), but to manage by hand:
 
    | command                            | what it does                          |
    |------------------------------------+---------------------------------------|
    | M-x recentf-edit-list              | mark recent /files/ to remove         |
    | M-x recentf-cleanup                | drop non-existent / excluded files    |
-   | M-x projectile-remove-known-project | drop one project from C-c p p        |
-   | M-x projectile-cleanup-known-projects | drop projects whose dir is gone    |
-   | M-x projectile-clear-known-projects | wipe the project list entirely       |
-   | C-h v recentf-list / projectile-known-projects | inspect either list raw  |
+   | M-x project-forget-project         | drop one project from C-x p p         |
+   | M-x project-forget-zombie-projects | drop projects whose dir is gone       |
+   | C-h v recentf-list / project--list | inspect either list raw (the latter is internal) |
 
 ** Worktree navigation  (Magit)
 
@@ -102,13 +102,13 @@
 
    Kill the worktree's buffers *before* removal.  The dedicated helper works
    from anywhere and protects modified buffers; after a worktree is gone,
-   projectile can walk up to the next enclosing =.git= and scope too broadly.
+   project.el can walk up to the next enclosing =.git= and scope too broadly.
 
    | step | key / command                          | note                                      |
    |------+----------------------------------------+-------------------------------------------|
    | 1    | M-x jwm/kill-buffers-under-dir          | choose the worktree root; preserves edits |
    | 2    | C-x g, then Z k                          | remove through Magit; shell also works    |
-   | 3    | M-x projectile-remove-known-project      | or let next-session cleanup remove it     |
+   | 3    | M-x project-forget-project               | or let next-session zombie cleanup remove it |
 
    Recovery, if you already removed the worktree and have buffers on
    now-missing files: =M-x jwm/kill-buffers-of-missing-files=.
@@ -239,7 +239,7 @@
    |-------------+----------------------------------------------------------|
    | C-x C-z     | show Eshell; from Eshell, restore previous window layout |
    | C-u C-x C-z | show Eshell and cd to this buffer's directory            |
-   | C-c p x e   | open Projectile Eshell at the project root               |
+   | C-x p e     | open Eshell at the project root (project-eshell)         |
 
 ** occur
 
@@ -248,23 +248,20 @@
     | M-s o        | start occur, aka list-lines-matching  |
     | prefix M-s o | show prefix lines of matching context |
 
-** counsel projectile
-    - =C-c p SPC= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-command][counsel projectile keymap]]
-    - =C-c p p= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-switch-project-command][counsel projectile switch project keymap]]
-    - =C-c p f= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-find-file-command][counsel projectile find file keymap]]
-    - =C-c p d= [[https://github.com/ericdanan/counsel-projectile#the-counsel-projectile-find-dir-command][counsel projectile find dir keymap]]
+** project.el
 
-** projectile
+    Built-in project commands live on the =C-x p= prefix
+    (=project-prefix-map=); =C-x p C-h= lists them all.
 
-    Recall that I have bound the projectile command map prefix to =s-p= as well as the usual =C-c p=.  Thus
-    =s-p= works everywhere =C-c p= does in these tables.
-
-    | key     | description                                                     |
-    |---------+-----------------------------------------------------------------|
-    | C-c p I | ibuffer; contains many sub commands from the ibuffer view       |
-    | C-c p V | browse dirty projects; useful for ensuring files are committed. |
-    | C-c p S | save all buffers across project.                                |
-    | C-c p D | run dired in project                                            |
+    | key     | description                                |
+    |---------+--------------------------------------------|
+    | C-x p p | switch project, then pick a command        |
+    | C-x p f | find file in project                       |
+    | C-x p b | switch to a buffer in project              |
+    | C-x p D | run dired at the project root              |
+    | C-x p k | kill project buffers                       |
+    | C-x p e | open Eshell at the project root            |
+    | C-x p c | compile at the project root                |
 
 ** ivy swiper
 
@@ -325,17 +322,6 @@
    | C-c C-l     | create or edit an org mode link                          |
    | C-c C-x C-s | archive a subtree                                        |
 
-
-* Projectile bindings
-
-   bbatsov's [[https://github.com/bbatsov/projectile/blob/master/doc/usage.md#interactive-commands][key bindings table]]
-
-   | key       | description                 |
-   |-----------+-----------------------------|
-   | C-c p f   | projectile find file        |
-   | C-c p s s | grep project for string: ag |
-   | C-c p s r | ripgrep project for string |
-   | C-c p k   | kill project buffers        |
 
 * Org mode bindings
 

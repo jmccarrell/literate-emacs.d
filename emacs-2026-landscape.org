@@ -91,7 +91,7 @@ looks like → effort.
 | wrap-region                        | wrap-region                 | Dormant       | Evaluate ~electric-pair-mode~ or keep. Low risk either way.| Low    | Low      |
 | Dired                              | built-in + dired-x          | Same          | Consider ~dirvish~ (modern dired front-end). Optional.      | Low    | Low      |
 | ag                                 | ag                          | Superseded    | Replace with ~consult-ripgrep~ (part of completion sub-goal).| Low   | Medium   |
-| Projectile + counsel-projectile    | projectile + counsel-proj   | Superseded    | Evaluate ~project.el~ (built-in); projectile still works.   | Medium | Medium   |
+| Projectile + counsel-projectile    | ~project.el~ (built-in)     | Shipped       | Migrated 2026-07; projectile removed (see Shipped).         | —      | —        |
 | Ivy / Counsel / Avy / Swiper       | full ivy stack              | Minority      | Migrate to vertico/consult/marginalia/embark/orderless.     | Medium | *High*  |
 | Hydra / ivy-hydra                  | hydra                       | Still fine    | Keep; or explore ~transient~ (used by magit).              | Low    | Low      |
 | Magit                              | magit                       | Still dominant | Keep. Consider ~magit-todos~, ~magit-delta~, ~difftastic~. | —      | —        |
@@ -131,7 +131,8 @@ The rough order the sub-goals landed in:
   projectile/ivy-hydra/ag replaced with vertico + consult +
   marginalia + embark + embark-consult + orderless +
   consult-ripgrep. Savehist and vertico-directory wired.
-  Projectile kept with =default= completion-system. =C-.= →
+  Projectile kept with =default= completion-system (removed later;
+  see the project.el migration below). =C-.= →
   embark-act; =C-;= → avy. Cheat sheet updated.
 - *Emacs-30 cleanups* — dropped use-package bootstrap; built-in
   =which-key= and =editorconfig= (=:ensure nil=); simplified package
@@ -230,6 +231,16 @@ The rough order the sub-goals landed in:
   =~/.emacs.d/emacs-mcp-stdio.sh=; the status recipe confirmed it
   matches the package source, and an external =tools/list= call
   through the installed helper returned the three read-only tools.
+- *project.el migration* — projectile removed entirely after its
+  2026-07 MELPA snapshot dropped =projectile-global-mode= and broke
+  startup. Built-in =project.el= on the standard =C-x p= prefix
+  replaces it: =project-forget-zombie-projects= at startup replaces
+  =projectile-cleanup-known-projects=; the known-project list grows
+  organically on first visit; project-wide search stays
+  =consult-ripgrep= (already project.el-aware). No custom prefix
+  re-binds — muscle memory retrains to vanilla =C-x p=. Cheat sheet
+  rewritten (counsel-projectile leftovers deleted). Tracked as
+  literate-emacs.d issue #25.
 
 ** Pending
 
@@ -518,7 +529,7 @@ The rough order the sub-goals landed in:
     - How does it compare to running =git worktree= by hand?
       Better discoverability, but does it cover the flags
       typically used (=-b <branch>=, =--no-checkout=, etc.)?
-    - Does it integrate with project.el or projectile so jumping
+    - Does it integrate with project.el so jumping
       to "the markdown-rendering worktree" is one keystroke
       from anywhere?
     - Could it replace parts of the manual command block in the
@@ -621,9 +632,6 @@ The rough order the sub-goals landed in:
 - /In-buffer completion/: corfu + cape (with eglot integration
   for LSP completion in Python buffers). Orthogonal to the
   minibuffer completion work already shipped.
-- /project.el migration/ (out from projectile) — still fine to
-  delay; projectile works alongside vertico/consult. Worth doing
-  only when specific projectile friction shows up.
 - /Go + eglot + gopls + tree-sitter/ — same pattern as Python.
 - /Theme evaluation/: Modus themes (built-in, WCAG AAA, Prot).
   Not urgent; zenburn is fine.
