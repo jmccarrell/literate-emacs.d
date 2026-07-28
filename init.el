@@ -705,7 +705,17 @@ BRANCH supplies the slash-safe default leaf name."
 ;; where I store periodic reminders, ie, ticklers in GTD-talk
 (defvar jwm/org-tickler-file (concat org-directory "/tickler.org"))
 
-(setq org-agenda-files (jwm/emacs-subdirectory "org-agenda-files-list"))
+(defvar jwm/org-agenda-files-list
+  (jwm/emacs-subdirectory "org-agenda-files-list")
+  "File naming the files `org-agenda' scans, one path per line.")
+
+(defun jwm/ensure-org-agenda-files-list ()
+  "Create `jwm/org-agenda-files-list' as an empty file when it is absent."
+  (unless (file-exists-p jwm/org-agenda-files-list)
+    (make-empty-file jwm/org-agenda-files-list t)))
+
+(jwm/ensure-org-agenda-files-list)
+(setq org-agenda-files jwm/org-agenda-files-list)
 
 ;; capture template.
 (setq org-capture-templates
