@@ -1384,8 +1384,23 @@
 
      This is the mechanism I want to utilize here.
 
+     Org signals =org-read-agenda-file-list: Opening input file: No such file or
+     directory= when this pointer file is missing (a fresh machine, or before =C-c [=
+     has ever run).  So make sure it exists — creating an empty one on first run —
+     before handing it to =org-agenda-files=.
+
      #+BEGIN_SRC emacs-lisp
-       (setq org-agenda-files (jwm/emacs-subdirectory "org-agenda-files-list"))
+       (defvar jwm/org-agenda-files-list
+         (jwm/emacs-subdirectory "org-agenda-files-list")
+         "File naming the files `org-agenda' scans, one path per line.")
+
+       (defun jwm/ensure-org-agenda-files-list ()
+         "Create `jwm/org-agenda-files-list' as an empty file when it is absent."
+         (unless (file-exists-p jwm/org-agenda-files-list)
+           (make-empty-file jwm/org-agenda-files-list t)))
+
+       (jwm/ensure-org-agenda-files-list)
+       (setq org-agenda-files jwm/org-agenda-files-list)
      #+END_SRC
 
 *** Templates, Tasks, Refiling
