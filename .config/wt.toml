@@ -1,0 +1,26 @@
+# Worktrunk project config for literate-emacs.d.
+#
+# Guard the ~/.emacs.d/init.el symlink. `wt remove` knows nothing about it: it
+# would remove the worktree and leave the live Emacs config pointing at a path
+# that no longer exists, breaking the next Emacs start. A non-zero exit here
+# aborts the removal, leaving worktree and branch intact.
+#
+# Both sides are resolved with pwd -P / readlink -f before comparing, so the
+# check holds if either path acquires a symlinked component. Prefix matching
+# (not equality against init.el) catches any live reference into the worktree.
+#
+# Rationale and alternatives considered: specs/013-worktree-symlink-pre-remove-hook.md
+# in the emacs-config workspace.
+pre-remove = """
+link=$(readlink -f "$HOME/.emacs.d/init.el" 2>/dev/null || true)
+tree=$(cd "{{ worktree_path }}" 2>/dev/null && pwd -P) || tree="{{ worktree_path }}"
+case "$link" in
+  "$tree"/*)
+    echo "ABORT: ~/.emacs.d/init.el points into this worktree."
+    echo "  symlink -> $link"
+    echo "Repoint it at the main checkout, then retry the removal:"
+    echo "    cd {{ repo_path }} && just link"
+    exit 1
+    ;;
+esac
+"""
