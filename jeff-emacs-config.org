@@ -1380,22 +1380,26 @@
 
      This is the mechanism I want to utilize here.
 
-     Org signals =org-read-agenda-file-list: Opening input file: No such file or
-     directory= when this pointer file is missing (a fresh machine, or before =C-c [=
-     has ever run).  So make sure it exists — creating an empty one on first run —
-     before handing it to =org-agenda-files=.
+     The pointer file lives at the root of the corpus repo (=org-directory=), tracked
+     in git, rather than under =~/.emacs.d=.  A registry outside the corpus is one file
+     of absolute paths shared by every checkout, so an Emacs working in a =jwm-todo=
+     worktree resolves the agenda against the *main* checkout — a silent wrong answer.
+     Inside the repo, each worktree carries its own registry describing its own files.
+
+     Entries are therefore bare filenames, which resolve against =org-directory=;
+     agenda files living outside the repo use =~=-rooted paths.  A session working in a
+     worktree binds =org-directory= to that worktree's root — =(or (vc-root-dir)
+     default-directory)= — and re-derives =org-agenda-files= from it.
+
+     Being tracked, the file is present in every checkout, so the old first-run
+     =make-empty-file= guard against =org-read-agenda-file-list: Opening input file: No
+     such file or directory= is gone with it.
 
      #+BEGIN_SRC emacs-lisp
        (defvar jwm/org-agenda-files-list
-         (jwm/emacs-subdirectory "org-agenda-files-list")
+         (expand-file-name "org-agenda-files-list" org-directory)
          "File naming the files `org-agenda' scans, one path per line.")
 
-       (defun jwm/ensure-org-agenda-files-list ()
-         "Create `jwm/org-agenda-files-list' as an empty file when it is absent."
-         (unless (file-exists-p jwm/org-agenda-files-list)
-           (make-empty-file jwm/org-agenda-files-list t)))
-
-       (jwm/ensure-org-agenda-files-list)
        (setq org-agenda-files jwm/org-agenda-files-list)
      #+END_SRC
 
