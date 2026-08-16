@@ -695,7 +695,11 @@ BRANCH supplies the slash-safe default leaf name."
  ("C-c a" . org-agenda))
 
 (setq org-directory
-      (cond (t "~/jwm/todo")))
+      (let ((root (locate-dominating-file
+                   default-directory "org-agenda-files-list")))
+        (if root
+            (abbreviate-file-name (directory-file-name root))
+          "~/jwm/todo")))
 
 ;; The default place to put notes for capture mode
 (setq org-default-notes-file

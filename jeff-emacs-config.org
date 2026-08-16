@@ -1358,9 +1358,24 @@
 
 *** Where to Look for Org Info
 
+    Derived rather than hardcoded, so an Emacs started inside a =jwm-todo=
+    worktree resolves the agenda against *that* worktree — the registry is
+    tracked at the repo root, so each worktree carries its own.  Searching for
+    the registry is also what makes the derivation safe: started anywhere else,
+    including another repo entirely, it falls back to the corpus rather than
+    adopting an unrelated project root.
+
+    =vc-root-dir= is the obvious way to find the root and does not work here:
+    it needs a buffer visiting a file, and during startup that is =*scratch*=,
+    so it returns nil no matter where Emacs was launched.
+
     #+BEGIN_SRC emacs-lisp
       (setq org-directory
-            (cond (t "~/jwm/todo")))
+            (let ((root (locate-dominating-file
+                         default-directory "org-agenda-files-list")))
+              (if root
+                  (abbreviate-file-name (directory-file-name root))
+                "~/jwm/todo")))
 
       ;; The default place to put notes for capture mode
       (setq org-default-notes-file
