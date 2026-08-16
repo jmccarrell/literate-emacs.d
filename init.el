@@ -706,15 +706,9 @@ BRANCH supplies the slash-safe default leaf name."
 (defvar jwm/org-tickler-file (concat org-directory "/tickler.org"))
 
 (defvar jwm/org-agenda-files-list
-  (jwm/emacs-subdirectory "org-agenda-files-list")
+  (expand-file-name "org-agenda-files-list" org-directory)
   "File naming the files `org-agenda' scans, one path per line.")
 
-(defun jwm/ensure-org-agenda-files-list ()
-  "Create `jwm/org-agenda-files-list' as an empty file when it is absent."
-  (unless (file-exists-p jwm/org-agenda-files-list)
-    (make-empty-file jwm/org-agenda-files-list t)))
-
-(jwm/ensure-org-agenda-files-list)
 (setq org-agenda-files jwm/org-agenda-files-list)
 
 ;; capture template.
