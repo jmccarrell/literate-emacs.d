@@ -107,3 +107,20 @@ mcp-stdio-helper-status:
            --eval '(require (quote mcp-server-lib))' \
            --eval '(require (quote mcp-server-lib-commands))' \
            --eval '(condition-case err (let* ((source (mcp-server-lib--package-script-path)) (target (mcp-server-lib--installed-script-path)) (target-exists (and target (file-exists-p target))) (matches (and source target-exists (with-temp-buffer (insert-file-contents-literally source) (let ((source-text (buffer-string))) (erase-buffer) (insert-file-contents-literally target) (string= source-text (buffer-string))))))) (princ (format "package_source: %s\n" (or source "missing"))) (princ (format "install_target: %s\n" target)) (princ (format "target_exists: %s\n" (if target-exists "yes" "no"))) (princ (format "matches_package_helper: %s\n" (cond ((not target-exists) "n/a") (matches "yes") (t "no")))) (princ "install_command: M-x mcp-server-lib-install\n") (princ "teardown_command: M-x mcp-server-lib-uninstall\n")) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1)))'
+
+# Run the ERT suites under tests/. Each test file loads init.el itself, so
+# a failure here is either a real regression or a tangle that was skipped.
+# Pass a file stem to run one suite: `just test live-emacs`.
+test suite="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    shopt -s nullglob
+    files=(tests/*{{ suite }}*-tests.el)
+    if [ ${#files[@]} -eq 0 ]; then
+        echo "test: no suite matching '{{ suite }}' under tests/" >&2
+        exit 1
+    fi
+    for f in "${files[@]}"; do
+        echo "── ${f}"
+        emacs --batch -l "$f" -f ert-run-tests-batch-and-exit
+    done
