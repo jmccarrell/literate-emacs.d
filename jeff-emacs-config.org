@@ -58,7 +58,12 @@
 
   My /classic/ configuration took about 2.1 seconds to load.
 
+  The first tangled line is init.el's file header; Emacs 31 warns on an init file
+  with no ~lexical-binding~ cookie, and the cookie is only honored on line 1.
+
   #+BEGIN_SRC emacs-lisp
+    ;;; init.el --- Jeff McCarrell's literate Emacs configuration -*- lexical-binding: t; -*-
+
     (defconst emacs-start-time (current-time))
 
     (unless noninteractive

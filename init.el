@@ -1,3 +1,5 @@
+;;; init.el --- Jeff McCarrell's literate Emacs configuration -*- lexical-binding: t; -*-
+
 (defconst emacs-start-time (current-time))
 
 (unless noninteractive
