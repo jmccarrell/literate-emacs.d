@@ -631,7 +631,7 @@
        "Dump selected frame metrics from the currently selected frame to the *Message* buffer.
      Intended to be helpful for debugging the choices textsize makes for a given monitor/display."
        (interactive)
-       (let (f (selected-frame))
+       (let ((f (selected-frame)))
          (message "emacs frame geometry: X Y WIDTH HEIGHT: %s" (frame-monitor-attribute 'geometry f))
          (message "emacs monitor size WIDTH HEIGHT mm: %s" (frame-monitor-attribute 'mm-size f))
          (message "textsize monitor size  mm: %d" (textsize--monitor-size-mm f))
