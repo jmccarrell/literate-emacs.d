@@ -5,9 +5,9 @@
 (unless noninteractive
   (message "Loading %s..." load-file-name))
 
-(when (and (eq system-type 'darwin)
-           (not (getenv "MACOSX_DEPLOYMENT_TARGET")))
-  (setenv "MACOSX_DEPLOYMENT_TARGET" "11.0"))
+(when (eq system-type 'darwin)
+  (with-eval-after-load 'comp
+    (add-to-list 'native-comp-driver-options "-mmacosx-version-min=11")))
 
 (defconst jwm/emacs-directory (concat (getenv "HOME") "/.emacs.d"))
 
