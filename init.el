@@ -1354,10 +1354,31 @@ Idempotent; safe to run on every machine after config clone."
 (use-package just-mode)
 (use-package just-ts-mode)
 
+(defun jwm/sql-pop-to-session ()
+  "Select this buffer's SQL session buffer, with point at its end."
+  (interactive)
+  ;; `sql-buffer' holds the session buffer's name, not the buffer.
+  (unless (sql-buffer-live-p sql-buffer)
+    (sql-set-sqli-buffer))
+  (when (sql-buffer-live-p sql-buffer)
+    (pop-to-buffer sql-buffer)
+    (goto-char (point-max))))
+
+(defun jwm/sql-font-lock-everything ()
+  "Highlight session output as well as input."
+  (sql-product-font-lock nil nil))
+
 (use-package sql
   :ensure nil
   :custom
-  (sql-product 'postgres))
+  (sql-product 'postgres)
+  (sql-postgres-login-params '(user))
+  (sql-input-ring-file-name (locate-user-emacs-file ".sqli_history"))
+  :bind (:map sql-mode-map ("C-c C-z" . jwm/sql-pop-to-session))
+  :hook (sql-interactive-mode . jwm/sql-font-lock-everything)
+  :config
+  ;; A customized ~/.psqlrc prompt breaks sql-interactive-mode's prompt matching.
+  (add-to-list 'sql-postgres-options "--no-psqlrc" t))
 
 (use-package terraform-mode
   :mode "\.tf\\'")
