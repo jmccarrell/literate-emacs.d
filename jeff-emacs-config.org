@@ -71,6 +71,21 @@
   #+END_SRC
 
 * General Settings
+** Native compilation on macOS
+
+   Temporary; remove once [[https://github.com/caldwell/build-emacs/issues/158][build-emacs#158]] ships a fixed Emacs.app.  The GCC
+   bundled in the emacsformacosx.com build derives =-mmacosx-version-min=
+   from the kernel version minus 9, which on macOS 27 gives =18.0=; Apple's
+   clang rejects it, so every native compile fails.  An explicit version for
+   the native compiler's driver overrides it without touching the
+   environment of other processes; =11= is the minimum this build targets.
+
+  #+BEGIN_SRC emacs-lisp
+    (when (eq system-type 'darwin)
+      (with-eval-after-load 'comp
+        (add-to-list 'native-comp-driver-options "-mmacosx-version-min=11")))
+  #+END_SRC
+
 ** Emacs Directories
 
    I prefer Howard's style of [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][defining where to store eveything]], so I shamelessly stole it.

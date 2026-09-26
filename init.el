@@ -5,6 +5,10 @@
 (unless noninteractive
   (message "Loading %s..." load-file-name))
 
+(when (eq system-type 'darwin)
+  (with-eval-after-load 'comp
+    (add-to-list 'native-comp-driver-options "-mmacosx-version-min=11")))
+
 (defconst jwm/emacs-directory (concat (getenv "HOME") "/.emacs.d"))
 
 (defun jwm/emacs-subdirectory (d) (expand-file-name d jwm/emacs-directory))
