@@ -1493,6 +1493,11 @@
 
    I stole much of this from [[https://github.com/danielmai/.emacs.d/blob/master/config.org#org-babel-languages][Daniel Mai]].
 
+   =sql= blocks default to PostgreSQL (workspace spec 015).  They carry no
+   connection settings: =psql= takes them from the project's =PG*= variables
+   and =.pgpass=, which mise supplies.  An org file picks its login with
+   =#+PROPERTY: header-args:sql :dbuser <login>=.
+
    #+BEGIN_SRC emacs-lisp
      (use-package ob-restclient)
 
@@ -1510,6 +1515,10 @@
         (sqlite . t)
         (js . t)
         (restclient . t)))
+
+     ;; -X so ~/.psqlrc output cannot land in the result table.
+     (setq org-babel-default-header-args:sql
+           '((:engine . "postgresql") (:cmdline . "-X")))
 
      (defun my-org-confirm-babel-evaluate (lang body)
        "Do not confirm evaluation for these languages."
