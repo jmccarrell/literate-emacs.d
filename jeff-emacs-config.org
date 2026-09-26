@@ -2423,6 +2423,19 @@ instead of the global \"make -k\".  Still editable at the prompt for
     (use-package just-ts-mode)
   #+end_src
 
+** SQL
+
+   PostgreSQL is the default SQL dialect, for highlighting and for
+   interactive sessions. The rest of the SQL setup is planned in
+   workspace spec 015.
+
+  #+begin_src emacs-lisp
+    (use-package sql
+      :ensure nil
+      :custom
+      (sql-product 'postgres))
+  #+end_src
+
 ** terraform
 
 Lifted directly from jwiegley.
