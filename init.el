@@ -104,7 +104,8 @@ Intended for headless provisioning; blocks until compilation completes."
     (let ((files (directory-files-recursively package-user-dir "\\.el\\'")))
       (dolist (entry load-history)
         (let* ((f (car entry))
-               (base (and (stringp f) (file-name-sans-extension f)))
+               (base (and (stringp f) (string-suffix-p ".elc" f)
+                          (file-name-sans-extension f)))
                (src (and base (seq-find #'file-exists-p
                                         (list (concat base ".el")
                                               (concat base ".el.gz"))))))
@@ -112,10 +113,12 @@ Intended for headless provisioning; blocks until compilation completes."
       (native-compile-async (delete-dups files))
       ;; native-compile-async doesn't fill its queue instantly — settle first.
       (sleep-for 3)
-      (while (or comp-files-queue
-                 (and (fboundp 'comp-async-runnings)
-                      (> (or (comp-async-runnings) 0) 0)))
-        (sleep-for 1)))))
+      ;; Emacs 31 renamed comp-async-runnings to comp--async-runnings.
+      (let ((runnings (seq-find #'fboundp '(comp--async-runnings
+                                            comp-async-runnings))))
+        (while (or comp-files-queue
+                   (and runnings (> (or (funcall runnings) 0) 0)))
+          (sleep-for 1))))))
 
 (setq inhibit-startup-message t)
 ;; needed for emacs23
