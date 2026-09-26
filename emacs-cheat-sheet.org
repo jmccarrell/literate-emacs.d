@@ -299,6 +299,22 @@
     leaves an empty =|---|= result.  A PostgreSQL =NOTICE= opens that window
     too, even when the block succeeded.
 
+*** Formatting SQL  (pg_format)
+
+    Formatting is on request only, never on save: SQL layout is a judgment
+    call.  Needs =pg_format= (Homebrew =pgformatter=, installed on lyra by
+    =daily=); where it is missing the key is unbound.
+
+    | key / command | result |
+    |---------------+--------|
+    | C-c C-f | format the region if one is active, otherwise the whole buffer |
+    | C-c ' then C-c C-f | format an org =sql= block; =C-c '= again writes it back |
+    | M-x pg-format-buffer / pg-format-region | the same, by name |
+
+    =pg_format= reads its settings from =.pg_format= in the buffer's
+    directory, then =~/.pg_format= (for example =keyword-case=,
+    =spaces=).  Nothing is set in the Emacs config.
+
 ** Avy  (jump to visible text)
 
    | key | command             |

@@ -1527,9 +1527,10 @@
         (js . t)
         (restclient . t)))
 
-     ;; -X so ~/.psqlrc output cannot land in the result table.
+     ;; -X so ~/.psqlrc output cannot land in the result table.  "postgres",
+     ;; not "postgresql": C-c ' hands the engine to `sql-set-product'.
      (setq org-babel-default-header-args:sql
-           '((:engine . "postgresql") (:cmdline . "-X")))
+           '((:engine . "postgres") (:cmdline . "-X")))
 
      (defun my-org-confirm-babel-evaluate (lang body)
        "Do not confirm evaluation for these languages."
@@ -2499,6 +2500,30 @@ instead of the global \"make -k\".  Still editable at the prompt for
       :config
       ;; A customized ~/.psqlrc prompt breaks sql-interactive-mode's prompt matching.
       (add-to-list 'sql-postgres-options "--no-psqlrc" t))
+  #+end_src
+
+   =C-c C-f= formats the region, or the whole buffer, with =pg_format=; it
+   also works in the buffer =C-c '= opens for an org =sql= block.  Never on
+   save: SQL layout is a judgment call, and saving would rewrite every
+   existing file it touched.  =pg_format= reads its own settings from
+   =.pg_format= or =~/.pg_format=.  Only where =pg_format= is installed.
+
+  #+begin_src emacs-lisp
+    (when (executable-find "pg_format")
+      (require 'reformatter)
+      (reformatter-define pg-format
+        :program "pg_format"
+        :args '("-"))
+
+      (defun jwm/pg-format-dwim ()
+        "Format the active region with pg_format, or the whole buffer."
+        (interactive)
+        (if (use-region-p)
+            (pg-format-region (region-beginning) (region-end))
+          (pg-format-buffer)))
+
+      (with-eval-after-load 'sql
+        (keymap-set sql-mode-map "C-c C-f" #'jwm/pg-format-dwim)))
   #+end_src
 
 ** terraform
