@@ -195,6 +195,68 @@
    =cargo locate-project --workspace= to identify the desired manifest, open
    its directory in Dired, and run =M-x compile= there.
 
+** SQL and PostgreSQL  (project environment and psql sessions)
+
+   Planned in workspace spec 015; this section grows as its steps land.
+
+   One time on each machine: =brew install libpq= (=psql= is keg-only, so
+   it is reached through a project's =mise.toml=, not the global =PATH=),
+   then =just install-packages= in =literate-emacs.d= to install =mise=,
+   and restart Emacs.
+
+   One time in each project checkout: =mise trust=, and whatever writes its
+   password file (=just write-pgpass= in art-of-postgresql).
+
+*** Project environment  (mise)
+
+    Each buffer gets its project's =mise.toml= environment and =exec-path=:
+    the =PG*= variables and =psql= reach a buffer in art-of-postgresql and
+    nothing outside it.  Org source blocks and processes started from the
+    buffer inherit them.
+
+    - The mode line shows =mise[...]=; =mise[untrust]= means the project's
+      config is not trusted yet, so the buffer gets no project environment.
+      Run =mise trust= in a shell.  Emacs never trusts a config itself.
+    - A project with both a =.envrc= and its own mise config uses mise; a
+      =*Warnings*= entry names it once per session.  A project with only a
+      =.envrc= still uses envrc.
+
+    | key / command | result |
+    |---------------+--------|
+    | M-: (getenv "PGHOST") | check what the current buffer sees |
+    | M-x mise-update-buffer | re-read one buffer's environment after editing =mise.toml= |
+    | M-x mise-update-dir | re-read every buffer under a directory; =C-u= first clears the cache for all |
+
+*** psql session from a =.sql= buffer
+
+    =M-x sql-postgres= from a buffer in the project asks only for the login
+    (=artofpg_ddl= or =artofpg_rw= in art-of-postgresql).  Host, database
+    and password come from the project's =PG*= variables and =.pgpass=, so
+    there is no password prompt.  An empty login leaves it to =PGUSER=.
+
+    | key / command | result |
+    |---------------+--------|
+    | M-x sql-postgres | start a session; the =.sql= buffer sends to it from then on |
+    | C-c C-c | send the paragraph (statement) at point |
+    | C-c C-r | send the region |
+    | C-c C-b | send the whole buffer |
+    | C-c C-n | send the current line and move to the next |
+    | C-c C-s | prompt for a string and send it |
+    | C-c C-z | switch to the session buffer, at its end |
+    | C-c C-l a | list all tables and views |
+    | C-c C-l t | describe a table |
+
+    In the session buffer:
+
+    | key | result |
+    |-----+--------|
+    | M-p / M-n | previous / next statement; history is kept across sessions in =~/.emacs.d/.sqli_history= |
+    | M-r | search history by regexp |
+    | C-c C-r | scroll to show the start of the last output |
+
+    Statements need their terminating =;=.  =~/.psqlrc= is ignored
+    (=--no-psqlrc=) so a custom prompt cannot confuse the session buffer.
+
 ** Avy  (jump to visible text)
 
    | key | command             |
