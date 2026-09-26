@@ -1380,6 +1380,42 @@ Idempotent; safe to run on every machine after config clone."
                        (mise-default-exclude))))
   :hook (after-init . global-mise-mode))
 
+(defun jwm/mise-project-config ()
+  "Return the closest mise config for `default-directory' that is not global."
+  (let ((global (file-name-as-directory (expand-file-name "~/.config/mise"))))
+    (with-temp-buffer
+      (when (eq 0 (ignore-errors
+                    (call-process "mise" nil '(t nil) nil "config" "ls" "--json")))
+        (seq-find (lambda (f) (not (string-prefix-p global f)))
+                  (mapcar (lambda (c) (expand-file-name (alist-get 'path c)))
+                          (ignore-errors
+                            (json-parse-string (buffer-string)
+                                               :object-type 'alist
+                                               :array-type 'list))))))))
+
+(defvar jwm/mise-envrc-warned nil
+  "Projects already warned about having both a .envrc and a mise config.")
+
+(defun jwm/envrc-yield-to-mise (orig &optional arg)
+  "Keep `envrc-mode' off where a project mise config applies too."
+  (let ((envrc-dir (and (eql arg 1)
+                        (executable-find "mise")
+                        (not (file-remote-p default-directory))
+                        (locate-dominating-file default-directory ".envrc")))
+        (mise-config nil))
+    (if (and envrc-dir (setq mise-config (jwm/mise-project-config)))
+        (unless (member envrc-dir jwm/mise-envrc-warned)
+          (push envrc-dir jwm/mise-envrc-warned)
+          (display-warning
+           'mise
+           (format "%s has both %s.envrc and %s; using mise"
+                   (abbreviate-file-name envrc-dir)
+                   (abbreviate-file-name envrc-dir)
+                   (abbreviate-file-name mise-config))))
+      (funcall orig arg))))
+
+(advice-add 'envrc-mode :around #'jwm/envrc-yield-to-mise)
+
 (use-package docker
   :bind ("C-c d" . docker)
   :diminish)

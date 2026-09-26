@@ -2469,9 +2469,11 @@ Lifted directly from jwiegley.
 
 ** mise support
 
-   [[https://github.com/eki3z/mise.el][mise.el]] does for =mise.toml= what envrc does for =.envrc=: each
-   buffer gets its project's environment and =exec-path=, and org-babel
-   blocks inherit them. Chosen in workspace spec 015.
+   mise is my preferred tool for project environments; envrc remains for
+   projects that only have a =.envrc=. [[https://github.com/eki3z/mise.el][mise.el]] does for =mise.toml= what
+   envrc does for =.envrc=: each buffer gets its project's environment and
+   =exec-path=, and org-babel blocks inherit them. Chosen in workspace spec
+   015.
 
    - =mise-trust= is nil: the default asks once, then runs
      =mise trust --all= on every parent directory.
@@ -2479,8 +2481,9 @@ Lifted directly from jwiegley.
      off, which would write the dotfiles-managed global config; the
      dotfiles repo sets it instead.
    - envrc and mise each clear the other's buffer-local environment, so
-     buffers where envrc is active are left to envrc. This section comes
-     after envrc's so that envrc's per-buffer hook runs first.
+     each buffer gets exactly one. Where a project has both a =.envrc=
+     and its own mise config, envrc stands aside and a warning names the
+     project. Elsewhere a buffer under a =.envrc= is left to envrc.
 
    #+begin_src emacs-lisp
      (use-package mise
@@ -2492,6 +2495,42 @@ Lifted directly from jwiegley.
              (lambda () (or (eq (bound-and-true-p envrc--status) 'on)
                             (mise-default-exclude))))
        :hook (after-init . global-mise-mode))
+
+     (defun jwm/mise-project-config ()
+       "Return the closest mise config for `default-directory' that is not global."
+       (let ((global (file-name-as-directory (expand-file-name "~/.config/mise"))))
+         (with-temp-buffer
+           (when (eq 0 (ignore-errors
+                         (call-process "mise" nil '(t nil) nil "config" "ls" "--json")))
+             (seq-find (lambda (f) (not (string-prefix-p global f)))
+                       (mapcar (lambda (c) (expand-file-name (alist-get 'path c)))
+                               (ignore-errors
+                                 (json-parse-string (buffer-string)
+                                                    :object-type 'alist
+                                                    :array-type 'list))))))))
+
+     (defvar jwm/mise-envrc-warned nil
+       "Projects already warned about having both a .envrc and a mise config.")
+
+     (defun jwm/envrc-yield-to-mise (orig &optional arg)
+       "Keep `envrc-mode' off where a project mise config applies too."
+       (let ((envrc-dir (and (eql arg 1)
+                             (executable-find "mise")
+                             (not (file-remote-p default-directory))
+                             (locate-dominating-file default-directory ".envrc")))
+             (mise-config nil))
+         (if (and envrc-dir (setq mise-config (jwm/mise-project-config)))
+             (unless (member envrc-dir jwm/mise-envrc-warned)
+               (push envrc-dir jwm/mise-envrc-warned)
+               (display-warning
+                'mise
+                (format "%s has both %s.envrc and %s; using mise"
+                        (abbreviate-file-name envrc-dir)
+                        (abbreviate-file-name envrc-dir)
+                        (abbreviate-file-name mise-config))))
+           (funcall orig arg))))
+
+     (advice-add 'envrc-mode :around #'jwm/envrc-yield-to-mise)
    #+end_src
 
 ** docker and dockerfile
