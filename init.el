@@ -1354,6 +1354,11 @@ Idempotent; safe to run on every machine after config clone."
 (use-package just-mode)
 (use-package just-ts-mode)
 
+(use-package sql
+  :ensure nil
+  :custom
+  (sql-product 'postgres))
+
 (use-package terraform-mode
   :mode "\.tf\\'")
 
