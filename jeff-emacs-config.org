@@ -223,7 +223,7 @@
          docker dockerfile-mode edit-indirect embark embark-consult envrc
          expand-region flymake-ruff go-mode gptel js2-mode json-mode
          jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
-         mcp-server-lib ob-restclient orderless outline-indent pet
+         mcp-server-lib mise ob-restclient orderless outline-indent pet
          reformatter terraform-mode textsize vertico wgrep which-key
          wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
        "External packages this config expects; installed by `just install-packages'.")
@@ -2465,6 +2465,33 @@ Lifted directly from jwiegley.
    #+begin_src emacs-lisp
      (use-package envrc
        :hook (after-init . envrc-global-mode))
+   #+end_src
+
+** mise support
+
+   [[https://github.com/eki3z/mise.el][mise.el]] does for =mise.toml= what envrc does for =.envrc=: each
+   buffer gets its project's environment and =exec-path=, and org-babel
+   blocks inherit them. Chosen in workspace spec 015.
+
+   - =mise-trust= is nil: the default asks once, then runs
+     =mise trust --all= on every parent directory.
+   - The package sets mise's =experimental= setting itself when it is
+     off, which would write the dotfiles-managed global config; the
+     dotfiles repo sets it instead.
+   - envrc and mise each clear the other's buffer-local environment, so
+     buffers where envrc is active are left to envrc. This section comes
+     after envrc's so that envrc's per-buffer hook runs first.
+
+   #+begin_src emacs-lisp
+     (use-package mise
+       :if (executable-find "mise")
+       :custom
+       (mise-trust nil)
+       :config
+       (setq mise-exclude-predicate
+             (lambda () (or (eq (bound-and-true-p envrc--status) 'on)
+                            (mise-default-exclude))))
+       :hook (after-init . global-mise-mode))
    #+end_src
 
 ** docker and dockerfile

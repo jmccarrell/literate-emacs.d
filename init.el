@@ -85,7 +85,7 @@
     docker dockerfile-mode edit-indirect embark embark-consult envrc
     expand-region flymake-ruff go-mode gptel js2-mode json-mode
     jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
-    mcp-server-lib ob-restclient orderless outline-indent pet
+    mcp-server-lib mise ob-restclient orderless outline-indent pet
     reformatter terraform-mode textsize vertico wgrep which-key
     wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
   "External packages this config expects; installed by `just install-packages'.")
@@ -1369,6 +1369,16 @@ Idempotent; safe to run on every machine after config clone."
 
 (use-package envrc
   :hook (after-init . envrc-global-mode))
+
+(use-package mise
+  :if (executable-find "mise")
+  :custom
+  (mise-trust nil)
+  :config
+  (setq mise-exclude-predicate
+        (lambda () (or (eq (bound-and-true-p envrc--status) 'on)
+                       (mise-default-exclude))))
+  :hook (after-init . global-mise-mode))
 
 (use-package docker
   :bind ("C-c d" . docker)
