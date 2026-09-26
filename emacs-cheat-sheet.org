@@ -257,6 +257,48 @@
     Statements need their terminating =;=.  =~/.psqlrc= is ignored
     (=--no-psqlrc=) so a custom prompt cannot confuse the session buffer.
 
+*** SQL in org documents
+
+    =sql= source blocks run against PostgreSQL through =psql=, with results
+    inserted as an org table.  The block needs no connection settings: they
+    come from the project's =PG*= variables and =.pgpass=, so the org file
+    must live in the project.  Outside it, a block fails with =psql: command
+    not found=.
+
+    Choose the login once per file, and override it per block when needed:
+
+    #+begin_example
+    ,#+PROPERTY: header-args:sql :dbuser artofpg_rw
+
+    ,#+begin_src sql
+    select current_user, current_database();
+    ,#+end_src
+
+    ,#+begin_src sql :dbuser artofpg_ddl
+    create table ...
+    ,#+end_src
+    #+end_example
+
+    After adding or changing the =#+PROPERTY:= line, press =C-c C-c= on it
+    so org reads it.
+
+    | key / header argument | result |
+    |-----------------------+--------|
+    | C-c C-c on a block | run it; blocks run without asking first |
+    | C-c ' on a block | edit it in a =sql-mode= buffer; =C-c '= again returns |
+    | :dbuser <login> | the login for this block or, in =#+PROPERTY:=, the file |
+    | :colnames no | a table without the header row |
+    | :results raw | the raw tab-separated output instead of a table |
+    | :eval query | ask before running this block (or a whole file, in =#+PROPERTY:=) |
+
+    Each block is a separate =psql= run, so there is no session state
+    between blocks: =set=, temporary tables and open transactions do not
+    carry over.  Keep one query per block: every statement's output lands
+    in the same table, including tags such as =DO= or =CREATE TABLE=.  A
+    failed block shows =psql='s error in a separate window and
+    leaves an empty =|---|= result.  A PostgreSQL =NOTICE= opens that window
+    too, even when the block succeeded.
+
 ** Avy  (jump to visible text)
 
    | key | command             |

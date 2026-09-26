@@ -773,6 +773,10 @@ BRANCH supplies the slash-safe default leaf name."
    (js . t)
    (restclient . t)))
 
+;; -X so ~/.psqlrc output cannot land in the result table.
+(setq org-babel-default-header-args:sql
+      '((:engine . "postgresql") (:cmdline . "-X")))
+
 (defun my-org-confirm-babel-evaluate (lang body)
   "Do not confirm evaluation for these languages."
   (not (or (string= lang "C")
