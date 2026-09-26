@@ -778,9 +778,10 @@ BRANCH supplies the slash-safe default leaf name."
    (js . t)
    (restclient . t)))
 
-;; -X so ~/.psqlrc output cannot land in the result table.
+;; -X so ~/.psqlrc output cannot land in the result table.  "postgres",
+;; not "postgresql": C-c ' hands the engine to `sql-set-product'.
 (setq org-babel-default-header-args:sql
-      '((:engine . "postgresql") (:cmdline . "-X")))
+      '((:engine . "postgres") (:cmdline . "-X")))
 
 (defun my-org-confirm-babel-evaluate (lang body)
   "Do not confirm evaluation for these languages."
@@ -1392,6 +1393,22 @@ Idempotent; safe to run on every machine after config clone."
   :config
   ;; A customized ~/.psqlrc prompt breaks sql-interactive-mode's prompt matching.
   (add-to-list 'sql-postgres-options "--no-psqlrc" t))
+
+(when (executable-find "pg_format")
+  (require 'reformatter)
+  (reformatter-define pg-format
+    :program "pg_format"
+    :args '("-"))
+
+  (defun jwm/pg-format-dwim ()
+    "Format the active region with pg_format, or the whole buffer."
+    (interactive)
+    (if (use-region-p)
+        (pg-format-region (region-beginning) (region-end))
+      (pg-format-buffer)))
+
+  (with-eval-after-load 'sql
+    (keymap-set sql-mode-map "C-c C-f" #'jwm/pg-format-dwim)))
 
 (use-package terraform-mode
   :mode "\.tf\\'")
