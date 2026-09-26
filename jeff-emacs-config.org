@@ -79,11 +79,15 @@
    clang rejects it, so every native compile fails.  An explicit version for
    the native compiler's driver overrides it without touching the
    environment of other processes; =11= is the minimum this build targets.
+   Background compiles hand the option to their workers only if =comp= is
+   loaded, and they load just =comp-run=, so =comp-run= pulls =comp= in.
 
   #+BEGIN_SRC emacs-lisp
     (when (eq system-type 'darwin)
       (with-eval-after-load 'comp
-        (add-to-list 'native-comp-driver-options "-mmacosx-version-min=11")))
+        (add-to-list 'native-comp-driver-options "-mmacosx-version-min=11"))
+      (with-eval-after-load 'comp-run
+        (require 'comp)))
   #+END_SRC
 
 ** Emacs Directories

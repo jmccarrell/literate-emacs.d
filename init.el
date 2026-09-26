@@ -7,7 +7,9 @@
 
 (when (eq system-type 'darwin)
   (with-eval-after-load 'comp
-    (add-to-list 'native-comp-driver-options "-mmacosx-version-min=11")))
+    (add-to-list 'native-comp-driver-options "-mmacosx-version-min=11"))
+  (with-eval-after-load 'comp-run
+    (require 'comp)))
 
 (defconst jwm/emacs-directory (concat (getenv "HOME") "/.emacs.d"))
 
