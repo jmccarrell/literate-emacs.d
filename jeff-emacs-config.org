@@ -71,6 +71,21 @@
   #+END_SRC
 
 * General Settings
+** Native compilation on macOS
+
+   The compiler library bundled in the emacsformacosx.com Emacs.app derives
+   =-mmacosx-version-min= from the kernel version, and on macOS 27 it passes
+   =18.0=, which Apple's clang rejects, so every native compile fails.  An
+   explicit deployment target overrides that; =11.0= is the minimum this build
+   targets, so it stays valid across macOS releases.  Set before packages load,
+   so the background compile jobs inherit it.
+
+  #+BEGIN_SRC emacs-lisp
+    (when (and (eq system-type 'darwin)
+               (not (getenv "MACOSX_DEPLOYMENT_TARGET")))
+      (setenv "MACOSX_DEPLOYMENT_TARGET" "11.0"))
+  #+END_SRC
+
 ** Emacs Directories
 
    I prefer Howard's style of [[https://github.com/howardabrams/dot-files/blob/master/emacs.org#my-directory-location][defining where to store eveything]], so I shamelessly stole it.
