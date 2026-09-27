@@ -226,6 +226,18 @@
     | M-: (getenv "PGHOST") | check what the current buffer sees |
     | M-x mise-update-buffer | re-read one buffer's environment after editing =mise.toml= |
     | M-x mise-update-dir | re-read every buffer under a directory; =C-u= first clears the cache for all |
+    | M-x jwm/mise-refresh | re-read every buffer, then restart the language servers so they see the change |
+
+    Which database a project's buffers reach is the project's mise setting.
+    art-of-postgresql defaults to its local container; to switch, run the
+    project's recipe in a shell, then refresh Emacs:
+
+    #+begin_src shell
+      just point-tools folio      # or: just point-tools local
+    #+end_src
+
+    Then =M-x jwm/mise-refresh=.  SQL sessions already running keep the
+    database they started with; start a new one.
 
 *** psql session from a =.sql= buffer
 
@@ -298,6 +310,27 @@
     failed block shows =psql='s error in a separate window and
     leaves an empty =|---|= result.  A PostgreSQL =NOTICE= opens that window
     too, even when the block succeeded.
+
+*** Completion and diagnostics  (postgres-language-server)
+
+    In a =.sql= buffer Eglot runs =postgres-language-server= (Homebrew,
+    installed on lyra by =daily=); where it is missing nothing starts.  It
+    reads the database from the project's =DATABASE_URL=, as the
+    =artofpg_rw= login in art-of-postgresql, with the password from
+    =.pgpass=.
+
+    | key / command | result |
+    |---------------+--------|
+    | C-M-i | complete tables after a schema name, and a table's columns inside a query |
+    | C-c ! n / C-c ! p | next / previous syntax error, marked as you type |
+    | C-c ! l | list the buffer's errors |
+    | M-x eglot-reconnect | restart the server for this buffer |
+
+    Errors come from PostgreSQL's own parser, so they are marked before
+    anything runs.  The server treats a blank line as the end of a
+    statement, so keep each statement free of blank lines.  One server
+    process serves every project and keeps the database it started with;
+    =M-x jwm/mise-refresh= restarts it.
 
 *** Formatting SQL  (pg_format)
 

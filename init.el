@@ -1352,6 +1352,8 @@ Idempotent; safe to run on every machine after config clone."
   (add-to-list 'eglot-server-programs
                '((dockerfile-mode dockerfile-ts-mode)
                  . ("docker-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '(sql-mode . ("postgres-language-server" "lsp-proxy")))
   (defun jwm/dockerfile-eglot-ensure ()
     "Start Eglot for Dockerfiles when docker-langserver is available."
     (when (executable-find "docker-langserver")
@@ -1382,6 +1384,11 @@ Idempotent; safe to run on every machine after config clone."
   "Highlight session output as well as input."
   (sql-product-font-lock nil nil))
 
+(defun jwm/sql-eglot-ensure ()
+  "Start Eglot for SQL when postgres-language-server is installed."
+  (when (executable-find "postgres-language-server")
+    (eglot-ensure)))
+
 (use-package sql
   :ensure nil
   :custom
@@ -1389,7 +1396,8 @@ Idempotent; safe to run on every machine after config clone."
   (sql-postgres-login-params '(user))
   (sql-input-ring-file-name (locate-user-emacs-file ".sqli_history"))
   :bind (:map sql-mode-map ("C-c C-z" . jwm/sql-pop-to-session))
-  :hook (sql-interactive-mode . jwm/sql-font-lock-everything)
+  :hook ((sql-interactive-mode . jwm/sql-font-lock-everything)
+         (sql-mode . jwm/sql-eglot-ensure))
   :config
   ;; A customized ~/.psqlrc prompt breaks sql-interactive-mode's prompt matching.
   (add-to-list 'sql-postgres-options "--no-psqlrc" t))
@@ -1466,6 +1474,24 @@ Idempotent; safe to run on every machine after config clone."
       (funcall orig arg))))
 
 (advice-add 'envrc-mode :around #'jwm/envrc-yield-to-mise)
+
+(defun jwm/mise-refresh ()
+  "Re-read mise for every buffer, then restart the Eglot servers they use.
+Run after changing a project's mise settings, e.g. `just point-tools'."
+  (interactive)
+  (mise-update-dir t)
+  (let ((managed (seq-filter (lambda (b) (with-current-buffer b (eglot-managed-p)))
+                             (buffer-list))))
+    (dolist (server (delete-dups (mapcar (lambda (b)
+                                           (with-current-buffer b (eglot-current-server)))
+                                         managed)))
+      (eglot-shutdown server))
+    ;; One postgres-language-server daemon serves every project and keeps
+    ;; the environment it started with.
+    (when (executable-find "postgres-language-server")
+      (call-process "postgres-language-server" nil nil nil "stop"))
+    (dolist (b managed)
+      (with-current-buffer b (eglot-ensure)))))
 
 (use-package docker
   :bind ("C-c d" . docker)
