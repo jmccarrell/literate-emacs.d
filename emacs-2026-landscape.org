@@ -108,7 +108,8 @@ looks like → effort.
 | just-mode                          | just-mode                   | Fine          | Consider ~just-ts-mode~ (purcell has it).                  | Trivial | Low     |
 | terraform-mode                     | terraform-mode              | Fine          | Consider eglot + ~terraform-ls~ or ~tofu-ls~ (purcell).    | Low    | Low      |
 | editorconfig                       | editorconfig                | Built-in 30   | On Emacs 30, can drop the package.                         | Trivial | Cleanup |
-| envrc                              | envrc                       | Still current | Keep. Upstream now checks direnv availability (Purcell note). | —    | —        |
+| envrc                              | envrc + mise.el             | Shipped       | mise preferred (spec 015); envrc kept for =.envrc=-only projects. | —   | —        |
+| SQL / PostgreSQL                   | sql-mode, ob-sql, eglot     | Shipped       | Spec 015 done: sessions, org blocks, language server, pg_format. | —   | —        |
 | docker / dockerfile-mode           | docker + dockerfile-mode    | Still current | Keep. Consider ~dockerfile-ts-mode~.                        | Trivial | Low     |
 | *AI / LLM integration*             | =gptel= cloud chat (Groq + Claude) | *Active* | Next: backend switching ergonomics; tools/MCP later.        | Medium | *High* |
 | Tree-sitter usage overall          | not configured              | Built-in 29+  | Turn on ~major-mode-remap-alist~ for Python/JS/YAML/etc.   | Low    | Cleanup  |
@@ -241,6 +242,22 @@ The rough order the sub-goals landed in:
   re-binds — muscle memory retrains to vanilla =C-x p=. Cheat sheet
   rewritten (counsel-projectile leftovers deleted). Tracked as
   literate-emacs.d issue #25.
+- *PostgreSQL development* — workspace spec 015, starting from the
+  art-of-postgresql study project.  Built-in =sql-mode= with the
+  PostgreSQL dialect (#38).  =mise.el= gives each buffer its project's
+  =mise.toml= environment, and is preferred over envrc where a project
+  has both (#41); a project's database is switched in mise, and
+  =jwm/mise-refresh= makes Emacs follow.  =psql= sessions from =.sql=
+  buffers, asking only for the login (#43).  =ob-sql= blocks default to
+  PostgreSQL with no connection settings in the file (#46).
+  =postgres-language-server= through eglot for completion from the live
+  schema and syntax errors as you type (#51).  =pg_format= through
+  =reformatter= on =C-c C-f=, never on save (#52).  Each step documented
+  its use in the cheat sheet as it landed.  Along the way, native
+  compilation broke on macOS 27, because the GCC inside the
+  emacsformacosx.com build passes an invalid macOS version; worked around
+  by passing a valid one to the compiler driver (#47, #49) until
+  build-emacs#158 ships a fix.
 
 ** Pending
 

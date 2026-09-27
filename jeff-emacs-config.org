@@ -2468,8 +2468,10 @@ instead of the global \"make -k\".  Still editable at the prompt for
 ** SQL
 
    PostgreSQL is the default SQL dialect, for highlighting and for
-   interactive sessions. Workspace spec 015 plans the rest of the SQL
-   setup.
+   interactive sessions.  Built in workspace spec 015, which also put
+   pieces in other sections: SQL source blocks under =** Org babel=, the
+   language server under =** Eglot=, and each project's database and
+   =psql= under =** mise support=.
 
    =M-x sql-postgres= asks only for the login. =psql= takes the host,
    port, database and password from the project's =PG*= variables and

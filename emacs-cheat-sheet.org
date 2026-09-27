@@ -195,14 +195,17 @@
    =cargo locate-project --workspace= to identify the desired manifest, open
    its directory in Dired, and run =M-x compile= there.
 
-** SQL and PostgreSQL  (project environment and psql sessions)
+** SQL and PostgreSQL  (sessions, org blocks, completion, formatting)
 
-   Planned in workspace spec 015; this section grows as its steps land.
+   From workspace spec 015: which database a project reaches, =psql=
+   sessions, SQL in org documents, completion and syntax errors, and
+   formatting.
 
-   One time on each machine: =brew install libpq= (=psql= is keg-only, so
-   it is reached through a project's =mise.toml=, not the global =PATH=),
-   then =just install-packages= in =literate-emacs.d= to install =mise=,
-   and restart Emacs.
+   One time on each machine: =libpq=, =postgres-language-server= and
+   =pgformatter= come from Homebrew (=Brewfile.jwm=, installed on lyra by
+   =daily=).  =psql= is keg-only, so it is reached through a project's
+   =mise.toml=, not the global =PATH=.  Then =just install-packages= in
+   =literate-emacs.d= to install =mise=, and restart Emacs.
 
    One time in each project checkout: =mise trust=, and whatever writes its
    password file (=just write-pgpass= in art-of-postgresql).
