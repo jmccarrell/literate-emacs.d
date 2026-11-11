@@ -415,7 +415,7 @@
 
    | key        | description                                 |
    |------------+---------------------------------------------|
-   | M-RET      | insert a newline in the prompt              |
+   | S-<return> | insert a newline in the prompt              |
    | C-<escape> | send escape (cancel the current operation)  |
    | C-c C-x    | drop the file/selection shown in the prompt |
 
