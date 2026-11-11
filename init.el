@@ -92,7 +92,7 @@
     expand-region flymake-ruff ghostel go-mode gptel js2-mode json-mode
     jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
     mcp-server-lib mise ob-restclient orderless outline-indent pet
-    reformatter terraform-mode textsize vertico vterm wgrep which-key
+    reformatter terraform-mode textsize vertico wgrep which-key
     wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
   "External packages this config expects; installed by `just install-packages'.")
 ;; Packages not in any archive, installed from source by `package-vc-install'.
@@ -1168,9 +1168,6 @@ can reach the socket."
                mcp-server-lib--running)
       (mcp-server-lib-stop))
     (message "MCP server %s is stopped" jwm/mcp-live-emacs-server-id)))
-
-(use-package vterm
-  :commands (vterm vterm-other-window))
 
 (use-package ghostel
   :commands (ghostel ghostel-project))

@@ -243,7 +243,7 @@
          expand-region flymake-ruff ghostel go-mode gptel js2-mode json-mode
          jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
          mcp-server-lib mise ob-restclient orderless outline-indent pet
-         reformatter terraform-mode textsize vertico vterm wgrep which-key
+         reformatter terraform-mode textsize vertico wgrep which-key
          wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
        "External packages this config expects; installed by `just install-packages'.")
      ;; Packages not in any archive, installed from source by `package-vc-install'.
@@ -2087,7 +2087,8 @@
    behind Ghostty), which claude-code-ide recommends as its backend.
    ghostel needs a native module.  The first time it loads it asks to
    download a prebuilt one (=ghostel-module-auto-install= keeps its
-   default, =ask=), so no machine needs =cmake= or =libvterm=.
+   default, =ask=), so no machine builds one.  ghostel replaced vterm,
+   which also served =M-x vterm=; =M-x ghostel= does that now.
 
    - Path: =~/.emacs.d/elpa/ghostel-*/=, the module saved inside it.
    - Provenance: MELPA for the package; the module is a prebuilt binary
@@ -2098,15 +2099,7 @@
    - Replication: each machine runs =just install-packages= and accepts
      the download prompt once.
 
-   =vterm= stays installed until it is retired, and setting the backend
-   back to =vterm= brings it back for Claude sessions.  It compiles its
-   native module with =cmake= the first time it loads, asking first,
-   and needs Homebrew's =libvterm= from the shared Brewfile in =jwm-bin=.
-
    #+BEGIN_SRC emacs-lisp
-     (use-package vterm
-       :commands (vterm vterm-other-window))
-
      (use-package ghostel
        :commands (ghostel ghostel-project))
 
