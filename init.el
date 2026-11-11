@@ -1532,24 +1532,25 @@ Idempotent; safe to run on every machine after config clone."
 (defconst jwm/pg-tool-pgoptions "-c statement_timeout=30s -c lock_timeout=5s"
   "Server-side limits for every PostgreSQL tool call.")
 
-(defun jwm/pg-tool-environment (dir)
-  "Return (PSQL . ENVIRONMENT) for running psql as DIR's agent login.
-Signal `user-error' when DIR's mise environment has no PGUSER_AGENT."
+(defun jwm/pg-tool-environment (dir login-var)
+  "Return (PSQL . ENVIRONMENT) for running psql as one of DIR's agent logins.
+LOGIN-VAR names the mise variable holding the login.  Signal
+`user-error' when DIR's mise environment does not set it."
   (let* ((default-directory dir)
          (env (with-temp-buffer
                 (when (and (executable-find "mise")
                            (eq 0 (call-process "mise" nil '(t nil) nil
                                                "env" "--json")))
                   (json-parse-string (buffer-string) :object-type 'alist))))
-         (user (alist-get 'PGUSER_AGENT env))
+         (user (alist-get (intern login-var) env))
          (psql (let ((exec-path (append (split-string (or (alist-get 'PATH env) "")
                                                       path-separator t)
                                         exec-path)))
                  (executable-find "psql"))))
     (when (or (null user) (string-empty-p user))
-      (user-error "PGUSER_AGENT is not set in the mise environment of %s; \
-it names the login the PostgreSQL tools run as"
-                  (abbreviate-file-name dir)))
+      (user-error "%s is not set in the mise environment of %s; \
+it names the login this PostgreSQL tool runs as"
+                  login-var (abbreviate-file-name dir)))
     (unless psql
       (user-error "No psql on %s's PATH" (abbreviate-file-name dir)))
     (cons psql
@@ -1579,10 +1580,10 @@ TEXT keeps the header and `jwm/pg-tool-max-rows' rows, within
     (cons (decode-coding-string (substring output 0 end) 'utf-8)
           (< end (length output)))))
 
-(defun jwm/pg-tool-run (dir sql args callback)
-  "Run SQL through psql as DIR's agent login, with extra psql ARGS.
+(defun jwm/pg-tool-run (dir login-var sql args callback)
+  "Run SQL through psql as the DIR login in LOGIN-VAR, with extra psql ARGS.
 CALLBACK runs exactly once, with the text to show Claude."
-  (pcase-let* ((`(,psql . ,env) (jwm/pg-tool-environment dir))
+  (pcase-let* ((`(,psql . ,env) (jwm/pg-tool-environment dir login-var))
                (default-directory dir)
                (process-environment env)
                (chunks nil)
@@ -1667,23 +1668,27 @@ the statement did not finish." jwm/pg-tool-timeout)))))
           (setq requests (delq request requests)))
         (delete-process proc)))))
 
-(defun jwm/pg-tool-call (sql &rest args)
-  "Run SQL, with extra psql ARGS, for the Claude session calling a tool."
+(defun jwm/pg-tool-call-as (login-var sql &rest args)
+  "Run SQL as the login in LOGIN-VAR, with extra psql ARGS, for the calling session."
   (let ((dir (or (plist-get (claude-code-ide-mcp-server-get-session-context)
                             :project-dir)
                  default-directory))
         (request jwm/pg-tool--request))
     (if request
         (progn
-          (jwm/pg-tool-run dir sql args
+          (jwm/pg-tool-run dir login-var sql args
                            (lambda (text) (jwm/pg-tool-answer request text)))
           ;; Leave the HTTP request open; the callback answers it.
           (throw 'close-connection :keep-alive))
       (let ((answer nil))
-        (jwm/pg-tool-run dir sql args (lambda (text) (setq answer text)))
+        (jwm/pg-tool-run dir login-var sql args (lambda (text) (setq answer text)))
         (while (not answer)
           (accept-process-output nil 0.1))
         answer))))
+
+(defun jwm/pg-tool-call (sql &rest args)
+  "Run SQL, with extra psql ARGS, as the read login of the calling session."
+  (apply #'jwm/pg-tool-call-as "PGUSER_AGENT" sql args))
 
 (defconst jwm/pg-tool-list-relations-sql
   "select n.nspname as schema, c.relname as name,
@@ -1735,6 +1740,10 @@ order by 1, 2"
   (jwm/pg-tool-call (concat (if (eq analyze t) "EXPLAIN (ANALYZE) " "EXPLAIN ")
                             query)))
 
+(defun jwm/pg-tool-run-write (statements)
+  "Run STATEMENTS in one transaction as the agent writer login."
+  (jwm/pg-tool-call-as "PGUSER_AGENT_WRITE" statements "--single-transaction"))
+
 (defun jwm/pg-tools-register ()
   "Register the PostgreSQL tools with claude-code-ide's tool server."
   (claude-code-ide-make-tool
@@ -1761,7 +1770,20 @@ database. With analyze true the query is executed (EXPLAIN ANALYZE), so use it o
 for statements that are safe to run."
    :args '((:name "query" :type string :description "The statement to explain")
            (:name "analyze" :type boolean :optional t
-            :description "Run the statement and report actual timings"))))
+            :description "Run the statement and report actual timings")))
+  (claude-code-ide-make-tool
+   :function #'jwm/pg-tool-run-write
+   :name "pg_run_write"
+   :description "Change rows in the project's PostgreSQL database: insert, update, \
+delete, or a query that calls a function which writes. Runs as the project's agent \
+writer login, whose grants decide what is allowed; it cannot change the schema, which \
+is done with Sqitch changes instead. The statements run in one transaction that \
+commits when they all succeed; an error rolls all of them back. Returns psql's CSV \
+output, including command tags such as INSERT 0 1 and any RETURNING rows, with the \
+same 30 second timeout and 200 row / 64 KB limit as pg_run_query. pg_run_query runs \
+as a read-only login and cannot write."
+   :args '((:name "statements" :type string
+            :description "The SQL to run; separate several statements with semicolons"))))
 
 (with-eval-after-load 'claude-code-ide-mcp-server
   (jwm/pg-tools-register))

@@ -354,8 +354,8 @@
 *** PostgreSQL tools in Claude sessions
 
     From workspace spec 017.  A Claude session started with =C-c C-'=
-    (claude-code-ide) can read the project's database itself: no key, just
-    ask Claude.  Each call runs its own =psql=, never the =*SQL*= session,
+    (claude-code-ide) can read and change rows in the project's database
+    itself: no key, just ask Claude.  Each call runs its own =psql=, never the =*SQL*= session,
     and Emacs stays usable while it runs.
 
     | tool | what Claude gets |
@@ -363,11 +363,18 @@
     | pg_describe_schema | every table and view; with a table, its columns, constraints and indexes |
     | pg_run_query | the result of a statement, as CSV |
     | pg_explain | the =EXPLAIN= plan; with =analyze=, =EXPLAIN (ANALYZE)=, which runs the statement |
+    | pg_run_write | runs inserts, updates and deletes in one transaction and commits; psql's command tags and any =RETURNING= rows |
 
-    - Login: the project's =PGUSER_AGENT= (=artofpg_agent_ro= in
-      art-of-postgresql), with the password from the project's =.pgpass=.
-      What it may do is the login's grants; Emacs adds no guard.  Without
-      =PGUSER_AGENT= the tools refuse.
+    - Login: the read tools use the project's =PGUSER_AGENT=
+      (=artofpg_agent_ro= in art-of-postgresql), =pg_run_write= its
+      =PGUSER_AGENT_WRITE= (=artofpg_agent_rw=), with the password from the
+      project's =.pgpass=.  What each may do is the login's grants; Emacs
+      adds no guard and asks nothing before a write.  Without its variable
+      a tool refuses.
+    - Writes: one call is one transaction, so an error rolls back every
+      statement in it.  No tool changes the schema: that stays a Sqitch
+      change (=just deploy-changes=), and the writer login gets
+      =permission denied= on DDL.
     - Database: whatever the project's mise points at.  The tools read
       mise on every call, so after =just point-tools= (above) the next call
       reaches the new target without restarting the session.
