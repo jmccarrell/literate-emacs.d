@@ -240,7 +240,7 @@
      (defvar jwm/required-packages
        '(ace-window auto-yasnippet avy cape consult corfu crux diminish
          docker dockerfile-mode edit-indirect embark embark-consult envrc
-         expand-region flymake-ruff go-mode gptel js2-mode json-mode
+         expand-region flymake-ruff ghostel go-mode gptel js2-mode json-mode
          jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
          mcp-server-lib mise ob-restclient orderless outline-indent pet
          reformatter terraform-mode textsize vertico vterm wgrep which-key
@@ -2055,7 +2055,7 @@
 ** claude-code-ide
 
    Coding agents run as the =claude= CLI inside Emacs, through
-   [[https://github.com/manzaltu/claude-code-ide.el][claude-code-ide]]: each session is a =vterm= buffer tied to its
+   [[https://github.com/manzaltu/claude-code-ide.el][claude-code-ide]]: each session is a =ghostel= buffer tied to its
    =project.el= project, and a project can hold several.  My Claude Code
    settings, skills and =CLAUDE.md= files apply unchanged.  Through the
    IDE WebSocket connection Claude opens files here, reads the selection
@@ -2083,21 +2083,38 @@
    =just install-packages= (or =M-x package-vc-install=), which also pulls
    =websocket=, =web-server= and =transient= from the archives.
 
-   =vterm= compiles its native module with =cmake= the first time it
-   loads, asking first.  Each machine needs =cmake=, a C compiler and
-   Homebrew's =libvterm=; both formulae are in the shared Brewfile in
-   =jwm-bin=.  Without a system libvterm the build downloads its own and
-   fails on macOS for want of GNU libtool (=glibtool=).  After a failed
-   build, delete =~/.emacs.d/elpa/vterm-*/build= and run
-   =M-x vterm-module-compile=.
+   Sessions run in [[https://github.com/dakra/ghostel][ghostel]], a terminal built on libghostty (the engine
+   behind Ghostty), which claude-code-ide recommends as its backend.
+   ghostel needs a native module.  The first time it loads it asks to
+   download a prebuilt one (=ghostel-module-auto-install= keeps its
+   default, =ask=), so no machine needs =cmake= or =libvterm=.
+
+   - Path: =~/.emacs.d/elpa/ghostel-*/=, the module saved inside it.
+   - Provenance: MELPA for the package; the module is a prebuilt binary
+     from the =dakra/ghostel= GitHub releases, checked by release
+     version, not by checksum.
+   - Teardown: =M-x package-delete RET ghostel=, which removes the module
+     with the package directory.
+   - Replication: each machine runs =just install-packages= and accepts
+     the download prompt once.
+
+   =vterm= stays installed until it is retired, and setting the backend
+   back to =vterm= brings it back for Claude sessions.  It compiles its
+   native module with =cmake= the first time it loads, asking first,
+   and needs Homebrew's =libvterm= from the shared Brewfile in =jwm-bin=.
 
    #+BEGIN_SRC emacs-lisp
      (use-package vterm
        :commands (vterm vterm-other-window))
 
+     (use-package ghostel
+       :commands (ghostel ghostel-project))
+
      (use-package claude-code-ide
        :if (executable-find "claude")
        :bind ("C-c C-'" . claude-code-ide-menu)
+       :custom
+       (claude-code-ide-terminal-backend 'ghostel)
        :config
        (claude-code-ide-emacs-tools-setup))
    #+END_SRC
