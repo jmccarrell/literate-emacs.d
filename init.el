@@ -1167,12 +1167,7 @@ can reach the socket."
     (when (and (boundp 'mcp-server-lib--running)
                mcp-server-lib--running)
       (mcp-server-lib-stop))
-    (message "MCP server %s is stopped" jwm/mcp-live-emacs-server-id))
-
-  ;; Claude Code's MCP config for the lab project still names the old
-  ;; command as the stdio helper's --init-function.
-  (define-obsolete-function-alias 'jwm/live-emacs-start
-    #'jwm/mcp-live-emacs-start "2026-11-11"))
+    (message "MCP server %s is stopped" jwm/mcp-live-emacs-server-id)))
 
 (use-package vterm
   :commands (vterm vterm-other-window))
