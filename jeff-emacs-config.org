@@ -243,9 +243,14 @@
          expand-region flymake-ruff go-mode gptel js2-mode json-mode
          jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
          mcp-server-lib mise ob-restclient orderless outline-indent pet
-         reformatter terraform-mode textsize vertico wgrep which-key
+         reformatter terraform-mode textsize vertico vterm wgrep which-key
          wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
        "External packages this config expects; installed by `just install-packages'.")
+     ;; Packages not in any archive, installed from source by `package-vc-install'.
+     ;; Each entry is a `package-vc-selected-packages' spec.
+     (defvar jwm/required-vc-packages
+       '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el"))
+       "Source packages this config expects; installed by `just install-packages'.")
      (require 'use-package)
    #+END_SRC
 
@@ -2045,6 +2050,51 @@
                     mcp-server-lib--running)
            (mcp-server-lib-stop))
          (message "MCP server %s is stopped" jwm/live-emacs-server-id)))
+   #+END_SRC
+
+** claude-code-ide
+
+   Coding agents run as the =claude= CLI inside Emacs, through
+   [[https://github.com/manzaltu/claude-code-ide.el][claude-code-ide]]: each session is a =vterm= buffer tied to its
+   =project.el= project, and a project can hold several.  My Claude Code
+   settings, skills and =CLAUDE.md= files apply unchanged.  Through the
+   IDE WebSocket connection Claude opens files here, reads the selection
+   and diagnostics, and proposes edits as ediff sessions.  Decided in
+   workspace spec 017.
+
+   It loads wherever =claude= is on =PATH=, not just on the personal
+   machine.  Claude Code's permission prompts stay on: nothing adds
+   =--dangerously-skip-permissions= to =claude-code-ide-cli-extra-flags=.
+   =claude-code-ide-mcp-allowed-tools= keeps its default, =auto=, which
+   pre-approves only the read-only tools on its =emacs-tools= server
+   (xref, imenu, project info, tree-sitter); everything else, including
+   the IDE connection's =executeCode=, goes through Claude Code's normal
+   rules.  =claude-code-ide-enable-execute-code= keeps its default, on,
+   although the WebSocket accepts any local client until
+   manzaltu/claude-code-ide.el#225 merges.
+
+   Its servers listen on random free ports, and =live-emacs= above speaks
+   stdio through =emacsclient=, so the two never compete for a port.
+
+   claude-code-ide is not on MELPA.  Its README installs it with
+   use-package =:vc=, but =:vc= clones whenever Emacs loads without the
+   package, and loading this config never installs anything.  So it is
+   listed in =jwm/required-vc-packages= (see Use-Package) and installed by
+   =just install-packages= (or =M-x package-vc-install=), which also pulls
+   =websocket=, =web-server= and =transient= from the archives.
+
+   =vterm= compiles its native module with =cmake= the first time it
+   loads, asking first; each machine needs =cmake= and a C compiler.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package vterm
+       :commands (vterm vterm-other-window))
+
+     (use-package claude-code-ide
+       :if (executable-find "claude")
+       :bind ("C-c C-'" . claude-code-ide-menu)
+       :config
+       (claude-code-ide-emacs-tools-setup))
    #+END_SRC
 
 * Programming Support
