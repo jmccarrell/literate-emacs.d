@@ -351,6 +351,30 @@
     directory, then =~/.pg_format= (for example =keyword-case=,
     =spaces=).  Nothing is set in the Emacs config.
 
+*** PostgreSQL tools in Claude sessions
+
+    From workspace spec 017.  A Claude session started with =C-c C-'=
+    (claude-code-ide) can read the project's database itself: no key, just
+    ask Claude.  Each call runs its own =psql=, never the =*SQL*= session,
+    and Emacs stays usable while it runs.
+
+    | tool | what Claude gets |
+    |------+------------------|
+    | pg_describe_schema | every table and view; with a table, its columns, constraints and indexes |
+    | pg_run_query | the result of a statement, as CSV |
+    | pg_explain | the =EXPLAIN= plan; with =analyze=, =EXPLAIN (ANALYZE)=, which runs the statement |
+
+    - Login: the project's =PGUSER_AGENT= (=artofpg_agent_ro= in
+      art-of-postgresql), with the password from the project's =.pgpass=.
+      What it may do is the login's grants; Emacs adds no guard.  Without
+      =PGUSER_AGENT= the tools refuse.
+    - Database: whatever the project's mise points at.  The tools read
+      mise on every call, so after =just point-tools= (above) the next call
+      reaches the new target without restarting the session.
+    - Limits: statements stop after 30 s (locks wait 5 s), Emacs kills
+      =psql= after 35 s, and Claude sees at most 200 rows or 64 KB, with
+      a line saying the result was cut off.
+
 ** Avy  (jump to visible text)
 
    | key | command             |

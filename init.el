@@ -1520,6 +1520,256 @@ Idempotent; safe to run on every machine after config clone."
   (with-eval-after-load 'sql
     (keymap-set sql-mode-map "C-c C-f" #'jwm/pg-format-dwim)))
 
+(defconst jwm/pg-tool-max-rows 200
+  "CSV rows, after the header, a PostgreSQL tool shows Claude.")
+
+(defconst jwm/pg-tool-max-bytes (* 64 1024)
+  "Bytes of psql output a PostgreSQL tool shows Claude.")
+
+(defconst jwm/pg-tool-timeout 35
+  "Seconds before Emacs kills a PostgreSQL tool's psql.")
+
+(defconst jwm/pg-tool-pgoptions "-c statement_timeout=30s -c lock_timeout=5s"
+  "Server-side limits for every PostgreSQL tool call.")
+
+(defun jwm/pg-tool-environment (dir)
+  "Return (PSQL . ENVIRONMENT) for running psql as DIR's agent login.
+Signal `user-error' when DIR's mise environment has no PGUSER_AGENT."
+  (let* ((default-directory dir)
+         (env (with-temp-buffer
+                (when (and (executable-find "mise")
+                           (eq 0 (call-process "mise" nil '(t nil) nil
+                                               "env" "--json")))
+                  (json-parse-string (buffer-string) :object-type 'alist))))
+         (user (alist-get 'PGUSER_AGENT env))
+         (psql (let ((exec-path (append (split-string (or (alist-get 'PATH env) "")
+                                                      path-separator t)
+                                        exec-path)))
+                 (executable-find "psql"))))
+    (when (or (null user) (string-empty-p user))
+      (user-error "PGUSER_AGENT is not set in the mise environment of %s; \
+it names the login the PostgreSQL tools run as"
+                  (abbreviate-file-name dir)))
+    (unless psql
+      (user-error "No psql on %s's PATH" (abbreviate-file-name dir)))
+    (cons psql
+          (append (list (concat "PGUSER=" user)
+                        (concat "PGOPTIONS=" jwm/pg-tool-pgoptions))
+                  (mapcar (lambda (kv) (format "%s=%s" (car kv) (cdr kv))) env)
+                  process-environment))))
+
+(defun jwm/pg-tool-cut (output)
+  "Return (TEXT . CUT) for OUTPUT, a unibyte string of psql CSV output.
+TEXT keeps the header and `jwm/pg-tool-max-rows' rows, within
+`jwm/pg-tool-max-bytes'; CUT is non-nil when anything was dropped."
+  (let ((end (length output))
+        (records 0)
+        (quoted nil)
+        (i 0))
+    ;; Count records, not lines: a quoted CSV field may hold newlines.
+    (while (< i end)
+      (pcase (aref output i)
+        (?\" (setq quoted (not quoted)))
+        (?\n (unless quoted
+               (setq records (1+ records))
+               (when (> records jwm/pg-tool-max-rows)
+                 (setq end (1+ i))))))
+      (setq i (1+ i)))
+    (setq end (min end jwm/pg-tool-max-bytes))
+    (cons (decode-coding-string (substring output 0 end) 'utf-8)
+          (< end (length output)))))
+
+(defun jwm/pg-tool-run (dir sql args callback)
+  "Run SQL through psql as DIR's agent login, with extra psql ARGS.
+CALLBACK runs exactly once, with the text to show Claude."
+  (pcase-let* ((`(,psql . ,env) (jwm/pg-tool-environment dir))
+               (default-directory dir)
+               (process-environment env)
+               (chunks nil)
+               (size 0)
+               (done nil)
+               (timer nil)
+               (proc nil))
+    (let ((finish
+           (lambda (text)
+             (unless done
+               (setq done t)
+               (when timer (cancel-timer timer))
+               (when (process-live-p proc) (delete-process proc))
+               (funcall callback text))))
+          (result
+           (lambda (status)
+             (pcase-let ((`(,text . ,cut)
+                          (jwm/pg-tool-cut (apply #'concat (reverse chunks)))))
+               (concat (unless (eq status 0)
+                         (format "psql exited with status %s:\n" status))
+                       text
+                       (when cut
+                         (format "\n[Result cut off: at most %d rows and %d KB are shown.]"
+                                 jwm/pg-tool-max-rows
+                                 (/ jwm/pg-tool-max-bytes 1024))))))))
+      (setq proc
+            (make-process
+             :name "jwm-pg-tool"
+             :command (append (list psql "-X" "--csv" "--no-password"
+                                    "-v" "ON_ERROR_STOP=1")
+                              args)
+             :connection-type 'pipe
+             :coding 'no-conversion
+             :noquery t
+             :filter (lambda (_p string)
+                       (push string chunks)
+                       (setq size (+ size (length string)))
+                       ;; Enough to fill the cap: stop reading.
+                       (when (> size jwm/pg-tool-max-bytes)
+                         (funcall finish (funcall result 0))))
+             :sentinel (lambda (p _event)
+                         (when (memq (process-status p) '(exit signal))
+                           (funcall finish (funcall result (process-exit-status p)))))))
+      (setq timer
+            (run-at-time jwm/pg-tool-timeout nil
+                         (lambda ()
+                           (funcall finish
+                                    (format "Error: psql was stopped after %d seconds; \
+the statement did not finish." jwm/pg-tool-timeout)))))
+      (process-send-string proc (encode-coding-string sql 'utf-8))
+      (process-send-string proc "\n")
+      (process-send-eof proc)
+      proc)))
+
+(defvar jwm/pg-tool--request nil
+  "The web-server request of the MCP call being handled, or nil.")
+
+(defun jwm/pg-tool-capture-request (orig request)
+  "Call ORIG with REQUEST, keeping REQUEST where the PostgreSQL tools see it."
+  (let ((jwm/pg-tool--request request))
+    (funcall orig request)))
+
+(declare-function ws-process "web-server")
+(declare-function ws-body "web-server")
+(declare-function ws-send "web-server")
+(declare-function ws-response-header "web-server")
+(declare-function claude-code-ide-mcp-server-get-session-context "claude-code-ide-mcp-server")
+(declare-function claude-code-ide-make-tool "claude-code-ide-mcp-server")
+
+(defun jwm/pg-tool-answer (request text)
+  "Answer the MCP tools/call REQUEST with TEXT, then close its connection."
+  (let ((proc (ws-process request)))
+    (when (process-live-p proc)
+      (let ((id (alist-get 'id (json-parse-string (ws-body request)
+                                                  :object-type 'alist))))
+        (ws-response-header proc 200 '("Content-Type" . "application/json"))
+        (ws-send proc (json-encode
+                       `((jsonrpc . "2.0")
+                         (id . ,id)
+                         (result (content . [((type . "text") (text . ,text))])))))
+        (with-slots (requests) (plist-get (process-plist proc) :server)
+          (setq requests (delq request requests)))
+        (delete-process proc)))))
+
+(defun jwm/pg-tool-call (sql &rest args)
+  "Run SQL, with extra psql ARGS, for the Claude session calling a tool."
+  (let ((dir (or (plist-get (claude-code-ide-mcp-server-get-session-context)
+                            :project-dir)
+                 default-directory))
+        (request jwm/pg-tool--request))
+    (if request
+        (progn
+          (jwm/pg-tool-run dir sql args
+                           (lambda (text) (jwm/pg-tool-answer request text)))
+          ;; Leave the HTTP request open; the callback answers it.
+          (throw 'close-connection :keep-alive))
+      (let ((answer nil))
+        (jwm/pg-tool-run dir sql args (lambda (text) (setq answer text)))
+        (while (not answer)
+          (accept-process-output nil 0.1))
+        answer))))
+
+(defconst jwm/pg-tool-list-relations-sql
+  "select n.nspname as schema, c.relname as name,
+       case c.relkind when 'r' then 'table' when 'p' then 'partitioned table'
+                      when 'v' then 'view' when 'm' then 'materialized view'
+                      when 'f' then 'foreign table' end as kind,
+       pg_catalog.obj_description(c.oid, 'pg_class') as comment
+from pg_catalog.pg_class c
+join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+where c.relkind in ('r', 'p', 'v', 'm', 'f')
+  and n.nspname not in ('pg_catalog', 'information_schema')
+  and n.nspname not like 'pg_toast%'
+order by 1, 2"
+  "Every table and view outside the system schemas.")
+
+(defconst jwm/pg-tool-describe-relation-sql
+  "select kind, name, definition from (
+  select 1 as part, a.attnum as pos, 'column' as kind, a.attname::text as name,
+         pg_catalog.format_type(a.atttypid, a.atttypmod)
+         || case when a.attnotnull then ' not null' else '' end
+         || coalesce(' default ' || pg_catalog.pg_get_expr(d.adbin, d.adrelid), '')
+         as definition
+  from pg_catalog.pg_attribute a
+  left join pg_catalog.pg_attrdef d on d.adrelid = a.attrelid and d.adnum = a.attnum
+  where a.attrelid = :'rel'::regclass and a.attnum > 0 and not a.attisdropped
+  union all
+  select 2, 0, 'constraint', conname::text, pg_catalog.pg_get_constraintdef(oid)
+  from pg_catalog.pg_constraint where conrelid = :'rel'::regclass
+  union all
+  select 3, 0, 'index', c.relname::text, pg_catalog.pg_get_indexdef(i.indexrelid)
+  from pg_catalog.pg_index i join pg_catalog.pg_class c on c.oid = i.indexrelid
+  where i.indrelid = :'rel'::regclass
+) parts order by part, pos, name"
+  "Columns, constraints and indexes of the relation in psql variable rel.")
+
+(defun jwm/pg-tool-describe-schema (&optional table)
+  "Describe TABLE, or list every table and view when TABLE is nil."
+  (if (and (stringp table) (not (string-empty-p table)))
+      (jwm/pg-tool-call jwm/pg-tool-describe-relation-sql "-v" (concat "rel=" table))
+    (jwm/pg-tool-call jwm/pg-tool-list-relations-sql)))
+
+(defun jwm/pg-tool-run-query (query)
+  "Run QUERY as the agent login."
+  (jwm/pg-tool-call query))
+
+(defun jwm/pg-tool-explain (query &optional analyze)
+  "Return the plan for QUERY; with ANALYZE, run it and include timings."
+  ;; JSON false arrives as :false, which is non-nil.
+  (jwm/pg-tool-call (concat (if (eq analyze t) "EXPLAIN (ANALYZE) " "EXPLAIN ")
+                            query)))
+
+(defun jwm/pg-tools-register ()
+  "Register the PostgreSQL tools with claude-code-ide's tool server."
+  (claude-code-ide-make-tool
+   :function #'jwm/pg-tool-describe-schema
+   :name "pg_describe_schema"
+   :description "Describe the project's PostgreSQL database. With no table, \
+list every table and view (schema, name, kind, comment). With a table, list its \
+columns, constraints and indexes. Output is CSV."
+   :args '((:name "table" :type string :optional t
+            :description "Table or view, optionally schema-qualified (nyse.factbook)")))
+  (claude-code-ide-make-tool
+   :function #'jwm/pg-tool-run-query
+   :name "pg_run_query"
+   :description "Run SQL against the project's PostgreSQL database and return the \
+result as CSV. Runs as the project's agent login, whose grants decide what is \
+allowed. Statements time out after 30 seconds; at most 200 rows and 64 KB come back, \
+with a note when the result was cut off."
+   :args '((:name "query" :type string :description "The SQL to run")))
+  (claude-code-ide-make-tool
+   :function #'jwm/pg-tool-explain
+   :name "pg_explain"
+   :description "Show PostgreSQL's EXPLAIN plan for a query in the project's \
+database. With analyze true the query is executed (EXPLAIN ANALYZE), so use it only \
+for statements that are safe to run."
+   :args '((:name "query" :type string :description "The statement to explain")
+           (:name "analyze" :type boolean :optional t
+            :description "Run the statement and report actual timings"))))
+
+(with-eval-after-load 'claude-code-ide-mcp-server
+  (jwm/pg-tools-register))
+
+(with-eval-after-load 'claude-code-ide-mcp-http-server
+  (advice-add 'claude-code-ide-mcp-http-server--handle-post
+              :around #'jwm/pg-tool-capture-request))
+
 (use-package terraform-mode
   :mode "\.tf\\'")
 
