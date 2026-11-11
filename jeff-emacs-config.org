@@ -2108,9 +2108,155 @@
        :bind ("C-c C-'" . claude-code-ide-menu)
        :custom
        (claude-code-ide-terminal-backend 'ghostel)
+       (claude-code-ide-cli-extra-flags
+        (concat "--settings " (shell-quote-argument jwm/claude-code-hooks-file)))
        :config
-       (claude-code-ide-emacs-tools-setup))
+       (claude-code-ide-emacs-tools-setup)
+       (advice-add 'claude-code-ide--create-terminal-session
+                   :around #'jwm/claude-code-ide-add-buffer-name))
    #+END_SRC
+
+*** Session status
+
+    claude-code-ide reports nothing about what a session is doing, so
+    Claude Code's own hooks tell Emacs: a session that needs permission
+    or is waiting for input, finishes a turn, starts working, or ends
+    calls =emacsclient=, and Emacs shows it.  This follows
+    [[https://github.com/stevemolitor/claude-code.el][claude-code.el]], which is not installed; its receiver is copied below.
+    Decided in workspace spec 017.
+
+    The hooks only reach sessions claude-code-ide starts: they are in
+    =claude-code-ide-hooks.json=, tangled beside =init.el= and passed with
+    =--settings=, so global Claude settings are untouched and a =claude=
+    started outside Emacs sends nothing.  Each hook command needs
+    =CLAUDE_BUFFER_NAME=, which advice on claude-code-ide's private
+    =claude-code-ide--create-terminal-session= puts in the session's
+    environment.  If a package update changes that function, sessions
+    still start; the variable is missing and the hooks do nothing.
+
+    Hook commands send their output to =/dev/null=: =emacsclient= prints
+    the result, and a =UserPromptSubmit= hook's output is added to
+    Claude's context.  They always exit 0, so an Emacs without a server
+    (only the windowed one runs =server-start=) never blocks a session.
+
+    #+BEGIN_SRC json :tangle claude-code-ide-hooks.json
+      {
+        "hooks": {
+          "Notification": [
+            {
+              "matcher": "permission_prompt",
+              "hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'permission \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]
+            },
+            {
+              "matcher": "idle_prompt",
+              "hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'idle \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]
+            }
+          ],
+          "Stop": [
+            {"hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'stop \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]}
+          ],
+          "UserPromptSubmit": [
+            {"hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'prompt \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]}
+          ],
+          "SessionEnd": [
+            {"hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'session-end \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]}
+          ]
+        }
+      }
+    #+END_SRC
+
+    The receiver and mode-line pulse are adapted from claude-code.el
+    =03199df= (=claude-code-event-hook=, =claude-code-handle-hook=,
+    =claude-code--pulse-modeline=), Copyright Stephen Molitor, Apache
+    License 2.0.  Its reply path, which returns JSON to Claude Code, is
+    left out: these hooks only report status.  The mode line does not
+    pulse when a session starts working, since that follows my own
+    prompt; a macOS notification is added for "needs permission" and
+    "waiting for input".
+
+    #+BEGIN_SRC emacs-lisp
+      (defconst jwm/claude-code-hooks-file
+        (expand-file-name "claude-code-ide-hooks.json"
+                          (file-name-directory
+                           (file-truename (or load-file-name buffer-file-name))))
+        "Claude Code settings file holding the session status hooks.")
+
+      (defun jwm/claude-code-ide-add-buffer-name (orig-fn buffer-name &rest args)
+        "Call ORIG-FN with CLAUDE_BUFFER_NAME=BUFFER-NAME in the environment.
+      ARGS are passed through.  Advises `claude-code-ide--create-terminal-session'."
+        (let ((process-environment
+               (if (stringp buffer-name)
+                   (cons (concat "CLAUDE_BUFFER_NAME=" buffer-name)
+                         process-environment)
+                 process-environment)))
+          (apply orig-fn buffer-name args)))
+
+      ;; Adapted from claude-code.el 03199df, Copyright Stephen Molitor,
+      ;; Apache License 2.0.
+      (defvar jwm/claude-code-event-hook nil
+        "Hook run when a Claude Code session hook calls Emacs.
+      Each function gets one plist with :type, :buffer-name, :json-data
+      and :args.")
+
+      (defvar server-eval-args-left)
+
+      (defun jwm/claude-code-handle-hook (type buffer-name &rest args)
+        "Run `jwm/claude-code-event-hook' for event TYPE from BUFFER-NAME.
+      Called through `emacsclient --eval' with the hook's JSON as the next
+      argument; ARGS and any further arguments are passed along."
+        ;; Consume every argument, or the server evaluates the rest as Lisp.
+        (let ((json-data (pop server-eval-args-left))
+              (extra-args (prog1 server-eval-args-left
+                            (setq server-eval-args-left nil))))
+          (run-hook-with-args 'jwm/claude-code-event-hook
+                              (list :type type
+                                    :buffer-name buffer-name
+                                    :json-data json-data
+                                    :args (append args extra-args)))
+          nil))
+
+      (defun jwm/claude-code--pulse-mode-line ()
+        "Flash the mode line twice."
+        (dolist (delay '(0 0.1 0.2 0.3))
+          (run-at-time delay nil #'invert-face 'mode-line)))
+
+      (defun jwm/claude-code--macos-notify (title body)
+        "Post a macOS notification with TITLE and BODY."
+        (when (and (eq system-type 'darwin) (executable-find "osascript"))
+          (make-process
+           :name "claude-code-notify"
+           :noquery t
+           :command (list "osascript"
+                          "-e" "on run argv"
+                          "-e" "display notification (item 2 of argv) with title (item 1 of argv)"
+                          "-e" "end run"
+                          title body))))
+
+      (defun jwm/claude-code-session-status (event)
+        "Show the session status EVENT from `jwm/claude-code-event-hook'."
+        (let* ((type (plist-get event :type))
+               (buffer-name (plist-get event :buffer-name))
+               (detail (ignore-errors
+                         (gethash "message"
+                                  (json-parse-string (plist-get event :json-data)))))
+               (status (pcase type
+                         ('permission "needs permission")
+                         ('idle "is waiting for input")
+                         ('stop "finished its turn")
+                         ('prompt "is working")
+                         ('session-end "ended")
+                         (_ (format "sent %s" type)))))
+          (message "Claude %s: %s%s" status buffer-name
+                   (if detail (concat " — " detail) ""))
+          (unless (eq type 'prompt)
+            (jwm/claude-code--pulse-mode-line))
+          (when (memq type '(permission idle))
+            (jwm/claude-code--macos-notify
+             (concat "Claude " status)
+             (if detail (concat buffer-name ": " detail) buffer-name)))))
+
+      (add-hook 'jwm/claude-code-event-hook #'jwm/claude-code-session-status)
+    #+END_SRC
 
 * Programming Support
 ** yasnippets
