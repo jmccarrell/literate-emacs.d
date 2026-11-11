@@ -1856,7 +1856,7 @@
    reality is the failure this avoids.
 
    **It is opt-in and stays that way.**  Loading Emacs defines the tools
-   and the commands; it does not start a server.  =M-x jwm/live-emacs-start=
+   and the commands; it does not start a server.  =M-x jwm/mcp-live-emacs-start=
    is a deliberate act, because the alternative is every Emacs I launch
    exposing an eval endpoint.
 
@@ -1880,34 +1880,34 @@
                   mcp-server-lib-stop
                   mcp-server-lib-register-tool)
        :init
-       (defvar jwm/live-emacs-server-id "live-emacs"
+       (defvar jwm/mcp-live-emacs-server-id "live-emacs"
          "MCP server identifier for this Emacs session's tools.")
 
-       (defvar jwm/live-emacs-tools-registered nil
+       (defvar jwm/mcp-live-emacs-tools-registered nil
          "List of `live-emacs' MCP tool IDs registered in this session.")
 
-       (defun jwm/live-emacs--json-false (value)
+       (defun jwm/mcp-live-emacs--json-false (value)
          "Return VALUE as a JSON boolean value."
          (if value t :json-false))
 
-       (defun jwm/live-emacs--first-doc-line (symbol)
+       (defun jwm/mcp-live-emacs--first-doc-line (symbol)
          "Return the first documentation line for SYMBOL, or nil."
          (when (symbolp symbol)
            (let ((doc (documentation symbol t)))
              (when (stringp doc)
                (car (split-string doc "\n" t))))))
 
-       (defun jwm/live-emacs--register-tool (handler &rest properties)
+       (defun jwm/mcp-live-emacs--register-tool (handler &rest properties)
          "Register HANDLER with PROPERTIES once for this Emacs session."
          (require 'mcp-server-lib)
-         (when (eq jwm/live-emacs-tools-registered t)
-           (setq jwm/live-emacs-tools-registered '("emacs_state_summary")))
+         (when (eq jwm/mcp-live-emacs-tools-registered t)
+           (setq jwm/mcp-live-emacs-tools-registered '("emacs_state_summary")))
          (let ((id (plist-get properties :id)))
-           (unless (member id jwm/live-emacs-tools-registered)
+           (unless (member id jwm/mcp-live-emacs-tools-registered)
              (apply #'mcp-server-lib-register-tool handler properties)
-             (add-to-list 'jwm/live-emacs-tools-registered id))))
+             (add-to-list 'jwm/mcp-live-emacs-tools-registered id))))
 
-       (defun jwm/live-emacs-state-summary ()
+       (defun jwm/mcp-live-emacs-state-summary ()
          "Return read-only JSON metadata about the current Emacs session."
          (require 'json)
          (let* ((window (selected-window))
@@ -1931,7 +1931,7 @@
                 ("emacs_version" . ,emacs-version)
                 ("read_only" . t))))))
 
-       (defun jwm/live-emacs-key-binding (key)
+       (defun jwm/mcp-live-emacs-key-binding (key)
          "Return read-only JSON metadata about KEY's active binding.
 
      MCP Parameters:
@@ -1956,7 +1956,7 @@
                   ("normalized_key" . ,(key-description key-vector))
                   ("command" . ,command-name)
                   ("command_type" . ,command-type)
-                  ("command_doc_summary" . ,(jwm/live-emacs--first-doc-line command-symbol))
+                  ("command_doc_summary" . ,(jwm/mcp-live-emacs--first-doc-line command-symbol))
                   ("read_only" . t))))
            (error
             (json-encode
@@ -1964,7 +1964,7 @@
                ("error" . ,(error-message-string err))
                ("read_only" . t))))))
 
-       (defun jwm/live-emacs-library-status (library)
+       (defun jwm/mcp-live-emacs-library-status (library)
          "Return read-only JSON metadata about LIBRARY or feature name.
 
      MCP Parameters:
@@ -1975,12 +1975,12 @@
                 (path (locate-library library)))
            (json-encode
             `(("library" . ,library)
-              ("feature_known" . ,(jwm/live-emacs--json-false feature))
-              ("feature_loaded" . ,(jwm/live-emacs--json-false loaded))
+              ("feature_known" . ,(jwm/mcp-live-emacs--json-false feature))
+              ("feature_loaded" . ,(jwm/mcp-live-emacs--json-false loaded))
               ("library_path" . ,path)
               ("read_only" . t)))))
 
-       (defun jwm/live-emacs-eval (form)
+       (defun jwm/mcp-live-emacs-eval (form)
          "Evaluate FORM and return its value's printed representation.
 
      A failing form is reported with `mcp-server-lib-tool-throw', which the
@@ -1995,40 +1995,40 @@
            (error
             (mcp-server-lib-tool-throw (error-message-string err)))))
 
-       (defun jwm/live-emacs-register-tools ()
+       (defun jwm/mcp-live-emacs-register-tools ()
          "Register the `live-emacs' MCP tools."
          (interactive)
          (require 'mcp-server-lib)
-         (jwm/live-emacs--register-tool
-          #'jwm/live-emacs-state-summary
+         (jwm/mcp-live-emacs--register-tool
+          #'jwm/mcp-live-emacs-state-summary
           :id "emacs_state_summary"
           :description "Return read-only metadata about the current Emacs session."
           :title "Emacs State Summary"
           :read-only t
-          :server-id jwm/live-emacs-server-id)
-         (jwm/live-emacs--register-tool
-          #'jwm/live-emacs-key-binding
+          :server-id jwm/mcp-live-emacs-server-id)
+         (jwm/mcp-live-emacs--register-tool
+          #'jwm/mcp-live-emacs-key-binding
           :id "emacs_key_binding"
           :description "Return the active command bound to an Emacs key sequence."
           :title "Emacs Key Binding"
           :read-only t
-          :server-id jwm/live-emacs-server-id)
-         (jwm/live-emacs--register-tool
-          #'jwm/live-emacs-library-status
+          :server-id jwm/mcp-live-emacs-server-id)
+         (jwm/mcp-live-emacs--register-tool
+          #'jwm/mcp-live-emacs-library-status
           :id "emacs_library_status"
           :description "Return loaded feature status and library path for an Emacs library name."
           :title "Emacs Library Status"
           :read-only t
-          :server-id jwm/live-emacs-server-id)
-         (jwm/live-emacs--register-tool
-          #'jwm/live-emacs-eval
+          :server-id jwm/mcp-live-emacs-server-id)
+         (jwm/mcp-live-emacs--register-tool
+          #'jwm/mcp-live-emacs-eval
           :id "elisp_eval"
           :description "Evaluate one elisp form in this Emacs session and return its value."
           :title "Elisp Eval"
           :read-only nil
-          :server-id jwm/live-emacs-server-id))
+          :server-id jwm/mcp-live-emacs-server-id))
 
-       (defun jwm/live-emacs-start ()
+       (defun jwm/mcp-live-emacs-start ()
          "Start the `live-emacs' MCP server.
 
      Deliberately not started on init: `elisp_eval' evaluates arbitrary
@@ -2036,20 +2036,25 @@
      can reach the socket."
          (interactive)
          (require 'mcp-server-lib)
-         (jwm/live-emacs-register-tools)
+         (jwm/mcp-live-emacs-register-tools)
          (unless (and (boundp 'mcp-server-lib--running)
                       mcp-server-lib--running)
            (mcp-server-lib-start))
-         (message "MCP server %s is running" jwm/live-emacs-server-id))
+         (message "MCP server %s is running" jwm/mcp-live-emacs-server-id))
 
-       (defun jwm/live-emacs-stop ()
+       (defun jwm/mcp-live-emacs-stop ()
          "Stop the `live-emacs' MCP server."
          (interactive)
          (require 'mcp-server-lib)
          (when (and (boundp 'mcp-server-lib--running)
                     mcp-server-lib--running)
            (mcp-server-lib-stop))
-         (message "MCP server %s is stopped" jwm/live-emacs-server-id)))
+         (message "MCP server %s is stopped" jwm/mcp-live-emacs-server-id))
+
+       ;; Claude Code's MCP config for the lab project still names the old
+       ;; command as the stdio helper's --init-function.
+       (define-obsolete-function-alias 'jwm/live-emacs-start
+         #'jwm/mcp-live-emacs-start "2026-11-11"))
    #+END_SRC
 
 ** claude-code-ide
