@@ -426,6 +426,17 @@
    | M-x ghostel         | open a ghostel terminal                     |
    | M-x ghostel-project | open a ghostel terminal at the project root |
 
+   Session status shows in the echo area, naming the session's buffer;
+   the mode line flashes, except when a session starts working.  Only the
+   windowed Emacs receives it (it runs the server).
+
+   | event                     | display                                 |
+   |---------------------------+-----------------------------------------|
+   | needs permission          | message, flash, macOS notification      |
+   | waiting for input         | message, flash, macOS notification      |
+   | finished its turn / ended | message, flash                          |
+   | is working                | message                                 |
+
    Claude Code still asks before running tools outside its allow list;
    only the read-only =emacs-tools= (xref, imenu, project info,
    tree-sitter) run without a prompt.

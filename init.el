@@ -1177,8 +1177,94 @@ can reach the socket."
   :bind ("C-c C-'" . claude-code-ide-menu)
   :custom
   (claude-code-ide-terminal-backend 'ghostel)
+  (claude-code-ide-cli-extra-flags
+   (concat "--settings " (shell-quote-argument jwm/claude-code-hooks-file)))
   :config
-  (claude-code-ide-emacs-tools-setup))
+  (claude-code-ide-emacs-tools-setup)
+  (advice-add 'claude-code-ide--create-terminal-session
+              :around #'jwm/claude-code-ide-add-buffer-name))
+
+(defconst jwm/claude-code-hooks-file
+  (expand-file-name "claude-code-ide-hooks.json"
+                    (file-name-directory
+                     (file-truename (or load-file-name buffer-file-name))))
+  "Claude Code settings file holding the session status hooks.")
+
+(defun jwm/claude-code-ide-add-buffer-name (orig-fn buffer-name &rest args)
+  "Call ORIG-FN with CLAUDE_BUFFER_NAME=BUFFER-NAME in the environment.
+ARGS are passed through.  Advises `claude-code-ide--create-terminal-session'."
+  (let ((process-environment
+         (if (stringp buffer-name)
+             (cons (concat "CLAUDE_BUFFER_NAME=" buffer-name)
+                   process-environment)
+           process-environment)))
+    (apply orig-fn buffer-name args)))
+
+;; Adapted from claude-code.el 03199df, Copyright Stephen Molitor,
+;; Apache License 2.0.
+(defvar jwm/claude-code-event-hook nil
+  "Hook run when a Claude Code session hook calls Emacs.
+Each function gets one plist with :type, :buffer-name, :json-data
+and :args.")
+
+(defvar server-eval-args-left)
+
+(defun jwm/claude-code-handle-hook (type buffer-name &rest args)
+  "Run `jwm/claude-code-event-hook' for event TYPE from BUFFER-NAME.
+Called through `emacsclient --eval' with the hook's JSON as the next
+argument; ARGS and any further arguments are passed along."
+  ;; Consume every argument, or the server evaluates the rest as Lisp.
+  (let ((json-data (pop server-eval-args-left))
+        (extra-args (prog1 server-eval-args-left
+                      (setq server-eval-args-left nil))))
+    (run-hook-with-args 'jwm/claude-code-event-hook
+                        (list :type type
+                              :buffer-name buffer-name
+                              :json-data json-data
+                              :args (append args extra-args)))
+    nil))
+
+(defun jwm/claude-code--pulse-mode-line ()
+  "Flash the mode line twice."
+  (dolist (delay '(0 0.1 0.2 0.3))
+    (run-at-time delay nil #'invert-face 'mode-line)))
+
+(defun jwm/claude-code--macos-notify (title body)
+  "Post a macOS notification with TITLE and BODY."
+  (when (and (eq system-type 'darwin) (executable-find "osascript"))
+    (make-process
+     :name "claude-code-notify"
+     :noquery t
+     :command (list "osascript"
+                    "-e" "on run argv"
+                    "-e" "display notification (item 2 of argv) with title (item 1 of argv)"
+                    "-e" "end run"
+                    title body))))
+
+(defun jwm/claude-code-session-status (event)
+  "Show the session status EVENT from `jwm/claude-code-event-hook'."
+  (let* ((type (plist-get event :type))
+         (buffer-name (plist-get event :buffer-name))
+         (detail (ignore-errors
+                   (gethash "message"
+                            (json-parse-string (plist-get event :json-data)))))
+         (status (pcase type
+                   ('permission "needs permission")
+                   ('idle "is waiting for input")
+                   ('stop "finished its turn")
+                   ('prompt "is working")
+                   ('session-end "ended")
+                   (_ (format "sent %s" type)))))
+    (message "Claude %s: %s%s" status buffer-name
+             (if detail (concat " — " detail) ""))
+    (unless (eq type 'prompt)
+      (jwm/claude-code--pulse-mode-line))
+    (when (memq type '(permission idle))
+      (jwm/claude-code--macos-notify
+       (concat "Claude " status)
+       (if detail (concat buffer-name ": " detail) buffer-name)))))
+
+(add-hook 'jwm/claude-code-event-hook #'jwm/claude-code-session-status)
 
 (use-package yasnippet
   :config

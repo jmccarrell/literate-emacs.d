@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'permission \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]
+      },
+      {
+        "matcher": "idle_prompt",
+        "hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'idle \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]
+      }
+    ],
+    "Stop": [
+      {"hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'stop \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]}
+    ],
+    "UserPromptSubmit": [
+      {"hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'prompt \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]}
+    ],
+    "SessionEnd": [
+      {"hooks": [{"type": "command", "command": "[ -z \"$CLAUDE_BUFFER_NAME\" ] || emacsclient --eval \"(jwm/claude-code-handle-hook 'session-end \\\"$CLAUDE_BUFFER_NAME\\\")\" \"$(cat)\" >/dev/null 2>&1 || true"}]}
+    ]
+  }
+}
