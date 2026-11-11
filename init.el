@@ -92,9 +92,14 @@
     expand-region flymake-ruff go-mode gptel js2-mode json-mode
     jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
     mcp-server-lib mise ob-restclient orderless outline-indent pet
-    reformatter terraform-mode textsize vertico wgrep which-key
+    reformatter terraform-mode textsize vertico vterm wgrep which-key
     wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
   "External packages this config expects; installed by `just install-packages'.")
+;; Packages not in any archive, installed from source by `package-vc-install'.
+;; Each entry is a `package-vc-selected-packages' spec.
+(defvar jwm/required-vc-packages
+  '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el"))
+  "Source packages this config expects; installed by `just install-packages'.")
 (require 'use-package)
 
 (defun jwm/warm-native-comp ()
@@ -1163,6 +1168,15 @@ can reach the socket."
                mcp-server-lib--running)
       (mcp-server-lib-stop))
     (message "MCP server %s is stopped" jwm/live-emacs-server-id)))
+
+(use-package vterm
+  :commands (vterm vterm-other-window))
+
+(use-package claude-code-ide
+  :if (executable-find "claude")
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup))
 
 (use-package yasnippet
   :config

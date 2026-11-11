@@ -389,6 +389,39 @@
    =replace_buffer= (asks for confirmation). Toggle/select them in the
    =C-c g m= menu.
 
+** AI / Claude Code (claude-code-ide)
+
+   Claude Code runs in a =vterm= buffer per session, tied to the current
+   project; a project can hold several.  Loaded only when =claude= is on
+   =PATH=.  Install with =just install-packages= (claude-code-ide is not
+   on MELPA).
+
+   | key / command                           | description                                   |
+   |-----------------------------------------+-----------------------------------------------|
+   | C-c C-'                                 | open the claude-code-ide transient menu       |
+   | M-x claude-code-ide                     | start a Claude session for this project       |
+   | M-x claude-code-ide-continue            | continue the most recent conversation         |
+   | M-x claude-code-ide-resume              | pick a previous conversation to resume        |
+   | M-x claude-code-ide-switch-to-buffer    | switch to this project's Claude buffer        |
+   | M-x claude-code-ide-list-sessions       | list every running session and switch         |
+   | M-x claude-code-ide-toggle              | show/hide this project's Claude windows       |
+   | M-x claude-code-ide-send-prompt         | send a prompt from the minibuffer             |
+   | M-x claude-code-ide-insert-at-mentioned | send the selected text to Claude's prompt     |
+   | M-x claude-code-ide-stop                | stop a session (C-u to pick which)            |
+   | M-x claude-code-ide-check-status        | check the =claude= CLI is installed and works |
+
+   Inside a Claude terminal buffer:
+
+   | key        | description                                 |
+   |------------+---------------------------------------------|
+   | M-RET      | insert a newline in the prompt              |
+   | C-<escape> | send escape (cancel the current operation)  |
+   | C-c C-x    | drop the file/selection shown in the prompt |
+
+   Claude Code still asks before running tools outside its allow list;
+   only the read-only =emacs-tools= (xref, imenu, project info,
+   tree-sitter) run without a prompt.
+
 ** Eshell
 
    | key         | description                                              |

@@ -23,7 +23,8 @@ verify-tangle: tangle
           --eval '(kill-emacs 0)'
     @echo "verify-tangle: PASS"
 
-# Install the packages this config expects (the jwm/required-packages manifest).
+# Install the packages this config expects (the jwm/required-packages manifest,
+# plus jwm/required-vc-packages from source).
 #
 # Because init.el sets use-package-always-ensure nil, loading the config never
 # installs anything — so on a fresh machine (e.g. a provisioned VM) run this once
@@ -32,7 +33,7 @@ verify-tangle: tangle
 #
 # Load init.el inside a condition-case: on a bare box, loading the full config aborts
 # partway (e.g. org-babel hard-requires ob-restclient before it's installed). That's
-# fine here — the package archives + `jwm/required-packages' are defined near the top,
+# fine here — the package archives and both manifests are defined near the top,
 # before any such failure, which is all `package-install' below needs.
 #
 # Then WARM THE NATIVE-COMP CACHE: native-compile every installed package now, so the
@@ -48,7 +49,8 @@ install-packages:
     emacs --batch \
           --eval '(condition-case e (load-file "init.el") (error (princ (format "init.el partial load (bootstrap, expected pre-install): %S\n" e))))' \
           --eval '(package-refresh-contents)' \
-          --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))'
+          --eval '(dolist (p jwm/required-packages) (unless (package-installed-p p) (package-install p)))' \
+          --eval '(dolist (s jwm/required-vc-packages) (unless (package-installed-p (car s)) (package-vc-install s)))'
     # 2. Warm the native-comp cache in a SECOND, fresh Emacs — packages are now
     #    installed so init.el loads fully (jwm/warm-native-comp compiles packages +
     #    the core lisp the config loaded). A second Emacs on purpose: doing it in the
