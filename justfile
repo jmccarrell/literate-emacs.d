@@ -112,7 +112,7 @@ mcp-stdio-helper-status:
 
 # Run the ERT suites under tests/. Each test file loads init.el itself, so
 # a failure here is either a real regression or a tangle that was skipped.
-# Pass a file stem to run one suite: `just test live-emacs`.
+# Pass a file stem to run one suite: `just test mcp-live-emacs`.
 test suite="":
     #!/usr/bin/env bash
     set -euo pipefail
