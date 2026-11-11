@@ -2084,7 +2084,12 @@
    =websocket=, =web-server= and =transient= from the archives.
 
    =vterm= compiles its native module with =cmake= the first time it
-   loads, asking first; each machine needs =cmake= and a C compiler.
+   loads, asking first.  Each machine needs =cmake=, a C compiler and
+   Homebrew's =libvterm=; both formulae are in the shared Brewfile in
+   =jwm-bin=.  Without a system libvterm the build downloads its own and
+   fails on macOS for want of GNU libtool (=glibtool=).  After a failed
+   build, delete =~/.emacs.d/elpa/vterm-*/build= and run
+   =M-x vterm-module-compile=.
 
    #+BEGIN_SRC emacs-lisp
      (use-package vterm
