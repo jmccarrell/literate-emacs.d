@@ -89,7 +89,7 @@
 (defvar jwm/required-packages
   '(ace-window auto-yasnippet avy cape consult corfu crux diminish
     docker dockerfile-mode edit-indirect embark embark-consult envrc
-    expand-region flymake-ruff go-mode gptel js2-mode json-mode
+    expand-region flymake-ruff ghostel go-mode gptel js2-mode json-mode
     jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
     mcp-server-lib mise ob-restclient orderless outline-indent pet
     reformatter terraform-mode textsize vertico vterm wgrep which-key
@@ -1172,9 +1172,14 @@ can reach the socket."
 (use-package vterm
   :commands (vterm vterm-other-window))
 
+(use-package ghostel
+  :commands (ghostel ghostel-project))
+
 (use-package claude-code-ide
   :if (executable-find "claude")
   :bind ("C-c C-'" . claude-code-ide-menu)
+  :custom
+  (claude-code-ide-terminal-backend 'ghostel)
   :config
   (claude-code-ide-emacs-tools-setup))
 

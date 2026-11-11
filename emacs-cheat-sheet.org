@@ -391,10 +391,11 @@
 
 ** AI / Claude Code (claude-code-ide)
 
-   Claude Code runs in a =vterm= buffer per session, tied to the current
+   Claude Code runs in a =ghostel= buffer per session, tied to the current
    project; a project can hold several.  Loaded only when =claude= is on
    =PATH=.  Install with =just install-packages= (claude-code-ide is not
-   on MELPA).
+   on MELPA).  The first ghostel buffer asks to download ghostel's
+   prebuilt native module; accept once per machine.
 
    | key / command                           | description                                   |
    |-----------------------------------------+-----------------------------------------------|
@@ -414,9 +415,16 @@
 
    | key        | description                                 |
    |------------+---------------------------------------------|
-   | M-RET      | insert a newline in the prompt              |
+   | S-<return> | insert a newline in the prompt              |
    | C-<escape> | send escape (cancel the current operation)  |
    | C-c C-x    | drop the file/selection shown in the prompt |
+
+   ghostel also works as a plain terminal:
+
+   | command             | description                                 |
+   |---------------------+---------------------------------------------|
+   | M-x ghostel         | open a ghostel terminal                     |
+   | M-x ghostel-project | open a ghostel terminal at the project root |
 
    Claude Code still asks before running tools outside its allow list;
    only the read-only =emacs-tools= (xref, imenu, project info,
