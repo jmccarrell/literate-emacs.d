@@ -523,6 +523,10 @@
     | C-x p e | open Eshell at the project root            |
     | C-x p c | compile at the project root                |
 
+    A new worktree is not on the =C-x p p= list until project.el sees
+    it: run =C-x p f= (or any other =C-x p= command) once from a buffer
+    in the worktree to add it.
+
 ** ivy swiper
 
    | key     | description                                           |
