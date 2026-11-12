@@ -83,8 +83,13 @@ link:
 # buffer whose default-directory is Emacs's info-data dir, not the
 # shell's cwd. Without expand-file-name, write-region would land
 # in /Applications/Emacs.app/.../share/info/.
+#
+# INFOPATH is pinned so the snapshot does not depend on the caller's
+# environment: a shell without it drops every homebrew manual. The
+# trailing colon appends Emacs's built-in default directories.
 info-dir-update:
-    @emacs --batch \
+    @INFOPATH="$([ -d /opt/homebrew/share/info ] && echo /opt/homebrew/share/info):" \
+     emacs --batch \
            --eval '(package-initialize)' \
            --eval '(let ((out (expand-file-name "info-dir.txt"))) (condition-case err (progn (info "(dir)") (write-region (point-min) (point-max) out)) (error (princ (format "ERROR: %S\n" err)) (kill-emacs 1))))'
     @echo "info-dir-update: wrote info-dir.txt ($(wc -l < info-dir.txt) lines)"
