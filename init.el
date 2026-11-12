@@ -814,11 +814,23 @@ BRANCH supplies the slash-safe default leaf name."
 
 (use-package edit-indirect)
 
+(defvar-keymap jwm/ai-map
+  :doc "AI commands: gptel and claude-code-ide.")
+(keymap-global-set "C-x c" jwm/ai-map)
+(with-eval-after-load 'which-key
+  (which-key-add-key-based-replacements
+    "C-x c" "AI"
+    "C-x c a" "add gptel context"
+    "C-x c A" "clear gptel context"
+    "C-x c r" "rewrite region"))
+
 (use-package gptel
-  :commands (gptel gptel-send gptel-menu)
-  :bind (("C-c g g" . gptel)
-         ("C-c g s" . gptel-send)
-         ("C-c g m" . gptel-menu))
+  :commands (gptel gptel-send gptel-menu gptel-abort)
+  :bind (:map jwm/ai-map
+              ("g" . gptel)
+              ("s" . gptel-send)
+              ("m" . gptel-menu)
+              ("x" . gptel-abort))
   :init
   (defvar jwm/gptel-anthropic-host "api.anthropic.com"
     "Auth-source host for the Anthropic API key.")
@@ -860,15 +872,12 @@ BRANCH supplies the slash-safe default leaf name."
             :key (lambda ()
                    (jwm/gptel-auth-source-password jwm/gptel-groq-host))
             :models (list jwm/gptel-groq-default-model
-                          jwm/gptel-groq-alt-model))))
-
-  (with-eval-after-load 'which-key
-    (which-key-add-key-based-replacements "C-c g" "gptel")))
+                          jwm/gptel-groq-alt-model)))))
 
 (use-package gptel-rewrite
   :ensure nil  ; ships with gptel
   :commands (gptel-rewrite)
-  :bind (("C-c g r" . gptel-rewrite))
+  :bind (:map jwm/ai-map ("r" . gptel-rewrite))
   :custom
   (gptel-rewrite-default-action nil)
   :config
@@ -888,14 +897,9 @@ BRANCH supplies the slash-safe default leaf name."
 (use-package gptel-context
   :ensure nil  ; ships with gptel
   :commands (gptel-context-add gptel-context-remove-all)
-  :bind (("C-c g a" . gptel-context-add)
-         ("C-c g A" . gptel-context-remove-all))
-  :config
-  (with-eval-after-load 'which-key
-    (which-key-add-key-based-replacements
-      "C-c g a" "add gptel context"
-      "C-c g A" "clear gptel context"
-      "C-c g r" "rewrite region")))
+  :bind (:map jwm/ai-map
+              ("a" . gptel-context-add)
+              ("A" . gptel-context-remove-all)))
 
 (use-package llm-tool-collection
   :after gptel
@@ -968,7 +972,7 @@ BRANCH supplies the slash-safe default leaf name."
     "Return read-only JSON metadata about KEY's active binding.
 
 MCP Parameters:
-  key - Emacs key sequence accepted by `kbd', for example C-c g g"
+  key - Emacs key sequence accepted by `kbd', for example C-x c g"
     (require 'json)
     (condition-case err
         (let* ((key-vector (kbd key))
@@ -1089,7 +1093,7 @@ can reach the socket."
 
 (use-package claude-code-ide
   :if (executable-find "claude")
-  :bind ("C-c C-'" . claude-code-ide-menu)
+  :bind (:map jwm/ai-map ("c" . claude-code-ide-menu))
   :custom
   (claude-code-ide-terminal-backend 'ghostel)
   (claude-code-ide-cli-extra-flags

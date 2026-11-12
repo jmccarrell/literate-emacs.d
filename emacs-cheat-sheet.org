@@ -353,7 +353,7 @@
 
 *** PostgreSQL tools in Claude sessions
 
-    From workspace spec 017.  A Claude session started with =C-c C-'=
+    From workspace spec 017.  A Claude session started with =C-x c c=
     (claude-code-ide) can read and change rows in the project's database
     itself: no key, just ask Claude.  Each call runs its own =psql=, never the =*SQL*= session,
     and Emacs stays usable while it runs.
@@ -406,24 +406,27 @@
    Cloud backends on the personal machine only: Groq =openai/gpt-oss-120b=
    (default) with =qwen/qwen3.6-27b=, and Anthropic Claude selectable.
 
+   Every AI command is under =C-x c=; =C-x c c= is Claude Code (below).
+
    | key     | description                            |
    |---------+----------------------------------------|
-   | C-c g g | start or switch to a gptel chat buffer |
-   | C-c g s | send region/buffer text to gptel       |
-   | C-c g m | open the gptel transient menu          |
-   | C-c g r | rewrite selected region with review    |
-   | C-c g a | add selected/current context           |
-   | C-c g A | clear gptel context                    |
+   | C-x c g | start or switch to a gptel chat buffer |
+   | C-x c s | send region/buffer text to gptel       |
+   | C-x c m | open the gptel transient menu          |
+   | C-x c r | rewrite selected region with review    |
+   | C-x c a | add selected/current context           |
+   | C-x c A | clear gptel context                    |
+   | C-x c x | stop a running request                 |
 
    Tools come from =llm-tool-collection=: view, search, create and edit
    files and buffers (file search runs asynchronously; no shell or elisp
-   tools).  None is sent until chosen in the =C-c g m= menu.  File writes
+   tools).  None is sent until chosen in the =C-x c m= menu.  File writes
    and =replace_buffer= ask first; =edit_buffer= does not.
 
    | key / where                            | description                                  |
    |----------------------------------------+----------------------------------------------|
-   | C-u 0 C-c g s                          | add instructions to a request in progress    |
-   | C-c g m M-RET                          | same, from the menu (requests with tools)    |
+   | C-u 0 C-x c s                          | add instructions to a request in progress    |
+   | C-x c m M-RET                          | same, from the menu (requests with tools)    |
    | C-c C-c on a tool call                 | run the tool calls                           |
    | C-c C-k on a tool call                 | cancel them (resumable)                      |
    | C-c C-r on a tool call                 | reject them with instructions and go on      |
@@ -443,7 +446,7 @@
 
    | key / command                           | description                                   |
    |-----------------------------------------+-----------------------------------------------|
-   | C-c C-'                                 | open the claude-code-ide transient menu       |
+   | C-x c c                                 | open the claude-code-ide transient menu       |
    | M-x claude-code-ide                     | start a Claude session for this project       |
    | M-x claude-code-ide-continue            | continue the most recent conversation         |
    | M-x claude-code-ide-resume              | pick a previous conversation to resume        |
