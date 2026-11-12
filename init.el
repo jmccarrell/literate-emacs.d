@@ -788,11 +788,12 @@ BRANCH supplies the slash-safe default leaf name."
   :diminish
   :hook (org-mode . mixed-pitch-mode))
 
+;; on demand only: a centered column squeezes wide org tables
 (use-package olivetti
   :ensure t
   :diminish
-  :custom (olivetti-body-width 90)
-  :hook (org-mode . olivetti-mode))
+  :commands olivetti-mode
+  :custom (olivetti-body-width 90))
 
 (setq org-hide-emphasis-markers t
       org-pretty-entities t)
