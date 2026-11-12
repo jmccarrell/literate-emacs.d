@@ -604,6 +604,7 @@
    | C-c l       | store a link, like in a file; region becomes search text |
    | C-c C-l     | create or edit an org mode link                          |
    | C-c C-x C-s | archive a subtree                                        |
+   | C-c h       | open this cheat sheet                                    |
 
 
 * Org mode bindings
