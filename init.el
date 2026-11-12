@@ -288,7 +288,7 @@ With a prefix argument, cd Eshell to the current buffer's directory."
 ;; no disabled functions
 (setq disabled-command-function nil)
 
-;; backtrace frames read as (fn arg ...), as Protesilaos sets it
+;; backtrace frames read as (fn arg ...)
 (setq debugger-stack-frame-as-list t)
 
 (defun jwm/kill-buffers-of-missing-files ()
