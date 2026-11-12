@@ -519,7 +519,7 @@
      ;; no disabled functions
      (setq disabled-command-function nil)
 
-     ;; backtrace frames read as (fn arg ...), as Protesilaos sets it
+     ;; backtrace frames read as (fn arg ...)
      (setq debugger-stack-frame-as-list t)
    #+END_SRC
 
