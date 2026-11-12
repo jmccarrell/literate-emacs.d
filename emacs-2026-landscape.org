@@ -286,13 +286,12 @@ The rough order the sub-goals landed in:
       keys in auth-source. The earlier local Ollama backends were
       removed. Keybindings are documented in =emacs-cheat-sheet.org=;
       =just verify-tangle= passed on =main=.
-    - *Shipped:* gptel tool use — five read-only tools (read
-      buffer/file, list project files, ripgrep search, read Emacs
-      documentation) plus =replace_buffer=, the one whole-buffer write
-      tool, gated by =:confirm t=. =gptel-use-tools= is on; tools are
-      selected from =gptel-menu=. This grounds the model in the actual
-      buffers/files/project; region edits stay review-first via
-      =gptel-rewrite=.
+    - *Shipped:* gptel tool use from =llm-tool-collection= (spec
+      018), registered by its =filesystem=, =editing= and
+      =introspection= tags as jwiegley does. Its file search is
+      asynchronous, so no tool blocks Emacs; its shell and elisp tools
+      are left out. No tool is sent until chosen in =gptel-menu=;
+      region edits stay review-first via =gptel-rewrite=.
     - *Earlier slice:* read-only external-process introspection through
       an Emacs-hosted MCP server. The first two introspection tools
       beyond session summary are keybinding lookup and loaded
@@ -322,8 +321,8 @@ The rough order the sub-goals landed in:
        decisions. Treat them as separate opt-in work, not part of
        "install an LLM client."
 
-    4. *Tool use / MCP* — gptel tool use has shipped: five read-only
-       tools plus a confirmation-gated =replace_buffer=. The
+    4. *Tool use / MCP* — gptel tool use has shipped, from
+       =llm-tool-collection=. The
        Emacs-hosted MCP server (keybinding lookup, loaded
        library/package status, stdio helper provenance recipe) remains
        read-only. Likely next layers are more gptel tools (other

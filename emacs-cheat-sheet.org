@@ -415,10 +415,23 @@
    | C-c g a | add selected/current context           |
    | C-c g A | clear gptel context                    |
 
-   Tool use is on (=gptel-use-tools=): read-only tools (read buffer/file,
-   list project files, ripgrep search, read documentation) plus
-   =replace_buffer= (asks for confirmation). Toggle/select them in the
-   =C-c g m= menu.
+   Tools come from =llm-tool-collection=: view, search, create and edit
+   files and buffers (file search runs asynchronously; no shell or elisp
+   tools).  None is sent until chosen in the =C-c g m= menu.  File writes
+   and =replace_buffer= ask first; =edit_buffer= does not.
+
+   | key / where                            | description                                  |
+   |----------------------------------------+----------------------------------------------|
+   | C-u 0 C-c g s                          | add instructions to a request in progress    |
+   | C-c C-c on a tool call                 | run the tool calls                           |
+   | C-c C-k on a tool call                 | cancel them (resumable)                      |
+   | C-c C-r on a tool call                 | reject them and let the conversation go on   |
+   | C-c C-i on a tool call                 | inspect or edit them                         |
+   | y / n / r / i at the minibuffer prompt | same: run, cancel, reject and go on, inspect |
+
+   Instructions added with =C-u 0= reach the model at its next tool call;
+   with no tool call they are dropped.  =gptel-menu= offers the same
+   steering while a request runs.
 
 ** AI / Claude Code (claude-code-ide)
 
