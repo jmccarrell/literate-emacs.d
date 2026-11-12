@@ -423,15 +423,15 @@
    | key / where                            | description                                  |
    |----------------------------------------+----------------------------------------------|
    | C-u 0 C-c g s                          | add instructions to a request in progress    |
+   | C-c g m M-RET                          | same, from the menu (requests with tools)    |
    | C-c C-c on a tool call                 | run the tool calls                           |
    | C-c C-k on a tool call                 | cancel them (resumable)                      |
-   | C-c C-r on a tool call                 | reject them and let the conversation go on   |
+   | C-c C-r on a tool call                 | reject them with instructions and go on      |
    | C-c C-i on a tool call                 | inspect or edit them                         |
    | y / n / r / i at the minibuffer prompt | same: run, cancel, reject and go on, inspect |
 
-   Instructions added with =C-u 0= reach the model at its next tool call;
-   with no tool call they are dropped.  =gptel-menu= offers the same
-   steering while a request runs.
+   Added instructions reach the model with its next tool call; if none
+   comes, gptel moves them to the start of the next prompt.
 
 ** AI / Claude Code (claude-code-ide)
 
