@@ -701,6 +701,27 @@
    | C-u C-u C-u TAB | show the whole file, including drawers        |
    | C-c C-r         | reveal context around point                   |
 
+** Display  (prose fonts, org-modern, hidden markup)
+
+   Org buffers open with =mixed-pitch-mode= (proportional prose, monospace
+   code and tables), =org-modern-mode=, and =org-appear-mode= (hidden
+   emphasis markers reappear while point is inside them).  Each command
+   below toggles one of these in the current buffer.
+
+   | command / key               | good for                                 |
+   |-----------------------------+------------------------------------------|
+   | M-x mixed-pitch-mode        | proportional prose on/off                |
+   | M-x org-modern-mode         | modern headings, bullets, tags, blocks   |
+   | M-x org-appear-mode         | reveal hidden markup at point on/off     |
+   | M-x olivetti-mode           | centered 90-column body (off by default) |
+   | M-x org-toggle-link-display | show links in full, brackets and URL     |
+   | C-c C-x \                   | toggle pretty entities (\alpha → α)      |
+
+   Settings that take effect only when a buffer is opened:
+   =org-hide-emphasis-markers=, =org-hide-leading-stars=,
+   =org-pretty-entities=.  Check one with =C-h v=; after changing one,
+   =M-x revert-buffer= to see it.
+
 ** Motion
 
    | key       | good for                           |

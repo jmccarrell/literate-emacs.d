@@ -778,6 +778,39 @@ BRANCH supplies the slash-safe default leaf name."
 ;;  as named by org-agenda-files.
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
 
+(when (jwm/font-exists-p "Helvetica Neue")
+  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 1.1))
+(when (jwm/font-exists-p "Hack")
+  (set-face-attribute 'fixed-pitch nil :family "Hack"))
+
+(use-package mixed-pitch
+  :ensure t
+  :diminish
+  :hook (org-mode . mixed-pitch-mode))
+
+;; on demand only: a centered column squeezes wide org tables
+(use-package olivetti
+  :ensure t
+  :diminish
+  :commands olivetti-mode
+  :custom (olivetti-body-width 90))
+
+(setq org-hide-emphasis-markers t
+      org-hide-leading-stars t
+      org-pretty-entities t)
+
+;; labels stay monospace so tags and TODO keywords align under mixed-pitch
+(use-package org-modern
+  :ensure t
+  :hook (org-mode . org-modern-mode)
+  :custom-face
+  (org-modern-label ((t (:height 0.8 :inherit fixed-pitch)))))
+
+;; show hidden emphasis markers again while point is inside them
+(use-package org-appear
+  :ensure t
+  :hook (org-mode . org-appear-mode))
+
 (defun save-org-mode-files ()
   (dolist (buf (buffer-list))
     (with-current-buffer buf
