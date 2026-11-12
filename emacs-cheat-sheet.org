@@ -80,16 +80,16 @@
    =C-x p= command runs from inside a project, so a new checkout or
    worktree is not offered by =C-x p p= until that happens once.
 
-   | task                             | key / command                                                        |
-   |----------------------------------+----------------------------------------------------------------------|
-   | add the project you are in       | any =C-x p= command from one of its buffers, e.g. =C-x p f=          |
-   | add a project not yet visited    | =C-x p p=, pick =... (choose a dir)=                                 |
+   | task                             | key / command                                                      |
+   |----------------------------------+--------------------------------------------------------------------|
+   | add the project you are in       | any =C-x p= command from one of its buffers, e.g. =C-x p f=            |
+   | add a project not yet visited    | =C-x p p=, pick =... (choose a dir)=                                   |
    | add every repo under a directory | M-x project-remember-projects-under (=C-u= to search subdirectories) |
    | switch project                   | =C-x p p=, then pick a command                                       |
-   | drop one project                 | M-x project-forget-project                                           |
-   | drop every project under a dir   | M-x project-forget-projects-under                                    |
-   | drop projects whose dir is gone  | M-x project-forget-zombie-projects (also runs at startup)            |
-   | inspect the list                 | C-h v project--list (internal variable)                              |
+   | drop one project                 | M-x project-forget-project                                         |
+   | drop every project under a dir   | M-x project-forget-projects-under                                  |
+   | drop projects whose dir is gone  | M-x project-forget-zombie-projects (also runs at startup)          |
+   | inspect the list                 | C-h v project--list (internal variable)                            |
 
    New worktree: after =Z c= in Magit, run =C-x p f= from the new
    worktree's Magit buffer to add it.  Removed worktree: see
@@ -102,7 +102,7 @@
 
    | command               | what it does                       |
    |-----------------------+------------------------------------|
-   | M-x recentf-edit-list | mark recent /files/ to remove      |
+   | M-x recentf-edit-list | mark recent /files/ to remove        |
    | M-x recentf-cleanup   | drop non-existent / excluded files |
    | C-h v recentf-list    | inspect the list                   |
 
@@ -112,15 +112,15 @@
    the starting point: it asks Git for registered worktrees, so a stale
    directory is never offered as a checkout.
 
-   | task                        | key / command                  | result                                  |
-   |-----------------------------+--------------------------------+-----------------------------------------|
-   | open the current repo       | C-x g                          | Magit status                            |
-   | open worktree actions       | Z                              | create, visit, or remove a worktree     |
-   | create branch + worktree    | C-x g, then Z c                | proposes <repo>.worktrees/<branch-slug> |
-   | add an existing branch      | C-x g, then Z b                | checks it out in a new worktree         |
-   | visit a registered worktree | C-x g, then Z g                | opens its Magit status                  |
+   | task                        | key / command                 | result                                  |
+   |-----------------------------+-------------------------------+-----------------------------------------|
+   | open the current repo       | C-x g                         | Magit status                            |
+   | open worktree actions       | Z                             | create, visit, or remove a worktree     |
+   | create branch + worktree    | C-x g, then Z c               | proposes <repo>.worktrees/<branch-slug> |
+   | add an existing branch      | C-x g, then Z b               | checks it out in a new worktree         |
+   | visit a registered worktree | C-x g, then Z g               | opens its Magit status                  |
    | quick worktree selector     | M-x jwm/magit-switch-worktree | choose a registered tree and open Magit |
-   | move from status to files   | RET / C-x b / C-x C-j          | file, buffer, or Dired navigation       |
+   | move from status to files   | RET / C-x b / C-x C-j         | file, buffer, or Dired navigation       |
 
    The location prompt stays editable for exceptions.  Magit proposes a
    slash-safe branch name, so =RND-123/foo= becomes =RND-123-foo= in the
@@ -132,11 +132,11 @@
    from anywhere and protects modified buffers; after a worktree is gone,
    project.el can walk up to the next enclosing =.git= and scope too broadly.
 
-   | step | key / command                          | note                                      |
-   |------+----------------------------------------+-------------------------------------------|
-   | 1    | M-x jwm/kill-buffers-under-dir          | choose the worktree root; preserves edits |
-   | 2    | C-x g, then Z k                          | remove through Magit; shell also works    |
-   | 3    | M-x project-forget-project               | or let next-session zombie cleanup remove it |
+   | step | key / command                  | note                                         |
+   |------+--------------------------------+----------------------------------------------|
+   |    1 | M-x jwm/kill-buffers-under-dir | choose the worktree root; preserves edits    |
+   |    2 | C-x g, then Z k                | remove through Magit; shell also works       |
+   |    3 | M-x project-forget-project     | or let next-session zombie cleanup remove it |
 
    Recovery, if you already removed the worktree and have buffers on
    now-missing files: =M-x jwm/kill-buffers-of-missing-files=.
@@ -157,13 +157,13 @@
    =outline-indent-minor-mode= is enabled in =yaml-mode=, =yaml-ts-mode=,
    =python-mode=, and =python-ts-mode=.
 
-   | key     | command                    |
-   |---------+----------------------------|
-   | C-c o t | toggle fold at point       |
-   | C-c o c | close fold at point        |
-   | C-c o o | open fold at point         |
-   | C-c o m | close all folds            |
-   | C-c o r | open all folds             |
+   | key     | command              |
+   |---------+----------------------|
+   | C-c o t | toggle fold at point |
+   | C-c o c | close fold at point  |
+   | C-c o o | open fold at point   |
+   | C-c o m | close all folds      |
+   | C-c o r | open all folds       |
 
    Bare =TAB= still indents with =indent-for-tab-command=.
 
@@ -184,14 +184,14 @@
    xref/eldoc keys — no Rust-specific bindings).  Jumping into stdlib source
    such as =unwrap_or_else= requires the =rust-src= component installed above.
 
-   | key / command | result |
-   |---------------+--------|
-   | M-. | jump to the definition at point; on a stdlib symbol like =unwrap_or_else= this opens its source in =rust-src= |
-   | M-, | pop back to where =M-.= jumped from |
-   | M-? | find all references to the symbol at point |
-   | C-h . | show the eldoc signature / hover doc for the symbol at point in the echo area |
-   | M-x eldoc-doc-buffer | open the full rust-analyzer hover documentation in a dedicated buffer |
-   | C-. | Embark on the symbol: xref, occur, rename-symbol, … |
+   | key / command        | result                                                                                                    |
+   |----------------------+-----------------------------------------------------------------------------------------------------------|
+   | M-.                  | jump to the definition at point; on a stdlib symbol like =unwrap_or_else= this opens its source in =rust-src= |
+   | M-,                  | pop back to where =M-.= jumped from                                                                         |
+   | M-?                  | find all references to the symbol at point                                                                |
+   | C-h .                | show the eldoc signature / hover doc for the symbol at point in the echo area                             |
+   | M-x eldoc-doc-buffer | open the full rust-analyzer hover documentation in a dedicated buffer                                     |
+   | C-.                  | Embark on the symbol: xref, occur, rename-symbol, …                                                       |
 
    | key / command | result |
    |---------------+--------|
@@ -252,12 +252,12 @@
       =*Warnings*= entry names it once per session.  A project with only a
       =.envrc= still uses envrc.
 
-    | key / command | result |
-    |---------------+--------|
-    | M-: (getenv "PGHOST") | check what the current buffer sees |
-    | M-x mise-update-buffer | re-read one buffer's environment after editing =mise.toml= |
-    | M-x mise-update-dir | re-read every buffer under a directory; =C-u= first clears the cache for all |
-    | M-x jwm/mise-refresh | re-read every buffer, then restart the language servers so they see the change |
+    | key / command          | result                                                                         |
+    |------------------------+--------------------------------------------------------------------------------|
+    | M-: (getenv "PGHOST")  | check what the current buffer sees                                             |
+    | M-x mise-update-buffer | re-read one buffer's environment after editing =mise.toml=                       |
+    | M-x mise-update-dir    | re-read every buffer under a directory; =C-u= first clears the cache for all     |
+    | M-x jwm/mise-refresh   | re-read every buffer, then restart the language servers so they see the change |
 
     Which database a project's buffers reach is the project's mise setting.
     art-of-postgresql defaults to its local container; to switch, run the
@@ -277,25 +277,25 @@
     and password come from the project's =PG*= variables and =.pgpass=, so
     there is no password prompt.  An empty login leaves it to =PGUSER=.
 
-    | key / command | result |
-    |---------------+--------|
+    | key / command    | result                                                    |
+    |------------------+-----------------------------------------------------------|
     | M-x sql-postgres | start a session; the =.sql= buffer sends to it from then on |
-    | C-c C-c | send the paragraph (statement) at point |
-    | C-c C-r | send the region |
-    | C-c C-b | send the whole buffer |
-    | C-c C-n | send the current line and move to the next |
-    | C-c C-s | prompt for a string and send it |
-    | C-c C-z | switch to the session buffer, at its end |
-    | C-c C-l a | list all tables and views |
-    | C-c C-l t | describe a table |
+    | C-c C-c          | send the paragraph (statement) at point                   |
+    | C-c C-r          | send the region                                           |
+    | C-c C-b          | send the whole buffer                                     |
+    | C-c C-n          | send the current line and move to the next                |
+    | C-c C-s          | prompt for a string and send it                           |
+    | C-c C-z          | switch to the session buffer, at its end                  |
+    | C-c C-l a        | list all tables and views                                 |
+    | C-c C-l t        | describe a table                                          |
 
     In the session buffer:
 
-    | key | result |
-    |-----+--------|
+    | key       | result                                                                                 |
+    |-----------+----------------------------------------------------------------------------------------|
     | M-p / M-n | previous / next statement; history is kept across sessions in =~/.emacs.d/.sqli_history= |
-    | M-r | search history by regexp |
-    | C-c C-r | scroll to show the start of the last output |
+    | M-r       | search history by regexp                                                               |
+    | C-c C-r   | scroll to show the start of the last output                                            |
 
     Statements need their terminating =;=.  =~/.psqlrc= is ignored
     (=--no-psqlrc=) so a custom prompt cannot confuse the session buffer.
@@ -325,14 +325,14 @@
     After adding or changing the =#+PROPERTY:= line, press =C-c C-c= on it
     so org reads it.
 
-    | key / header argument | result |
-    |-----------------------+--------|
-    | C-c C-c on a block | run it; blocks run without asking first |
-    | C-c ' on a block | edit it in a =sql-mode= buffer; =C-c '= again returns |
-    | :dbuser <login> | the login for this block or, in =#+PROPERTY:=, the file |
-    | :colnames no | a table without the header row |
-    | :results raw | the raw tab-separated output instead of a table |
-    | :eval query | ask before running this block (or a whole file, in =#+PROPERTY:=) |
+    | key / header argument | result                                                          |
+    |-----------------------+-----------------------------------------------------------------|
+    | C-c C-c on a block    | run it; blocks run without asking first                         |
+    | C-c ' on a block      | edit it in a =sql-mode= buffer; =C-c '= again returns               |
+    | :dbuser <login>       | the login for this block or, in =#+PROPERTY:=, the file           |
+    | :colnames no          | a table without the header row                                  |
+    | :results raw          | the raw tab-separated output instead of a table                 |
+    | :eval query           | ask before running this block (or a whole file, in =#+PROPERTY:=) |
 
     Each block is a separate =psql= run, so there is no session state
     between blocks: =set=, temporary tables and open transactions do not
@@ -350,12 +350,12 @@
     =artofpg_rw= login in art-of-postgresql, with the password from
     =.pgpass=.
 
-    | key / command | result |
-    |---------------+--------|
-    | C-M-i | complete tables after a schema name, and a table's columns inside a query |
-    | C-c ! n / C-c ! p | next / previous syntax error, marked as you type |
-    | C-c ! l | list the buffer's errors |
-    | M-x eglot-reconnect | restart the server for this buffer |
+    | key / command       | result                                                                    |
+    |---------------------+---------------------------------------------------------------------------|
+    | C-M-i               | complete tables after a schema name, and a table's columns inside a query |
+    | C-c ! n / C-c ! p   | next / previous syntax error, marked as you type                          |
+    | C-c ! l             | list the buffer's errors                                                  |
+    | M-x eglot-reconnect | restart the server for this buffer                                        |
 
     Errors come from PostgreSQL's own parser, so they are marked before
     anything runs.  The server treats a blank line as the end of a
@@ -369,11 +369,11 @@
     call.  Needs =pg_format= (Homebrew =pgformatter=, installed on lyra by
     =daily=); where it is missing the key is unbound.
 
-    | key / command | result |
-    |---------------+--------|
-    | C-c C-f | format the region if one is active, otherwise the whole buffer |
-    | C-c ' then C-c C-f | format an org =sql= block; =C-c '= again writes it back |
-    | M-x pg-format-buffer / pg-format-region | the same, by name |
+    | key / command                           | result                                                         |
+    |-----------------------------------------+----------------------------------------------------------------|
+    | C-c C-f                                 | format the region if one is active, otherwise the whole buffer |
+    | C-c ' then C-c C-f                      | format an org =sql= block; =C-c '= again writes it back            |
+    | M-x pg-format-buffer / pg-format-region | the same, by name                                              |
 
     =pg_format= reads its settings from =.pg_format= in the buffer's
     directory, then =~/.pg_format= (for example =keyword-case=,
@@ -386,12 +386,12 @@
     itself: no key, just ask Claude.  Each call runs its own =psql=, never the =*SQL*= session,
     and Emacs stays usable while it runs.
 
-    | tool | what Claude gets |
-    |------+------------------|
-    | pg_describe_schema | every table and view; with a table, its columns, constraints and indexes |
-    | pg_run_query | the result of a statement, as CSV |
-    | pg_explain | the =EXPLAIN= plan; with =analyze=, =EXPLAIN (ANALYZE)=, which runs the statement |
-    | pg_run_write | runs inserts, updates and deletes in one transaction and commits; psql's command tags and any =RETURNING= rows |
+    | tool             | what Claude gets                                                                                             |
+    |------------------+--------------------------------------------------------------------------------------------------------------|
+    | pg_describe_schema | every table and view; with a table, its columns, constraints and indexes                                     |
+    | pg_run_query       | the result of a statement, as CSV                                                                            |
+    | pg_explain        | the =EXPLAIN= plan; with =analyze=, =EXPLAIN (ANALYZE)=, which runs the statement                                  |
+    | pg_run_write       | runs inserts, updates and deletes in one transaction and commits; psql's command tags and any =RETURNING= rows |
 
     - Login: the read tools use the project's =PGUSER_AGENT=
       (=artofpg_agent_ro= in art-of-postgresql), =pg_run_write= its
@@ -658,19 +658,19 @@
 
 * Rectangles
 
-  | key                                          | usage                                                                                                     |
-  |----------------------------------------------+-----------------------------------------------------------------------------------------------------------|
-  | C-x r k                                      | kill the text of the region-rectangle, saving its contents as the last killed rectangle                   |
-  | C-x r M-w                                    | Save the text of the region-rectangle as the last killed rectangle                                        |
-  | C-x r d                                      | Delete the text of the region-rectangle                                                                   |
-  | C-x r y                                      | Yank the last killed rectangle with its upper left corner at point                                        |
-  | C-x r o                                      | Insert blank space to fill the space of the region-rectangle.  Pushes the previous contents to the right. |
-  | C-x r N                                      | Insert line numbers along the left edge of the region rectangle.  Pushes content right                    |
-  | C-x r c                                      | Clear region-rectangle by replacing its contents with spaces.                                             |
-  | M-x delete-whitespace-rectangle              | Delete whitespace in each of the lines of the rectangle, starting from the left edge column of the rect   |
-  | C-x r t _string_ RET                         | Replace rectangle contents with _string_ on each line                                                     |
-  | M-x string-insert-rectangle RET _string_ RET | Insert _string_ on each line of rectangle.                                                                |
-  | C-x SPC                                      | Toggle Rectangle Mark mode.                                                                               |
+  | key                                        | usage                                                                                                     |
+  |--------------------------------------------+-----------------------------------------------------------------------------------------------------------|
+  | C-x r k                                    | kill the text of the region-rectangle, saving its contents as the last killed rectangle                   |
+  | C-x r M-w                                  | Save the text of the region-rectangle as the last killed rectangle                                        |
+  | C-x r d                                    | Delete the text of the region-rectangle                                                                   |
+  | C-x r y                                    | Yank the last killed rectangle with its upper left corner at point                                        |
+  | C-x r o                                    | Insert blank space to fill the space of the region-rectangle.  Pushes the previous contents to the right. |
+  | C-x r N                                    | Insert line numbers along the left edge of the region rectangle.  Pushes content right                    |
+  | C-x r c                                    | Clear region-rectangle by replacing its contents with spaces.                                             |
+  | M-x delete-whitespace-rectangle            | Delete whitespace in each of the lines of the rectangle, starting from the left edge column of the rect   |
+  | C-x r t _string_ RET                         | Replace rectangle contents with _string_ on each line                                                       |
+  | M-x string-insert-rectangle RET _string_ RET | Insert _string_ on each line of rectangle.                                                                  |
+  | C-x SPC                                    | Toggle Rectangle Mark mode.                                                                               |
 
 ** Rectangle Mark Mode
 
