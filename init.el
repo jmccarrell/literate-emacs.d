@@ -818,11 +818,7 @@ BRANCH supplies the slash-safe default leaf name."
   :doc "AI commands: gptel and claude-code-ide.")
 (keymap-global-set "C-x c" jwm/ai-map)
 (with-eval-after-load 'which-key
-  (which-key-add-key-based-replacements
-    "C-x c" "AI"
-    "C-x c a" "add gptel context"
-    "C-x c A" "clear gptel context"
-    "C-x c r" "rewrite region"))
+  (which-key-add-key-based-replacements "C-x c" "AI"))
 
 (use-package gptel
   :commands (gptel gptel-send gptel-menu gptel-abort)
@@ -878,6 +874,9 @@ BRANCH supplies the slash-safe default leaf name."
   :ensure nil  ; ships with gptel
   :commands (gptel-rewrite)
   :bind (:map jwm/ai-map ("r" . gptel-rewrite))
+  :init
+  (with-eval-after-load 'which-key
+    (which-key-add-key-based-replacements "C-x c r" "rewrite region"))
   :custom
   (gptel-rewrite-default-action nil)
   :config
@@ -899,7 +898,12 @@ BRANCH supplies the slash-safe default leaf name."
   :commands (gptel-context-add gptel-context-remove-all)
   :bind (:map jwm/ai-map
               ("a" . gptel-context-add)
-              ("A" . gptel-context-remove-all)))
+              ("A" . gptel-context-remove-all))
+  :init
+  (with-eval-after-load 'which-key
+    (which-key-add-key-based-replacements
+      "C-x c a" "add gptel context"
+      "C-x c A" "clear gptel context")))
 
 (use-package llm-tool-collection
   :after gptel
