@@ -796,7 +796,15 @@ BRANCH supplies the slash-safe default leaf name."
   :custom (olivetti-body-width 90))
 
 (setq org-hide-emphasis-markers t
+      org-hide-leading-stars t
       org-pretty-entities t)
+
+;; labels stay monospace so tags and TODO keywords align under mixed-pitch
+(use-package org-modern
+  :ensure t
+  :hook (org-mode . org-modern-mode)
+  :custom-face
+  (org-modern-label ((t (:height 0.8 :inherit fixed-pitch)))))
 
 ;; show hidden emphasis markers again while point is inside them
 (use-package org-appear
