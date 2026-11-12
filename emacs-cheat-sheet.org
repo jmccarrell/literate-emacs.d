@@ -12,20 +12,22 @@
 
 ** Consult  (search, navigate, jump)
 
-   | key       | command                                         |
-   |-----------+-------------------------------------------------|
-   | C-x b     | consult-buffer (buffers, recents, bookmarks)    |
-   | M-y       | consult-yank-pop                                |
-   | M-g g     | consult-goto-line                               |
-   | M-g i     | consult-imenu                                   |
-   | M-s j     | consult-git-grep                                |
-   | M-s l     | consult-line (lines in current buffer)          |
-   | M-s r     | consult-ripgrep (project-wide)                  |
-   | C-u M-s r | consult-ripgrep (from named directory)          |
-   | M-s f     | consult-find                                    |
-   | C-s       | consult-line (swiper-style muscle memory)       |
-   | M-?       | jwm/consult-ripgrep-at-point (seeded w/ symbol) |
-   | M-.       | toggle preview (inside any consult prompt)      |
+   | key       | command                                             |
+   |-----------+-----------------------------------------------------|
+   | C-x b     | consult-buffer (buffers, recents, bookmarks)        |
+   | M-y       | consult-yank-pop                                    |
+   | M-g g     | consult-goto-line                                   |
+   | M-g i     | consult-imenu                                       |
+   | M-s j     | consult-git-grep                                    |
+   | M-s l     | consult-line (lines in current buffer)              |
+   | M-s r     | consult-ripgrep (project-wide)                      |
+   | C-u M-s r | consult-ripgrep (from named directory)              |
+   | M-s f     | consult-find                                        |
+   | C-s       | consult-line (swiper-style muscle memory)           |
+   | M-?       | jwm/consult-ripgrep-at-point (seeded w/ symbol)     |
+   | M-.       | toggle preview (inside any consult prompt)          |
+   | M-R       | reopen the last minibuffer session (vertico-repeat) |
+   | C-u M-R   | pick an earlier minibuffer session to reopen        |
 
 ** Embark  (act on candidate)
 
@@ -62,6 +64,9 @@
    | C-g         | dismiss the popup                         |
    | M-SPC       | insert separator (orderless multi-token)  |
    | M-PgDn/PgUp | scroll the doc popup (corfu-popupinfo)    |
+
+   Candidates chosen recently come first (=corfu-history-mode=), and the
+   order survives restarts.
 
 ** Recent files & known projects  (manage the lists)
 
@@ -1102,11 +1107,17 @@
 
 ** Tables
 
-   Align a table to a visible monospaced grid:  =C-c C-c |=
-
-   | key       | description  |
-   |-----------+--------------|
-   | C-c C-s t | insert table |
+   | key           | description                                |
+   |---------------+--------------------------------------------|
+   | C-c C-s t     | insert table                               |
+   | TAB / S-TAB   | next / previous cell, realigning the table |
+   | C-c S-<down>  | insert a row                               |
+   | C-c S-<up>    | delete the row                             |
+   | C-c S-<right> | insert a column                            |
+   | C-c S-<left>  | delete the column                          |
+   | C-c C-c ^     | sort the rows by the current column        |
+   | C-c C-c t     | transpose the table                        |
+   | C-c C-c \vert | convert the region to a table              |
 
    (See also the =M-<arrow>= table above — those keys reshape tables
    when point is inside a cell.)

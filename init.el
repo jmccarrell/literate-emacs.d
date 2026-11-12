@@ -289,6 +289,9 @@ With a prefix argument, cd Eshell to the current buffer's directory."
 ;; no disabled functions
 (setq disabled-command-function nil)
 
+;; backtrace frames read as (fn arg ...), as Protesilaos sets it
+(setq debugger-stack-frame-as-list t)
+
 (defun jwm/kill-buffers-of-missing-files ()
   "Kill unmodified file buffers whose backing file no longer exists.
 Skips modified buffers and remote (TRAMP) files."
@@ -565,6 +568,12 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
               ("DEL"   . vertico-directory-delete-char)
               ("M-DEL" . vertico-directory-delete-word)))
 
+(use-package vertico-repeat
+  :ensure nil  ; ships with vertico
+  :after vertico
+  :bind ("M-R" . vertico-repeat)
+  :hook (minibuffer-setup . vertico-repeat-save))
+
 (use-package orderless
   :custom
   (completion-styles '(orderless basic))
@@ -583,7 +592,8 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   (corfu-cycle t)           ; wrap around the candidate list
   :config
   (global-corfu-mode)
-  (corfu-popupinfo-mode))   ; show docstring beside the candidate
+  (corfu-popupinfo-mode)    ; show docstring beside the candidate
+  (corfu-history-mode))     ; recently chosen candidates first
 
 (use-package cape
   :if (package-installed-p 'cape)
