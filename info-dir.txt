@@ -1,29 +1,25 @@
 File: dir,	Node: Top	This is the top of the INFO tree
 
-  This (the Directory node) gives a menu of major topics.
-  Typing "q" exits, "H" lists all Info commands, "d" returns here,
-  "h" gives a primer for first-timers,
-  "mEmacs<Return>" visits the Emacs manual, etc.
+The Info Directory
+******************
 
-  In Emacs, you can click mouse button 2 on a menu item or cross reference
-  to select it.
+  The Info Directory is the top-level menu of major Info topics.
+  Type "d" in Info to return to the Info Directory.  Type "q" to exit Info.
+  Type "?" for a list of Info commands, or "h" to visit an Info tutorial.
+  Type "m" to choose a menu item--for instance,
+    "mEmacs<Return>" visits the Emacs manual.
+  In Emacs Info, you can click mouse button 2 on a menu item
+  or cross reference to follow it to its target.
+  Each menu line that starts with a * is a topic you can select with "m".
+  You can also select a topic by typing its ordinal number.
+  Every third topic has a red * to help pick the right number to type.
 
 * Menu:
 
+Texinfo documentation system
+* Info: (info).                 How to use the documentation browsing system.
+
 Emacs
-* Company: (company).           A modular text completion framework.
-* Embark: (embark).             Emacs Mini-Buffer Actions Rooted in Keymaps.
-* Magit: (magit).               Using Git from Emacs with Magit.
-* Magit-Section: (magit-section).
-                                Use Magit sections in your own packages.
-* Orderless: (orderless).       Completion style for matching regexps in any 
-                                  order.
-* RG: (rgel.info).              Search like a King with ripgrep in Emacs.
-* Ivy: (ivy).                   Using Ivy for completion.
-* Transient: (transient).       Transient Commands.
-* use-package: (use-package).   Declarative package configuration for Emacs.
-* With-Editor: (with-editor).   Using the Emacsclient as $EDITOR.
-* Dash: (dash.info).            A modern list library for GNU Emacs.
 * Emacs: (emacs).               The extensible self-documenting text editor.
 * Emacs FAQ: (efaq).            Frequently Asked Questions about Emacs.
 * Elisp: (elisp).               The Emacs Lisp Reference Manual.
@@ -49,7 +45,7 @@ Emacs
 * Rcirc: (rcirc).               Internet Relay Chat (IRC) client.
 * SASL: (sasl).                 The Emacs SASL library.
 * SC: (sc).                     Supercite lets you cite parts of messages
-                                  you’re replying to, in flexible ways.
+                                  you're replying to, in flexible ways.
 * Sieve: (sieve).               Managing Sieve scripts in Emacs.
 * Tramp: (tramp).               Transparent Remote Access, Multiple Protocol
                                   Emacs remote file access via ssh and scp.
@@ -84,10 +80,11 @@ Emacs
 * Semantic: (semantic).         Source code parser library and utilities.
 * Speedbar: (speedbar).         File/Tag summarizing utility.
 * Todo Mode: (todo-mode).       Make and maintain todo lists.
-* VIP: (vip).                   An obsolete VI-emulation for Emacs.
+* Transient: (transient). Transient Commands.
 * VIPER: (viper).               A VI-emulation mode for Emacs.
 * Wisent: (wisent).             Semantic Wisent parser development.
 * WoMan: (woman).               Browse UN*X Manual Pages "W.O. (without) Man".
+* use-package: (use-package). Declarative package configuration for Emacs.
 * vtable: (vtable).     Variable Pitch Tables.
 * Auth-source: (auth).          The Emacs auth-source library.
 * CL-Lib: (cl).                 Partial Common Lisp support for Emacs Lisp.
@@ -97,9 +94,15 @@ Emacs
 * URL: (url).                   URL loading package.
 * Widget: (widget).             The "widget" package used by the Emacs
                                   Customization facility.
-
-Texinfo documentation system
-* Info: (info).                 How to use the documentation browsing system.
+* Embark: (embark).             Emacs Mini-Buffer Actions Rooted in Keymaps.
+* Magit: (magit).               Using Git from Emacs with Magit.
+* Magit-Section: (magit-section).
+                                Use Magit sections in your own packages.
+* Orderless: (orderless).       Completion style for matching regexps in any 
+                                  order.
+* Web Server: (web-server).     Web Server for Emacs.
+* With-Editor: (with-editor).   Using the Emacsclient as $EDITOR.
+* Dash: (dash.info).            A modern list library for GNU Emacs.
 
 Libraries
 * autosprintf: (autosprintf).   Support for printf format strings in C++.
@@ -313,3 +316,4 @@ System administration
 GNU Packages
 * Aspell: (aspell).        GNU Aspell spelling checker
 * Aspell-dev: (aspell-dev).        For Aspell developers
+
