@@ -71,17 +71,40 @@
 ** Recent files & known projects  (manage the lists)
 
    Two separate lists: =recentf= tracks recent /files/; project.el's
-   known-project list is what =C-x p p= offers. Most pruning now
-   happens automatically (recentf on mode start, project.el zombie
-   cleanup at startup), but to manage by hand:
+   known-project list is what =C-x p p= offers.
 
-   | command                            | what it does                          |
-   |------------------------------------+---------------------------------------|
-   | M-x recentf-edit-list              | mark recent /files/ to remove         |
-   | M-x recentf-cleanup                | drop non-existent / excluded files    |
-   | M-x project-forget-project         | drop one project from C-x p p         |
-   | M-x project-forget-zombie-projects | drop projects whose dir is gone       |
-   | C-h v recentf-list / project--list | inspect either list raw (the latter is internal) |
+*** Known projects
+
+   A project is a Git checkout; each worktree is its own project.  The
+   list is saved in =~/.emacs.d/projects= and is only added to when a
+   =C-x p= command runs from inside a project, so a new checkout or
+   worktree is not offered by =C-x p p= until that happens once.
+
+   | task                             | key / command                                                        |
+   |----------------------------------+----------------------------------------------------------------------|
+   | add the project you are in       | any =C-x p= command from one of its buffers, e.g. =C-x p f=          |
+   | add a project not yet visited    | =C-x p p=, pick =... (choose a dir)=                                 |
+   | add every repo under a directory | M-x project-remember-projects-under (=C-u= to search subdirectories) |
+   | switch project                   | =C-x p p=, then pick a command                                       |
+   | drop one project                 | M-x project-forget-project                                           |
+   | drop every project under a dir   | M-x project-forget-projects-under                                    |
+   | drop projects whose dir is gone  | M-x project-forget-zombie-projects (also runs at startup)            |
+   | inspect the list                 | C-h v project--list (internal variable)                              |
+
+   New worktree: after =Z c= in Magit, run =C-x p f= from the new
+   worktree's Magit buffer to add it.  Removed worktree: see
+   [[*Worktree teardown  (kill buffers, then remove)][Worktree teardown]]; its entry goes at the next startup, or at once
+   with =M-x project-forget-project=.
+
+*** Recent files
+
+   recentf drops missing and excluded files when the mode starts.
+
+   | command               | what it does                       |
+   |-----------------------+------------------------------------|
+   | M-x recentf-edit-list | mark recent /files/ to remove      |
+   | M-x recentf-cleanup   | drop non-existent / excluded files |
+   | C-h v recentf-list    | inspect the list                   |
 
 ** Worktree navigation  (Magit)
 
@@ -522,10 +545,6 @@
     | C-x p k | kill project buffers                       |
     | C-x p e | open Eshell at the project root            |
     | C-x p c | compile at the project root                |
-
-    A new worktree is not on the =C-x p p= list until project.el sees
-    it: run =C-x p f= (or any other =C-x p= command) once from a buffer
-    in the worktree to add it.
 
 ** ivy swiper
 
