@@ -58,16 +58,14 @@
             (assoc-delete-all "melpa" package-archives)))
 ;; Drop the built-in NonGNU archive: elpa.nongnu.org has the same
 ;; GnuTLS pull failure here, and the configured non-built-ins are
-;; available from MELPA/GNU/Org.
+;; available from MELPA/GNU.  Org itself is built in and also ships
+;; on GNU ELPA; orgmode.org/elpa is a frozen 2021 stub.
 (setq package-archives (assoc-delete-all "nongnu" package-archives))
-(unless (assoc-default "org" package-archives)
-  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
 
 ;; Prefer MELPA when a package appears in multiple archives; keep
-;; Org and GNU available as lower-priority fallbacks.
+;; GNU available as a lower-priority fallback.
 (setq package-archive-priorities
       '(("melpa" . 30)
-        ("org" . 20)
         ("gnu" . 5)))
 
 (package-initialize)
