@@ -517,6 +517,9 @@
 
      ;; no disabled functions
      (setq disabled-command-function nil)
+
+     ;; backtrace frames read as (fn arg ...), as Protesilaos sets it
+     (setq debugger-stack-frame-as-list t)
    #+END_SRC
 
 ** Buffer cleanup for removed worktrees
@@ -1076,6 +1079,21 @@
                    ("M-DEL" . vertico-directory-delete-word)))
    #+END_SRC
 
+   =vertico-repeat= reopens the last minibuffer session, such as a
+   =consult-ripgrep= search, with its input and selected candidate;
+   =C-u M-R= picks from earlier sessions.  redguardtoo wrote his own
+   package for this, whose notes point Vertico users here.  The
+   sessions survive restarts: with =savehist-mode= on, =vertico-repeat=
+   adds its history to savehist itself.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package vertico-repeat
+       :ensure nil  ; ships with vertico
+       :after vertico
+       :bind ("M-R" . vertico-repeat)
+       :hook (minibuffer-setup . vertico-repeat-save))
+   #+END_SRC
+
 ** Orderless
 
    Space-separated fuzzy matching. Typing =py test run= matches any
@@ -1132,8 +1150,13 @@
        (corfu-cycle t)           ; wrap around the candidate list
        :config
        (global-corfu-mode)
-       (corfu-popupinfo-mode))   ; show docstring beside the candidate
+       (corfu-popupinfo-mode)    ; show docstring beside the candidate
+       (corfu-history-mode))     ; recently chosen candidates first
    #+END_SRC
+
+   =corfu-history-mode= is the Corfu version of redguardtoo's move to
+   =company-prescient=.  Like =vertico-repeat=, it adds its history to
+   savehist itself, so the order survives restarts.
 
 ** Cape
 
