@@ -778,6 +778,30 @@ BRANCH supplies the slash-safe default leaf name."
 ;;  as named by org-agenda-files.
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
 
+(when (jwm/font-exists-p "Helvetica Neue")
+  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 1.1))
+(when (jwm/font-exists-p "Hack")
+  (set-face-attribute 'fixed-pitch nil :family "Hack"))
+
+(use-package mixed-pitch
+  :ensure t
+  :diminish
+  :hook (org-mode . mixed-pitch-mode))
+
+(use-package olivetti
+  :ensure t
+  :diminish
+  :custom (olivetti-body-width 90)
+  :hook (org-mode . olivetti-mode))
+
+(setq org-hide-emphasis-markers t
+      org-pretty-entities t)
+
+;; show hidden emphasis markers again while point is inside them
+(use-package org-appear
+  :ensure t
+  :hook (org-mode . org-appear-mode))
+
 (defun save-org-mode-files ()
   (dolist (buf (buffer-list))
     (with-current-buffer buf

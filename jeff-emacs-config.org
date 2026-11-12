@@ -1529,6 +1529,44 @@
       (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
     #+END_SRC
 
+** Org Prose Display
+
+   Org prose reads better in a proportional font.  zenburn, unlike the
+   modus/ef themes, does not keep code and tables monospace under
+   =variable-pitch-mode=, so =mixed-pitch= does that instead: it leaves
+   =org-block=, =org-table=, =org-code=, keywords and checkboxes on
+   =fixed-pitch=.  The same shape appears in the oantolin, protesilaos, and
+   minemacs reference configs.
+
+   =fixed-pitch= defaults to the generic "Monospace" family, so pin it to
+   Hack to match the frame font.
+
+   #+BEGIN_SRC emacs-lisp
+     (when (jwm/font-exists-p "Helvetica Neue")
+       (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 1.1))
+     (when (jwm/font-exists-p "Hack")
+       (set-face-attribute 'fixed-pitch nil :family "Hack"))
+
+     (use-package mixed-pitch
+       :ensure t
+       :diminish
+       :hook (org-mode . mixed-pitch-mode))
+
+     (use-package olivetti
+       :ensure t
+       :diminish
+       :custom (olivetti-body-width 90)
+       :hook (org-mode . olivetti-mode))
+
+     (setq org-hide-emphasis-markers t
+           org-pretty-entities t)
+
+     ;; show hidden emphasis markers again while point is inside them
+     (use-package org-appear
+       :ensure t
+       :hook (org-mode . org-appear-mode))
+   #+END_SRC
+
 ** Save Org Files Periodically
 
    [[https://github.com/jwiegley/dot-emacs/blob/master/dot-org.el#L242-L249][Stolen from John Weigley]].
