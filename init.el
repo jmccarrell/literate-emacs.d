@@ -98,7 +98,8 @@
 ;; Packages not in any archive, installed from source by `package-vc-install'.
 ;; Each entry is a `package-vc-selected-packages' spec.
 (defvar jwm/required-vc-packages
-  '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el"))
+  '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")
+    (llm-tool-collection :url "https://github.com/skissue/llm-tool-collection"))
   "Source packages this config expects; installed by `just install-packages'.")
 (require 'use-package)
 
@@ -896,100 +897,14 @@ BRANCH supplies the slash-safe default leaf name."
       "C-c g A" "clear gptel context"
       "C-c g r" "rewrite region")))
 
-(with-eval-after-load 'gptel
-  (setq gptel-use-tools t)
-
-  (defun jwm/project-root-or-default ()
-    "Return the current project root, or `default-directory'."
-    (if-let ((proj (project-current)))
-        (project-root proj)
-      default-directory))
-
-  (gptel-make-tool
-   :name "read_buffer"
-   :function (lambda (buffer)
-               (if (buffer-live-p (get-buffer buffer))
-                   (with-current-buffer buffer
-                     (buffer-substring-no-properties (point-min) (point-max)))
-                 (format "Error: buffer %s is not live." buffer)))
-   :description "Return the contents of an Emacs buffer."
-   :args (list '(:name "buffer" :type string
-                 :description "Name of the buffer to read."))
-   :category "emacs"
-   :include t)
-
-  (gptel-make-tool
-   :name "read_file"
-   :function (lambda (path)
-               (let ((full (expand-file-name path (jwm/project-root-or-default))))
-                 (if (file-readable-p full)
-                     (with-temp-buffer
-                       (insert-file-contents full)
-                       (buffer-string))
-                   (format "Error: file %s is not readable." full))))
-   :description "Return the contents of a file, relative to the current project root."
-   :args (list '(:name "path" :type string
-                 :description "File path, relative to the project root."))
-   :category "filesystem"
-   :include t)
-
-  (gptel-make-tool
-   :name "list_project_files"
-   :function (lambda ()
-               (let ((default-directory (jwm/project-root-or-default)))
-                 (string-trim
-                  (shell-command-to-string "git ls-files"))))
-   :description "List the files tracked in the current project (git ls-files)."
-   :args nil
-   :category "filesystem"
-   :include t)
-
-  (gptel-make-tool
-   :name "search_project"
-   :function (lambda (pattern)
-               (let ((default-directory (jwm/project-root-or-default)))
-                 (with-temp-message (format "ripgrep: %s" pattern)
-                   (shell-command-to-string
-                    (format "rg --line-number --no-heading --color=never -e %s"
-                            (shell-quote-argument pattern))))))
-   :description "Search the current project with ripgrep; returns matching lines."
-   :args (list '(:name "pattern" :type string
-                 :description "The regular expression to search for."))
-   :category "filesystem"
-   :include t)
-
-  (gptel-make-tool
-   :name "read_documentation"
-   :function (lambda (name)
-               (let ((sym (intern name)))
-                 (cond
-                  ((fboundp sym) (or (documentation sym) "No function documentation."))
-                  ((boundp sym) (or (documentation-property sym 'variable-documentation)
-                                    "No variable documentation."))
-                  (t (format "No documentation found for %s." name)))))
-   :description "Read the Emacs documentation for a function or variable."
-   :args (list '(:name "name" :type string
-                 :description "Name of the function or variable."))
-   :category "emacs"
-   :include t)
-
-  (gptel-make-tool
-   :name "replace_buffer"
-   :function (lambda (buffer content)
-               (if (buffer-live-p (get-buffer buffer))
-                   (with-current-buffer buffer
-                     (erase-buffer)
-                     (insert content)
-                     (format "Replaced the contents of buffer %s." buffer))
-                 (format "Error: buffer %s is not live." buffer)))
-   :description "Overwrite the entire contents of an Emacs buffer with new content. Use for whole-buffer rewrites; requires user confirmation."
-   :args (list '(:name "buffer" :type string
-                 :description "Name of the buffer to overwrite.")
-               '(:name "content" :type string
-                 :description "The new, full contents of the buffer."))
-   :category "emacs"
-   :confirm t
-   :include t))
+(use-package llm-tool-collection
+  :after gptel
+  :config
+  ;; A tool carries several tags; register each one once.
+  (dolist (tool (seq-uniq
+                 (seq-mapcat #'llm-tool-collection-get-tag
+                             '(filesystem editing introspection))))
+    (apply #'gptel-make-tool tool)))
 
 (use-package mcp-server-lib
   :commands (mcp-server-lib-install

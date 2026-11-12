@@ -249,7 +249,8 @@
      ;; Packages not in any archive, installed from source by `package-vc-install'.
      ;; Each entry is a `package-vc-selected-packages' spec.
      (defvar jwm/required-vc-packages
-       '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el"))
+       '((claude-code-ide :url "https://github.com/manzaltu/claude-code-ide.el")
+         (llm-tool-collection :url "https://github.com/skissue/llm-tool-collection"))
        "Source packages this config expects; installed by `just install-packages'.")
      (require 'use-package)
    #+END_SRC
@@ -1600,8 +1601,9 @@
    gptel is a plain chat client for talking to a capable cloud model
    while writing code.  The default backend is Groq
    (=openai/gpt-oss-120b=, with =qwen/qwen3.6-27b= selectable) and
-   Anthropic Claude is also selectable.  Tools, MCP, agentic editing,
-   and inline completion stay as separate follow-up sub-goals.
+   Anthropic Claude is also selectable.  Tools come from
+   =llm-tool-collection= (see gptel tools); coding agents run in
+   claude-code-ide, not gptel.
 
    Both providers are cloud-only and reachable just from the personal
    machine, so the backends are created only when =jwm/personal-mac-p=
@@ -1729,114 +1731,31 @@
 
 ** gptel tools
 
-   These tools let the model ground its code help in the actual
-   buffers, files, and project rather than guessing.  Five are
-   read-only (read a buffer or file, list project files, ripgrep
-   search, read Emacs documentation); =replace_buffer= is the one
-   write tool and is gated by =:confirm t=, so gptel asks before it
-   overwrites a buffer.  Region-scoped editing still goes through the
-   review-first =gptel-rewrite=.
+   Tools come from [[https://github.com/skissue/llm-tool-collection][llm-tool-collection]], registered by tag as jwiegley
+   does: =filesystem=, =editing= and =introspection=.  Its file search
+   (=grep=) runs as an asynchronous process, so no tool blocks Emacs
+   while it works.  The =system= tools (=bash=, =eval_elisp=) are not
+   registered.  The tools that create, edit or replace a file, and
+   =replace_buffer=, ask before they run; =edit_buffer= does not.
 
-   Tool use is enabled globally via =gptel-use-tools=; pick or toggle
-   tools per request from the =gptel-menu= (=C-c g m=).  Tools only do
-   useful work with a tool-capable cloud backend, which is configured
-   on the personal machine.
+   Tools are chosen per request: =gptel-use-tools= keeps its default
+   and =gptel-tools= stays empty, so no tool is sent until one is
+   picked in =gptel-menu=.  gptel gets no PostgreSQL tools; those are
+   for claude-code-ide.
+
+   The package is in no archive, so it is listed in
+   =jwm/required-vc-packages= (see Use-Package) and installed by
+   =just install-packages=.
 
    #+BEGIN_SRC emacs-lisp
-     (with-eval-after-load 'gptel
-       (setq gptel-use-tools t)
-
-       (defun jwm/project-root-or-default ()
-         "Return the current project root, or `default-directory'."
-         (if-let ((proj (project-current)))
-             (project-root proj)
-           default-directory))
-
-       (gptel-make-tool
-        :name "read_buffer"
-        :function (lambda (buffer)
-                    (if (buffer-live-p (get-buffer buffer))
-                        (with-current-buffer buffer
-                          (buffer-substring-no-properties (point-min) (point-max)))
-                      (format "Error: buffer %s is not live." buffer)))
-        :description "Return the contents of an Emacs buffer."
-        :args (list '(:name "buffer" :type string
-                      :description "Name of the buffer to read."))
-        :category "emacs"
-        :include t)
-
-       (gptel-make-tool
-        :name "read_file"
-        :function (lambda (path)
-                    (let ((full (expand-file-name path (jwm/project-root-or-default))))
-                      (if (file-readable-p full)
-                          (with-temp-buffer
-                            (insert-file-contents full)
-                            (buffer-string))
-                        (format "Error: file %s is not readable." full))))
-        :description "Return the contents of a file, relative to the current project root."
-        :args (list '(:name "path" :type string
-                      :description "File path, relative to the project root."))
-        :category "filesystem"
-        :include t)
-
-       (gptel-make-tool
-        :name "list_project_files"
-        :function (lambda ()
-                    (let ((default-directory (jwm/project-root-or-default)))
-                      (string-trim
-                       (shell-command-to-string "git ls-files"))))
-        :description "List the files tracked in the current project (git ls-files)."
-        :args nil
-        :category "filesystem"
-        :include t)
-
-       (gptel-make-tool
-        :name "search_project"
-        :function (lambda (pattern)
-                    (let ((default-directory (jwm/project-root-or-default)))
-                      (with-temp-message (format "ripgrep: %s" pattern)
-                        (shell-command-to-string
-                         (format "rg --line-number --no-heading --color=never -e %s"
-                                 (shell-quote-argument pattern))))))
-        :description "Search the current project with ripgrep; returns matching lines."
-        :args (list '(:name "pattern" :type string
-                      :description "The regular expression to search for."))
-        :category "filesystem"
-        :include t)
-
-       (gptel-make-tool
-        :name "read_documentation"
-        :function (lambda (name)
-                    (let ((sym (intern name)))
-                      (cond
-                       ((fboundp sym) (or (documentation sym) "No function documentation."))
-                       ((boundp sym) (or (documentation-property sym 'variable-documentation)
-                                         "No variable documentation."))
-                       (t (format "No documentation found for %s." name)))))
-        :description "Read the Emacs documentation for a function or variable."
-        :args (list '(:name "name" :type string
-                      :description "Name of the function or variable."))
-        :category "emacs"
-        :include t)
-
-       (gptel-make-tool
-        :name "replace_buffer"
-        :function (lambda (buffer content)
-                    (if (buffer-live-p (get-buffer buffer))
-                        (with-current-buffer buffer
-                          (erase-buffer)
-                          (insert content)
-                          (format "Replaced the contents of buffer %s." buffer))
-                      (format "Error: buffer %s is not live." buffer)))
-        :description "Overwrite the entire contents of an Emacs buffer with new content. Use for whole-buffer rewrites; requires user confirmation."
-        :args (list '(:name "buffer" :type string
-                      :description "Name of the buffer to overwrite.")
-                    '(:name "content" :type string
-                      :description "The new, full contents of the buffer."))
-        :category "emacs"
-        :confirm t
-        :include t))
+     (use-package llm-tool-collection
+       :after gptel
+       :config
+       ;; A tool carries several tags; register each one once.
+       (dolist (tool (seq-uniq
+                      (seq-mapcat #'llm-tool-collection-get-tag
+                                  '(filesystem editing introspection))))
+         (apply #'gptel-make-tool tool)))
    #+END_SRC
 
 ** live-emacs — the MCP server for this session
