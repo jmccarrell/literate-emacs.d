@@ -444,10 +444,22 @@ In effect, adjusts the pixel size of the frame font up or down by the prefix val
   ;;  ie, when I am working on the train
   (bind-key [C-down-mouse-1] 'ignore))
 
+(defconst jwm/cheat-sheet-file
+  (expand-file-name "emacs-cheat-sheet.org"
+                    (file-name-directory
+                     (file-truename (or load-file-name buffer-file-name))))
+  "The cheat sheet in the checkout this config was loaded from.")
+
+(defun jwm/open-cheat-sheet ()
+  "Visit `jwm/cheat-sheet-file'."
+  (interactive)
+  (find-file jwm/cheat-sheet-file))
+
 (bind-keys
  ;; long time bindings I have preferred
  ("C-c u" . revert-buffer)
  ("C-M-g" . goto-line)
+ ("C-c h" . jwm/open-cheat-sheet)
 
  ;; perhaps turn these on when/if I bring in Howards font size functions
  ;; ("s-C-+" . ha/text-scale-frame-increase)

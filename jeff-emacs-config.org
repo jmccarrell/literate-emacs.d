@@ -829,11 +829,28 @@
    Recall that there are several /power/ features of =bind-key=, such as rebinding, adding keys to a
    specific map etc. Here are John's [[https://github.com/jwiegley/use-package/blob/master/bind-key.el#L41-L90][pointers]] in the comments of the package.
 
+   =C-c h= opens the cheat sheet that sits beside this file.  The path comes
+   from where =init.el= really lives, following the =~/.emacs.d/init.el=
+   symlink, so it is right on every machine and follows a worktree that is
+   linked live.
+
    #+BEGIN_SRC emacs-lisp
+     (defconst jwm/cheat-sheet-file
+       (expand-file-name "emacs-cheat-sheet.org"
+                         (file-name-directory
+                          (file-truename (or load-file-name buffer-file-name))))
+       "The cheat sheet in the checkout this config was loaded from.")
+
+     (defun jwm/open-cheat-sheet ()
+       "Visit `jwm/cheat-sheet-file'."
+       (interactive)
+       (find-file jwm/cheat-sheet-file))
+
      (bind-keys
       ;; long time bindings I have preferred
       ("C-c u" . revert-buffer)
       ("C-M-g" . goto-line)
+      ("C-c h" . jwm/open-cheat-sheet)
 
       ;; perhaps turn these on when/if I bring in Howards font size functions
       ;; ("s-C-+" . ha/text-scale-frame-increase)
