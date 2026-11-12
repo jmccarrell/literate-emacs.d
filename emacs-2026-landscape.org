@@ -188,7 +188,8 @@ The rough order the sub-goals landed in:
   investigations start by reading =info-dir.txt=.
 - *AI chat foundation* — added =gptel= as the first AI/LLM
   integration slice. It opens Org-mode chat buffers, binds
-  =C-c g g= / =C-c g s= / =C-c g m=, and uses cloud backends on the
+  =C-c g g= / =C-c g s= / =C-c g m= (since spec 018, =C-x c g= /
+  =C-x c s= / =C-x c m=), and uses cloud backends on the
   personal machine only (gated by =jwm/personal-mac-p=): Groq
   =openai/gpt-oss-120b= as the default coding model with
   =qwen/qwen3.6-27b= selectable, and Anthropic Claude selectable.
