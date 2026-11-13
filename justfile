@@ -59,6 +59,16 @@ install-packages:
     emacs --batch -l init.el --eval '(jwm/warm-native-comp)'
     @echo "install-packages: done"
 
+# Delete installed packages the manifest no longer needs. `package-autoremove'
+# keys off `package-selected-packages', which lives in the custom-file and goes
+# stale as the manifest changes, so reset and save it from the manifest first.
+# Asks before deleting. Restart any running Emacs afterwards: it still holds the
+# old list and would write it back on its next package install.
+prune-packages:
+    emacs --batch -l init.el \
+          --eval '(customize-save-variable (quote package-selected-packages) (append jwm/required-packages (mapcar (function car) jwm/required-vc-packages)))' \
+          --eval '(package-autoremove)'
+
 # Point ~/.emacs.d/init.el at THIS checkout's init.el.
 #
 # Idempotent and imperative: run it from whichever checkout you want

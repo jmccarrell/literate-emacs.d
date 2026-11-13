@@ -240,9 +240,10 @@
          docker dockerfile-mode edit-indirect embark embark-consult envrc
          expand-region flymake-ruff ghostel go-mode gptel js2-mode json-mode
          jsonnet-mode just-mode just-ts-mode magit marginalia markdown-mode
-         mcp-server-lib mise ob-restclient orderless outline-indent pet
-         reformatter terraform-mode textsize vertico wgrep which-key
-         wrap-region yaml-mode yasnippet yasnippet-snippets zenburn-theme)
+         mcp-server-lib mise mixed-pitch ob-restclient olivetti orderless
+         org-appear org-modern outline-indent pet reformatter terraform-mode
+         textsize vertico wgrep which-key wrap-region yaml-mode yasnippet
+         yasnippet-snippets zenburn-theme)
        "External packages this config expects; installed by `just install-packages'.")
      ;; Packages not in any archive, installed from source by `package-vc-install'.
      ;; Each entry is a `package-vc-selected-packages' spec.
