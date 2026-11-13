@@ -8,8 +8,7 @@
 
   The vertico + consult + embark stack replaced ivy / counsel / swiper.
   Built-in =project.el= owns the =C-x p ...= command map (replaced
-  projectile): =projectile-kill-buffers= is =C-x p k=, and
-  =projectile-remove-known-project= is =M-x project-forget-project=.
+  projectile).
 
 ** Consult  (search, navigate, jump)
 
@@ -546,14 +545,6 @@
     | C-x p k | kill project buffers                       |
     | C-x p e | open Eshell at the project root            |
     | C-x p c | compile at the project root                |
-
-** ivy swiper
-
-   | key     | description                                           |
-   |---------+-------------------------------------------------------|
-   | M-j     | ivy-yank-word; grab text at point for completion      |
-   | C-o     | ivy-hydra/body                                        |
-   | C-c C-o | ivy-occur save current candidate list to a new buffer |
 
 ** wrap-region and insert-pair
 
