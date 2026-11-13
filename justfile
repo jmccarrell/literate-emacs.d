@@ -65,8 +65,10 @@ install-packages:
 # Asks before deleting. Restart any running Emacs afterwards: it still holds the
 # old list and would write it back on its next package install.
 prune-packages:
+    # Customize won't write the custom-file while `user-init-file' is nil, and
+    # `-l init.el' under --batch leaves it nil.
     emacs --batch -l init.el \
-          --eval '(customize-save-variable (quote package-selected-packages) (append jwm/required-packages (mapcar (function car) jwm/required-vc-packages)))' \
+          --eval '(let ((user-init-file (expand-file-name "init.el"))) (customize-save-variable (quote package-selected-packages) (append jwm/required-packages (mapcar (function car) jwm/required-vc-packages))))' \
           --eval '(package-autoremove)'
 
 # Point ~/.emacs.d/init.el at THIS checkout's init.el.
