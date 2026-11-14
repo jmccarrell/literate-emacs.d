@@ -695,10 +695,11 @@
 
 ** Display  (prose fonts, org-modern, hidden markup)
 
-   Org buffers open with =mixed-pitch-mode= (proportional prose, monospace
-   code and tables), =org-modern-mode=, and =org-appear-mode= (hidden
-   emphasis markers reappear while point is inside them).  Each command
-   below toggles one of these in the current buffer.
+   Org and markdown buffers open with =mixed-pitch-mode= (proportional
+   prose, monospace code and tables).  Org buffers also open with
+   =org-modern-mode= and =org-appear-mode= (hidden emphasis markers
+   reappear while point is inside them).  Each command below toggles one
+   of these in the current buffer.
 
    | command / key               | good for                                 |
    |-----------------------------+------------------------------------------|
