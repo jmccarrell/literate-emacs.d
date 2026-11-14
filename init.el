@@ -787,7 +787,12 @@ BRANCH supplies the slash-safe default leaf name."
 (use-package mixed-pitch
   :ensure t
   :diminish
-  :hook (org-mode . mixed-pitch-mode))
+  :hook ((org-mode gfm-mode) . mixed-pitch-mode)
+  :config
+  (dolist (face '(org-date org-footnote org-special-keyword
+                  org-property-value org-tag org-todo org-done
+                  font-lock-comment-face))
+    (add-to-list 'mixed-pitch-fixed-pitch-faces face)))
 
 ;; on demand only: a centered column squeezes wide org tables
 (use-package olivetti
