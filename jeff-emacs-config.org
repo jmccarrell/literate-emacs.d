@@ -625,6 +625,22 @@
          (set-frame-font preferred-font t t)))
    #+END_SRC
 
+   org-modern's heading stars, list bullets and checkboxes come from the
+   Unicode blocks below.  No font macOS ships has the level-3 stars
+   =⯈ ⯆=, and Noto Sans has none of these glyphs, so pin the blocks to
+   Noto Sans Symbols 2 (installed from the shared Brewfile in =jwm-bin=)
+   and every machine draws them from the same font.  A face whose own
+   font has the glyph still draws it: under mixed-pitch, org checkboxes
+   come from the frame font.
+
+   #+BEGIN_SRC emacs-lisp
+     (when (jwm/font-exists-p "Noto Sans Symbols 2")
+       (dolist (block '((#x25a0 . #x25ff)    ; Geometric Shapes
+                        (#x2600 . #x26ff)    ; Miscellaneous Symbols
+                        (#x2b00 . #x2bff)))  ; Misc Symbols and Arrows
+         (set-fontset-font t block "Noto Sans Symbols 2")))
+   #+END_SRC
+
 ** Adjust font size to display resolution
 
    With the broad range of pixels per inch offered by laptops, 4k displays, etc.

@@ -336,6 +336,12 @@ Use this on a worktree root *before* `git worktree remove'."
     (message "setting Jeff preferred font %s" preferred-font)
     (set-frame-font preferred-font t t)))
 
+(when (jwm/font-exists-p "Noto Sans Symbols 2")
+  (dolist (block '((#x25a0 . #x25ff)    ; Geometric Shapes
+                   (#x2600 . #x26ff)    ; Miscellaneous Symbols
+                   (#x2b00 . #x2bff)))  ; Misc Symbols and Arrows
+    (set-fontset-font t block "Noto Sans Symbols 2")))
+
 (use-package textsize
   :init (textsize-mode)
   :config
