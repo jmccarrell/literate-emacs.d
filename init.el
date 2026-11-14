@@ -779,8 +779,8 @@ BRANCH supplies the slash-safe default leaf name."
 ;;  as named by org-agenda-files.
 (setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
 
-(when (jwm/font-exists-p "Helvetica Neue")
-  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 1.1))
+(when (jwm/font-exists-p "Noto Sans")
+  (set-face-attribute 'variable-pitch nil :family "Noto Sans" :height 1.1))
 (when (jwm/font-exists-p "Hack")
   (set-face-attribute 'fixed-pitch nil :family "Hack"))
 

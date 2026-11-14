@@ -1539,12 +1539,15 @@
    =fixed-pitch=.  The same shape appears in the oantolin, protesilaos, and
    minemacs reference configs.
 
+   Prose is Noto Sans.  mixed-pitch ignores its =:height= unless
+   =mixed-pitch-set-height= is on, and it stays off.
+
    =fixed-pitch= defaults to the generic "Monospace" family, so pin it to
    Hack to match the frame font.
 
    #+BEGIN_SRC emacs-lisp
-     (when (jwm/font-exists-p "Helvetica Neue")
-       (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 1.1))
+     (when (jwm/font-exists-p "Noto Sans")
+       (set-face-attribute 'variable-pitch nil :family "Noto Sans" :height 1.1))
      (when (jwm/font-exists-p "Hack")
        (set-face-attribute 'fixed-pitch nil :family "Hack"))
 
