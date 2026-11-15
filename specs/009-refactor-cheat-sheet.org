@@ -1,0 +1,3 @@
+I want to refactor /Users/jeff.mccarrell/jwm/proj/emacs-config/literate-emacs.d/main/emacs-cheat-sheet.org to be more useful.
+There is information in there that I don't use any more.
+There are stale bindings in the cheat sheet that aren't hooked up any more.

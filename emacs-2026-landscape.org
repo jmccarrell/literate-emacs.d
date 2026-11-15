@@ -60,8 +60,8 @@ leaner successor in ~expreg~.
 
 * Reference config synthesis
 
-Detailed analysis of external Emacs configs now lives in the workspace-level
-[[../../reference-configs.md][reference-configs.md]]. That file sits beside
+Detailed analysis of external Emacs configs now lives in
+[[file:reference-configs.md][reference-configs.md]]. That file sits beside
 ~reference-repos.list~, ~reference-emacs-configs/~, and the ~just ref-*~
 workflow, so it is the right place to track per-repo state, upstream commit
 deltas, and what we have extracted from each reference.
@@ -716,9 +716,9 @@ Package repos and primary docs:
 - [[https://github.com/mickeynp/expreg][expreg]]
 
 Reference config synthesis:
-- [[../../reference-configs.md][reference-configs.md]] — canonical repo-by-repo analysis,
+- [[file:reference-configs.md][reference-configs.md]] — canonical repo-by-repo analysis,
   current tiers, and extracted patterns
-- [[../../reference-repos.list][reference-repos.list]] — registered reference repos and
+- [[file:reference-repos.list][reference-repos.list]] — registered reference repos and
   last analyzed SHAs
 
 Community context:

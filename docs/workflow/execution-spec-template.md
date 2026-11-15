@@ -12,7 +12,7 @@ executor can act on or a reviewer can check.
 **Summary.** One sentence: what this issue makes true when it is done.
 
 **Why / context.** The problem and the forces. Link the driving GitHub issue,
-workspace spec, prior PR, package manual, or reference config note.
+spec in `specs/`, prior PR, package manual, or reference config note.
 
 **Scope.**
 
@@ -58,7 +58,7 @@ changes, this is usually reverting the PR and re-tangling. For global Emacs
 state outside this repo, include the exact teardown command or file removal
 instruction.
 
-**Dependencies.** Blocked by `#NNN`; blocks `#NNN`. Link parent workspace specs
+**Dependencies.** Blocked by `#NNN`; blocks `#NNN`. Link specs in `specs/`
 when the issue implements a slice of a broader brief.
 
 ---
