@@ -9,8 +9,7 @@
 # check holds if either path acquires a symlinked component. Prefix matching
 # (not equality against init.el) catches any live reference into the worktree.
 #
-# Rationale and alternatives considered: specs/013-worktree-symlink-pre-remove-hook.md
-# in the emacs-config workspace.
+# Rationale and alternatives considered: specs/013-worktree-symlink-pre-remove-hook.md.
 pre-remove = """
 link=$(readlink -f "$HOME/.emacs.d/init.el" 2>/dev/null || true)
 tree=$(cd "{{ worktree_path }}" 2>/dev/null && pwd -P) || tree="{{ worktree_path }}"

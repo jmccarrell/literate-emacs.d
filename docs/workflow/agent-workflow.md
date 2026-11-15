@@ -2,8 +2,8 @@
 
 How issues move through `literate-emacs.d`, who owns each step, and how the
 GitHub labels drive it. This workflow is intentionally lightweight: the durable
-configuration lives in the literate org file, durable local briefs may still
-live in the parent workspace's `specs/` directory, and branch-local execution
+configuration lives in the literate org file, durable local briefs
+live in `specs/`, and branch-local execution
 state lives in `TASK.md`.
 
 ## Label axes
@@ -21,10 +21,10 @@ custom `type:*` axis until there is enough issue volume to justify it.
 ## Specs and task files
 
 - GitHub issues are the public backlog/spec surface when an issue exists.
-- Workspace `specs/` remain durable local briefs for exploratory or multi-step
+- `specs/` remain durable local briefs for exploratory or multi-step
   Emacs work that starts outside GitHub.
 - `TASK.md` remains branch-local execution context. It should link back to the
-  GitHub issue or workspace spec that it implements, and it should be removed
+  GitHub issue or spec in `specs/` that it implements, and it should be removed
   before the branch is merged.
 
 ## State machine

@@ -1,5 +1,7 @@
 # Recipes for the literate Emacs config.
 
+import 'reference.just'
+
 # Default: show the recipe list. Underscore-prefixed name marks
 # this as a "private" recipe; `@` makes its commands silent so
 # the user sees only the listing.
