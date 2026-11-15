@@ -623,6 +623,25 @@
    | C-SPC       | set the mark                                 |
    | C-u C-SPC   | jump to mark; repeat to go back in mark ring |
 
+* GTD states and dashboard
+
+   | state     | means                                       |
+   |-----------+---------------------------------------------|
+   | NEXT      | the next step; keeps its project off Stuck  |
+   | TODO      | a task, not yet the next step               |
+   | PROJECT   | a project heading                           |
+   | WAITING   | waiting on someone                          |
+   | DELEGATED | handed to someone else                      |
+   | HOLD      | paused, still meant to be done              |
+   | (none)    | appears in no agenda list                   |
+
+   | key     | description                                      |
+   |---------+--------------------------------------------------|
+   | C-c c t | capture a NEXT item to inbox.org                 |
+   | C-c a g | the GTD dashboard                                |
+   | l       | in the dashboard: show what was closed           |
+   | C-c C-w | refile (also in the agenda)                      |
+
 * Agenda view bindings
 
    | key    | description                    |
