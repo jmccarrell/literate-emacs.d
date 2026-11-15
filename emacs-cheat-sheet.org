@@ -592,10 +592,8 @@
 
    | key         | description                                              |
    |-------------+----------------------------------------------------------|
-   | C-c C-s     | schedule a task on a date                                |
    | C-c l       | store a link, like in a file; region becomes search text |
    | C-c C-l     | create or edit an org mode link                          |
-   | C-c C-x C-s | archive a subtree                                        |
    | C-c h       | open this cheat sheet                                    |
 
 
@@ -605,7 +603,6 @@
    |-------------+----------------------------------------------|
    | C-c %       | Push the current position onto the mark ring |
    | C-c C-v d   | demarcate a block (select region first)      |
-   | C-c C-x C-s | move subtree to archive file                 |
 
 * Register, Bookmark & Mark bindings
 
@@ -622,14 +619,6 @@
    |-------------+----------------------------------------------|
    | C-SPC       | set the mark                                 |
    | C-u C-SPC   | jump to mark; repeat to go back in mark ring |
-
-* Agenda view bindings
-
-   | key    | description                    |
-   |--------+--------------------------------|
-   | t      | move a task through its states |
-   | z      | add a note to a task           |
-   | a or $ | archive done tasks             |
 
 * Dired
 ** Key bindings
@@ -671,6 +660,93 @@
 ** Rectangle Registers
 
    - fill this out from [Rectangle Registers](https://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangle-Registers.html#Rectangle-Registers)
+
+* GTD with Org
+
+  The setup is steve-purcell's, adopted whole (spec 020).  Each agenda file
+  is an area, such as lab or invest; its top-level headings are
+  projects, plus one =Misc= heading for tasks outside any project.
+  =todo.org= holds the rest; =someday.org= holds what isn't committed yet and
+  stays out of the dashboard.
+
+** States
+
+   The keyword on a heading decides which dashboard list it lands in.
+
+   | state           | means                          | shows in                                 |
+   |-----------------+--------------------------------+------------------------------------------|
+   | NEXT            | the next step; one per project | Next Actions                             |
+   | TODO            | a task, not yet the next step  | Orphaned Tasks (no project)              |
+   | PROJECT         | a project heading              | Projects; Stuck until a NEXT is under it |
+   | WAITING         | waiting on someone             | Waiting                                  |
+   | DELEGATED       | handed to someone else         | Delegated                                |
+   | HOLD            | paused, still meant to be done | On Hold                                  |
+   | DONE, CANCELLED | finished                       | nowhere                                  |
+   | (none)          | notes and structure            | nowhere                                  |
+
+** Capture
+
+   | key     | does                              |
+   |---------+-----------------------------------|
+   | C-c c t | a NEXT item into inbox.org        |
+   | C-c c T | a reminder into tickler.org       |
+   | C-c c j | a journal entry                   |
+
+** Process the Inbox
+
+   In an Org buffer:
+
+   | key            | does                                              |
+   |----------------+---------------------------------------------------|
+   | C-c C-w        | refile to a project or Misc (C-u C-u: go to last) |
+   | C-c C-t        | choose a state                                    |
+   | S-LEFT/RIGHT   | step through states                               |
+   | C-S-LEFT/RIGHT | switch state set (task, project, waiting)         |
+   | C-c , [ABC]    | set priority; A means "do soon"                   |
+   | C-c , SPC      | remove the priority                               |
+   | S-UP/DOWN      | raise or lower priority [1]                       |
+   | C-c C-s        | schedule                                          |
+   | C-c C-d        | set a deadline                                    |
+
+** Work from the dashboard
+
+   =C-c a g= opens it.  Lists, top to bottom: Important tasks without a date
+   ([#A], no date), today, Inbox, Stuck Projects, Next Actions, Projects,
+   Orphaned Tasks, Waiting, Delegated, On Hold.
+
+   In the dashboard:
+
+   | key     | does                             |
+   |---------+----------------------------------|
+   | n / p   | next / previous line             |
+   | RET     | go to the item in its file       |
+   | t       | change its state                 |
+   | ,       | set its priority                 |
+   | C-c C-w | refile it                        |
+   | z       | add a note                       |
+   | <       | limit to the item's file (area)  |
+   | l       | show what was closed             |
+   | r       | rebuild                          |
+   | a or $  | archive a finished item          |
+
+** Weekly review
+
+   When the "Personal Weekly Review" tickler item comes up, open =C-c a g=:
+
+   1. Press =l= to see what was closed.
+   2. Empty the Inbox: refile each item, or mark it DONE.
+   3. Give each stuck project a NEXT step, or put it on HOLD.
+   4. Chase Waiting and Delegated items.
+   5. Restart or drop each On Hold item, and look over =someday.org=.
+
+** Archive
+
+   | key         | does                                      |
+   |-------------+-------------------------------------------|
+   | C-c C-x C-s | move subtree to the archive file          |
+   | C-c C-x C-a | archive subtree using the default command |
+   | C-c C-x a/A | toggle ARCHIVE tag / to ARCHIVE sibling   |
+   | C-TAB       | force cycling of an ARCHIVEd tree         |
 
 * Org key bindings
 ** References
@@ -743,17 +819,6 @@
    | C-c C-x C-w/M-w    | kill/copy subtree                          |
    | C-c C-x C-y or C-y | yank subtree                               |
    | C-x n s/w          | narrow buffer to subtree / widen           |
-
-** Capture / Refile / Archiving
-
-   | key         | good for                                      |
-   |-------------+-----------------------------------------------|
-   | C-c c       | capture a new item (C-u C-u == goto last) [1] |
-   | C-c C-w     | refile subtree (C-u C-u == goto last)         |
-   | C-c C-x C-a | archive subtree using the default command     |
-   | C-c C-x C-s | move subtree to archive file                  |
-   | C-c C-x a/A | toggle ARCHIVE tag / to ARCHIVE sibling       |
-   | C-TAB       | force cycling of an ARCHIVEd tree             |
 
 ** Filtering and Sparse Trees
 
@@ -909,20 +974,13 @@
    |-------+------------------------|
    | M-TAB | complete-word-at-point |
 
-** TODO Items and Checkboxes
+** Checkboxes and TODO Sparse Trees
 
    | key            | usage                                         |
    |----------------+-----------------------------------------------|
-   | C-c C-t        | rotate the state of the current item          |
-   | S-LEFT/RIGHT   | select next/previous state                    |
-   | C-S-LEFT/RIGHT | select next/previous set                      |
    | C-c C-x o      | toggle ORDERED property                       |
    | C-c C-v        | view TODO items in a sparse tree              |
    | C-3 C-v C-v    | view 3rd TODO keyword's sparse tree           |
-   |                |                                               |
-   | C-c , [ABC]    | set the priority of the current item          |
-   | C-c , SPC      | remove priority cookie from current item      |
-   | S-UP/DOWN      | raise/lower priority of current item [1]      |
    | M-S-RET        | insert new checkbox item in plain list        |
    | C-c C-x C-b    | toggle checkbox(es) in region/entry/at point  |
    | C-c C-c        | toggle checkbox at point                      |
@@ -1000,7 +1058,7 @@
    | C-c a T     | compile TODO list for keyword [1]         |
    | C-c a m     | match tags, TODO keywords, properties [1] |
    | C-c a M     | match only TODO items [1]                 |
-   | C-c a #     | find stuck projects [1]                   |
+   | C-c a #     | stuck projects alone (also in C-c a g)    |
    | C-c a L     | show timeline of current org file [1]     |
    | C-c a C     | configure custom commands [1]             |
    | C-c C-o     | agenda for date at cursor                 |

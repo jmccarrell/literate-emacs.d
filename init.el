@@ -745,10 +745,8 @@ BRANCH supplies the slash-safe default leaf name."
             (abbreviate-file-name (directory-file-name root))
           "~/jwm/todo")))
 
-;; The default place to put notes for capture mode
-(setq org-default-notes-file
-      (concat org-directory
-              (cond (t "/todo.org"))))
+;; Capture lands in the GTD inbox; the weekly review empties it.
+(setq org-default-notes-file (concat org-directory "/inbox.org"))
 
 ;; where I store periodic reminders, ie, ticklers in GTD-talk
 (defvar jwm/org-tickler-file (concat org-directory "/tickler.org"))
@@ -759,31 +757,131 @@ BRANCH supplies the slash-safe default leaf name."
 
 (setq org-agenda-files jwm/org-agenda-files-list)
 
-;; capture template.
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline org-default-notes-file "Tasks")
-         "* TODO %?\n %i\n  %a\n")
+      '(("t" "Todo" entry (file "")  ; "" is `org-default-notes-file'
+         "* NEXT %?\n%U\n" :clock-resume t)
         ("T" "Tickler" entry (file+headline jwm/org-tickler-file "Tickler")
          "* %i%?\n %U\n")
         ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
          "* %?\nEntered on %U\n  %i\n  %a\n")))
 
-;; Jeff task states
 (setq org-todo-keywords
-      '((sequence
-         "TODO(t)"
-         "NEXT(n!)"
-         "DOING(g!)"
-         "WAITING(w@/!)"
-         "|" "DONE(d!)"
-         "CANCELLED(c@)"
-         "DEFERRED(D@)")))
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+        (sequence "PROJECT(p)" "|" "DONE(d!/!)" "CANCELLED(c@/!)")
+        (sequence "WAITING(w@/!)" "DELEGATED(e!)" "HOLD(h)" "|" "CANCELLED(c@/!)"))
+      org-todo-repeat-to-state "NEXT")
 
-;; I prefer 2 levels of headlines for org refile targets
-;;  this matches well with my TASKS/PROJECTS high level
-;; Allow refiling into any of my current projects,
-;;  as named by org-agenda-files.
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 2))))
+(setq org-todo-keyword-faces
+      '(("NEXT" :inherit warning)
+        ("PROJECT" :inherit font-lock-string-face)))
+
+(setq org-refile-use-cache nil
+      org-refile-targets '((nil :maxlevel . 3) (org-agenda-files :maxlevel . 3))
+      org-refile-use-outline-path t
+      org-outline-path-complete-in-steps nil
+      org-refile-allow-creating-parent-nodes 'confirm)
+
+(with-eval-after-load 'org-agenda
+  (add-to-list 'org-agenda-after-show-hook #'org-fold-show-entry))
+
+(advice-add 'org-refile :after (lambda (&rest _) (org-save-all-org-buffers)))
+
+(defun jwm/org-verify-refile-target ()
+  "Exclude headings in a done state from refile targets."
+  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+(setq org-refile-target-verify-function #'jwm/org-verify-refile-target)
+
+(defun jwm/org-agenda-skip-unless-undated-a ()
+  "Skip unless the entry is priority A with no scheduled date or deadline."
+  (let ((point (point)))
+    (if (and (eq (nth 3 (org-heading-components)) ?A)
+             (not (org-get-deadline-time point))
+             (not (org-get-scheduled-time point)))
+        nil
+      (line-beginning-position 2))))
+
+(defun jwm/org-agenda-files-without-someday ()
+  "The agenda files, less someday.org."
+  (seq-remove (lambda (f) (string= (file-name-nondirectory f) "someday.org"))
+              (org-agenda-files)))
+
+(setq org-stuck-projects '("-INBOX/PROJECT" ("NEXT")))
+
+(let ((active-project-match '(car org-stuck-projects)))
+  (setq org-agenda-compact-blocks t
+        org-agenda-sticky t
+        org-agenda-start-on-weekday nil
+        org-agenda-span 'day
+        org-agenda-include-diary nil
+        org-agenda-sorting-strategy
+        '((agenda habit-down time-up effort-up category-keep)
+          (todo category-up effort-up)
+          (tags category-up effort-up)
+          (search category-up))
+        org-agenda-window-setup 'current-window
+        org-agenda-custom-commands
+        `(("g" "GTD"
+           ((tags-todo "*"
+                       ((org-agenda-overriding-header "Important tasks without a date")
+                        (org-agenda-skip-function #'jwm/org-agenda-skip-unless-undated-a)))
+            (agenda "" nil)
+            (tags "INBOX"
+                  ((org-agenda-overriding-header "Inbox")
+                   (org-tags-match-list-sublevels nil)))
+            (stuck ""
+                   ((org-agenda-overriding-header "Stuck Projects")
+                    (org-agenda-tags-todo-honor-ignore-options t)
+                    (org-tags-match-list-sublevels t)
+                    (org-agenda-todo-ignore-scheduled 'future)))
+            (tags-todo "-INBOX"
+                       ((org-agenda-overriding-header "Next Actions")
+                        (org-agenda-tags-todo-honor-ignore-options t)
+                        (org-agenda-todo-ignore-scheduled 'future)
+                        (org-agenda-skip-function
+                         '(lambda ()
+                            (or (org-agenda-skip-subtree-if 'todo '("HOLD" "WAITING"))
+                                (org-agenda-skip-entry-if 'nottodo '("NEXT")))))
+                        (org-tags-match-list-sublevels t)
+                        (org-agenda-sorting-strategy
+                         '(todo-state-down effort-up category-keep))))
+            (tags-todo ,active-project-match
+                       ((org-agenda-overriding-header "Projects")
+                        (org-tags-match-list-sublevels t)
+                        (org-agenda-sorting-strategy
+                         '(category-keep))))
+            (tags-todo "-INBOX/-NEXT"
+                       ((org-agenda-overriding-header "Orphaned Tasks")
+                        (org-agenda-tags-todo-honor-ignore-options t)
+                        (org-agenda-todo-ignore-scheduled 'future)
+                        (org-agenda-skip-function
+                         '(lambda ()
+                            (or (org-agenda-skip-subtree-if 'todo '("PROJECT" "HOLD" "WAITING" "DELEGATED"))
+                                (org-agenda-skip-subtree-if 'nottodo '("TODO")))))
+                        (org-tags-match-list-sublevels t)
+                        (org-agenda-sorting-strategy
+                         '(category-keep))))
+            (tags-todo "/WAITING"
+                       ((org-agenda-overriding-header "Waiting")
+                        (org-agenda-tags-todo-honor-ignore-options t)
+                        (org-agenda-todo-ignore-scheduled 'future)
+                        (org-agenda-sorting-strategy
+                         '(category-keep))))
+            (tags-todo "/DELEGATED"
+                       ((org-agenda-overriding-header "Delegated")
+                        (org-agenda-tags-todo-honor-ignore-options t)
+                        (org-agenda-todo-ignore-scheduled 'future)
+                        (org-agenda-sorting-strategy
+                         '(category-keep))))
+            (tags-todo "-INBOX"
+                       ((org-agenda-overriding-header "On Hold")
+                        (org-agenda-skip-function
+                         '(lambda ()
+                            (or (org-agenda-skip-subtree-if 'todo '("WAITING"))
+                                (org-agenda-skip-entry-if 'nottodo '("HOLD")))))
+                        (org-tags-match-list-sublevels nil)
+                        (org-agenda-sorting-strategy
+                         '(category-keep)))))
+           ((org-agenda-files (jwm/org-agenda-files-without-someday)))))))
 
 (when (jwm/font-exists-p "Noto Sans")
   (set-face-attribute 'variable-pitch nil :family "Noto Sans" :height 1.1))
