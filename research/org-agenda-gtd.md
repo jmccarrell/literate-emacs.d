@@ -45,23 +45,23 @@ states with little change:
 
 ## Jeff's baseline
 
-From `literate-emacs.d/jeff-emacs-config.org`:
+From `jeff-emacs-config.org` at commit 086df40, before spec 020 changed it:
 
 - **Keys.** `C-c c` capture, `C-c a` agenda, `C-c l` store link
-  ([L1437-L1441](../literate-emacs.d/jeff-emacs-config.org#L1437-L1441)).
+  ([L1437-L1441](https://github.com/jmccarrell/literate-emacs.d/blob/086df406bea98f359f88aad32d304e658e6ffa9d/jeff-emacs-config.org#L1437-L1441)).
 - **Files.** `org-directory` is derived from the nearest
   `org-agenda-files-list` registry, falling back to `~/jwm/todo`;
   `org-default-notes-file` is `todo.org`; a separate `tickler.org`
-  ([L1463-L1479](../literate-emacs.d/jeff-emacs-config.org#L1463-L1479)).
+  ([L1463-L1479](https://github.com/jmccarrell/literate-emacs.d/blob/086df406bea98f359f88aad32d304e658e6ffa9d/jeff-emacs-config.org#L1463-L1479)).
   `org-agenda-files` points at the registry file
-  ([L1506-L1510](../literate-emacs.d/jeff-emacs-config.org#L1506-L1510)).
+  ([L1506-L1510](https://github.com/jmccarrell/literate-emacs.d/blob/086df406bea98f359f88aad32d304e658e6ffa9d/jeff-emacs-config.org#L1506-L1510)).
 - **Capture.** `t` TODO under `todo.org` / `Tasks`, `T` tickler, `j` journal
-  datetree ([L1519-L1526](../literate-emacs.d/jeff-emacs-config.org#L1519-L1526)).
+  datetree ([L1519-L1526](https://github.com/jmccarrell/literate-emacs.d/blob/086df406bea98f359f88aad32d304e658e6ffa9d/jeff-emacs-config.org#L1519-L1526)).
 - **States.** One sequence: `TODO NEXT(n!) DOING(g!) WAITING(w@/!) |
   DONE CANCELLED(c@) DEFERRED(D@)`
-  ([L1530-L1538](../literate-emacs.d/jeff-emacs-config.org#L1530-L1538)).
+  ([L1530-L1538](https://github.com/jmccarrell/literate-emacs.d/blob/086df406bea98f359f88aad32d304e658e6ffa9d/jeff-emacs-config.org#L1530-L1538)).
 - **Refile.** Any agenda file to `:maxlevel 2`, matching a `TASKS`/`PROJECTS`
-  top-level layout ([L1541-L1546](../literate-emacs.d/jeff-emacs-config.org#L1541-L1546)).
+  top-level layout ([L1541-L1546](https://github.com/jmccarrell/literate-emacs.d/blob/086df406bea98f359f88aad32d304e658e6ffa9d/jeff-emacs-config.org#L1541-L1546)).
 
 Not configured: `org-agenda-custom-commands`, `org-stuck-projects`,
 `org-tag-alist` / contexts, priority range, `org-agenda-sorting-strategy`,

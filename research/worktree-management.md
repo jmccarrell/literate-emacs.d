@@ -6,7 +6,8 @@ from Emacs?
 
 **Scope.** This is a local-first snapshot of the active literate config,
 installed package sources, and the cached reference configurations.  It does
-not change Emacs configuration.
+not change Emacs configuration.  Its config links point at commit 72bf4a3, the
+config as it was when this note was written.
 
 ## Current configuration
 
@@ -15,7 +16,7 @@ into a worktree-specific workflow:
 
 1. **Magit is installed and available at `C-x g`.**  The configuration only
    binds `magit-status`; it adds no worktree policy of its own
-   ([`jeff-emacs-config.org`](../literate-emacs.d/jeff-emacs-config.org#L1248-L1260)).
+   ([`jeff-emacs-config.org`](https://github.com/jmccarrell/literate-emacs.d/blob/72bf4a3fa016543bd10d2fc761dd757ead119f31/jeff-emacs-config.org#L1248-L1260)).
    Installed Magit includes the `magit-worktree` transient: create a worktree
    from an existing branch, create a branch and worktree, move, delete, and
    visit another worktree ([`magit-worktree.el`](file:///Users/jeff.mccarrell/.emacs.d/elpa/magit-20251215.2222/magit-worktree.el#L128-L141)).
@@ -25,25 +26,25 @@ into a worktree-specific workflow:
 2. **Projectile provides project switching.**  `C-c p p` (and `s-p`) invokes
    `projectile-switch-project`; global Projectile records project roots and
    removes stale paths once per session
-   ([`jeff-emacs-config.org`](../literate-emacs.d/jeff-emacs-config.org#L955-L981)).
+   ([`jeff-emacs-config.org`](https://github.com/jmccarrell/literate-emacs.d/blob/72bf4a3fa016543bd10d2fc761dd757ead119f31/jeff-emacs-config.org#L955-L981)).
    Each Git worktree has its own `.git` file and is therefore a distinct
    Projectile project.  This is effective after a worktree has been visited,
    but it is a flat list rather than a repo-to-worktree browser.
 
 3. **Dired and Consult cover file/buffer navigation.**  `C-x C-j` jumps from
    a file to Dired; Dired has `dired-dwim-target` enabled
-   ([`jeff-emacs-config.org`](../literate-emacs.d/jeff-emacs-config.org#L914-L951)).
+   ([`jeff-emacs-config.org`](https://github.com/jmccarrell/literate-emacs.d/blob/72bf4a3fa016543bd10d2fc761dd757ead119f31/jeff-emacs-config.org#L914-L951)).
    `C-x b` is remapped to `consult-buffer`, while Consult exposes
    current-project buffers/files as sources.  That makes the active worktree
    pleasant once selected, but does not discover sibling worktrees
-   ([`jeff-emacs-config.org`](../literate-emacs.d/jeff-emacs-config.org#L1148-L1196);
+   ([`jeff-emacs-config.org`](https://github.com/jmccarrell/literate-emacs.d/blob/72bf4a3fa016543bd10d2fc761dd757ead119f31/jeff-emacs-config.org#L1148-L1196);
    [`consult.el`](file:///Users/jeff.mccarrell/.emacs.d/elpa/consult-20260421.1105/consult.el#L240-L263)).
 
 The config also has a careful **teardown** workflow.  Before removing a
 worktree, `jwm/kill-buffers-under-dir` closes its unmodified file buffers;
 after removal, `jwm/kill-buffers-of-missing-files` recovers any stale buffers.
 Both deliberately leave modified buffers alone
-([`jeff-emacs-config.org`](../literate-emacs.d/jeff-emacs-config.org#L486-L536)).
+([`jeff-emacs-config.org`](https://github.com/jmccarrell/literate-emacs.d/blob/72bf4a3fa016543bd10d2fc761dd757ead119f31/jeff-emacs-config.org#L486-L536)).
 
 ## Magit's directory policy is the missing connection
 
