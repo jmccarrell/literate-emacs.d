@@ -35,6 +35,12 @@
   (and (jwm/mac-p)
        (file-exists-p (concat (getenv "HOME") "/jdocs"))))
 
+;; No window-system check: batch, terminal and daemon Emacs must route
+;; capture and the agenda the same way as the GUI.
+(defun jwm/work-mac-p ()
+  (and (eq system-type 'darwin)
+       (file-directory-p (concat (getenv "HOME") "/mark43"))))
+
 (setq user-full-name "Jeff McCarrell"
       user-mail-address (cond
                          (t "jeff@mccarrell.org")))
@@ -741,9 +747,9 @@ BRANCH supplies the slash-safe default leaf name."
 (setq org-directory
       (let ((root (locate-dominating-file
                    default-directory "org-agenda-files-list")))
-        (if root
-            (abbreviate-file-name (directory-file-name root))
-          "~/jwm/todo")))
+        (cond (root (abbreviate-file-name (directory-file-name root)))
+              ((jwm/work-mac-p) "~/mark43/notes")
+              (t "~/jwm/todo"))))
 
 ;; Capture lands in the GTD inbox; the weekly review empties it.
 (setq org-default-notes-file (concat org-directory "/inbox.org"))
