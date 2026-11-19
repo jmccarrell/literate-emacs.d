@@ -1555,6 +1555,8 @@
 
     Refiling is steve-purcell's, three levels deep: areas hold projects at the
     top level, and the projects in =todo.org= sit one level down, under Misc.
+    Reference notes are never refile targets, but a =Reference= heading itself
+    is, so notes can be filed into it.
 
     #+BEGIN_SRC emacs-lisp
       (setq org-refile-use-cache nil
@@ -1569,8 +1571,14 @@
       (advice-add 'org-refile :after (lambda (&rest _) (org-save-all-org-buffers)))
 
       (defun jwm/org-verify-refile-target ()
-        "Exclude headings in a done state from refile targets."
-        (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+        "Exclude done headings and headings beneath a Reference heading."
+        (and (not (member (nth 2 (org-heading-components)) org-done-keywords))
+             (save-excursion
+               (catch 'reference
+                 (while (org-up-heading-safe)
+                   (when (string= (org-get-heading t t t t) "Reference")
+                     (throw 'reference nil)))
+                 t))))
       (setq org-refile-target-verify-function #'jwm/org-verify-refile-target)
     #+END_SRC
 
