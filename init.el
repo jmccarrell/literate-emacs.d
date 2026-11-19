@@ -793,8 +793,14 @@ BRANCH supplies the slash-safe default leaf name."
 (advice-add 'org-refile :after (lambda (&rest _) (org-save-all-org-buffers)))
 
 (defun jwm/org-verify-refile-target ()
-  "Exclude headings in a done state from refile targets."
-  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+  "Exclude done headings and headings beneath a Reference heading."
+  (and (not (member (nth 2 (org-heading-components)) org-done-keywords))
+       (save-excursion
+         (catch 'reference
+           (while (org-up-heading-safe)
+             (when (string= (org-get-heading t t t t) "Reference")
+               (throw 'reference nil)))
+           t))))
 (setq org-refile-target-verify-function #'jwm/org-verify-refile-target)
 
 (defun jwm/org-agenda-skip-unless-undated-a ()

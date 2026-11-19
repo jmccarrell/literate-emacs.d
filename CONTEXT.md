@@ -73,8 +73,8 @@ _Avoid_: Full Rust IDE distribution, package bundle
 
 **Area**:
 One agenda file that holds one part of Jeff's life or work, such as the lab,
-Emacs, or investing. Its top-level headings are its Projects plus one Misc
-heading.
+Emacs, or investing. Its top-level headings are its Projects, one Misc
+heading and at most one Reference heading.
 _Avoid_: Work stream, context
 
 **Project**:
@@ -95,6 +95,11 @@ _Avoid_: Tasks section, notes file
 **Misc**:
 The heading in each Area for sorted tasks that belong to no Project.
 _Avoid_: Inbox, Tasks section
+
+**Reference**:
+Notes that support a Project or an Area but are never acted on: a heading with
+no keyword under a Reference heading, or a file outside the agenda.
+_Avoid_: Notes section, someday
 
 **On Hold**:
 A paused item that stays open in its Area because Jeff still means to do it;
