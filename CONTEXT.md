@@ -89,8 +89,18 @@ _Avoid_: Todo, doing
 
 **Inbox**:
 The single file captured items land in before they are sorted into an Area.
-Emptied at each weekly review.
+Emptied at each Weekly Review.
 _Avoid_: Tasks section, notes file
+
+**Tickler**:
+Dated reminders that return to the agenda on their date, kept in their own
+file.
+_Avoid_: Someday, calendar
+
+**Weekly Review**:
+The weekly pass, prompted by a Tickler entry, that empties the Inbox, reviews
+the week's closed items and sets next week's Next Actions.
+_Avoid_: Daily list, 5:15
 
 **Misc**:
 The heading in each Area for sorted tasks that belong to no Project.
