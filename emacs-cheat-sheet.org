@@ -739,6 +739,19 @@
    4. Chase Waiting and Delegated items.
    5. Restart or drop each On Hold item, and look over =someday.org=.
 
+** Keeping the work notes in shape
+
+   - The =C-c a g= dashboard is the daily plan; there are no dated daily
+     lists.
+   - Capture with =C-c c t=, then process the inbox into a project or
+     =* Misc=.
+   - A follow-up is a =WAITING= item where it lives, not an entry under a
+     "Follow ups" heading.
+   - Meeting notes are journal entries (=C-c c j=), titled =1-1 <name>= or
+     =<meeting> <topic>=.  Actions leave the journal as their own items.
+   - Each person's =*-talk.org= links to their entries: =C-c l= on the
+     entry, then =C-c C-l= in the talk file.
+
 ** Archive
 
    | key         | does                                      |

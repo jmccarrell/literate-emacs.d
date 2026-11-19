@@ -106,6 +106,11 @@ A paused item that stays open in its Area because Jeff still means to do it;
 the HOLD state.
 _Avoid_: Deferred, Someday, cancelled
 
+**Journal**:
+The dated log of meeting notes, one datetree entry per meeting, kept outside
+the agenda. Actions found in an entry leave it as their own items.
+_Avoid_: Daily list, meeting file
+
 **Someday**:
 The list of things Jeff has not committed to, kept in its own file outside
 any Area and left out of the daily views.
