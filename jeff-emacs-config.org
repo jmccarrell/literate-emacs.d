@@ -1522,13 +1522,23 @@
     Capture =t= is steve-purcell's: everything captured is a =NEXT= item in the
     inbox.
 
+    Capture =j= files meeting notes into a datetree, outside the agenda.  The
+    work Mac keeps its journal with the work notes; every other machine keeps
+    =~/pdata/journal.org=.  The path is fixed rather than following
+    =org-directory=, so a capture made from a worktree still lands in the main
+    notes.
+
     #+BEGIN_SRC emacs-lisp
+      (defvar jwm/org-journal-file
+        (if (jwm/work-mac-p) "~/mark43/notes/journal.org" "~/pdata/journal.org")
+        "File the journal capture template files into.")
+
       (setq org-capture-templates
             '(("t" "Todo" entry (file "")  ; "" is `org-default-notes-file'
                "* NEXT %?\n%U\n" :clock-resume t)
               ("T" "Tickler" entry (file+headline jwm/org-tickler-file "Tickler")
                "* %i%?\n %U\n")
-              ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
+              ("j" "Journal" entry (file+datetree jwm/org-journal-file)
                "* %?\nEntered on %U\n  %i\n  %a\n")))
     #+END_SRC
 

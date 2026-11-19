@@ -763,12 +763,16 @@ BRANCH supplies the slash-safe default leaf name."
 
 (setq org-agenda-files jwm/org-agenda-files-list)
 
+(defvar jwm/org-journal-file
+  (if (jwm/work-mac-p) "~/mark43/notes/journal.org" "~/pdata/journal.org")
+  "File the journal capture template files into.")
+
 (setq org-capture-templates
       '(("t" "Todo" entry (file "")  ; "" is `org-default-notes-file'
          "* NEXT %?\n%U\n" :clock-resume t)
         ("T" "Tickler" entry (file+headline jwm/org-tickler-file "Tickler")
          "* %i%?\n %U\n")
-        ("j" "Journal" entry (file+datetree "~/pdata/journal.org")
+        ("j" "Journal" entry (file+datetree jwm/org-journal-file)
          "* %?\nEntered on %U\n  %i\n  %a\n")))
 
 (setq org-todo-keywords
